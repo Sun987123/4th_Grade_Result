@@ -15,7 +15,13 @@
             --radius: 8px;
         }
 
-        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--text); -webkit-font-smoothing: antialiased; }
+        body { 
+            font-family: 'Poppins', sans-serif; 
+            background-color: var(--bg); 
+            margin: 0; padding: 0; color: var(--text); 
+            -webkit-font-smoothing: antialiased;
+            display: flex; flex-direction: column; min-height: 100vh;
+        }
 
         /* Header */
         header { background: linear-gradient(135deg, #0056b3, #004494); color: white; padding: 12px 0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
@@ -23,7 +29,11 @@
         .sub-head { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; font-weight: 400; }
 
         /* Container */
-        .container { max-width: 800px; margin: 10px auto; padding: 10px; background: white; border-radius: var(--radius); }
+        .container { 
+            max-width: 800px; margin: 10px auto; padding: 10px; 
+            background: white; border-radius: var(--radius); width: 95%; 
+            box-sizing: border-box; flex: 1; 
+        }
 
         /* Search Box */
         .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
@@ -33,78 +43,114 @@
         
         button.search-btn { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.95rem; }
 
-        /* RESULT CARD */
+        /* COMPACT RESULT CARD - ALIGNMENT */
         #result-area { display: none; margin-top: 15px; border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; background: #fff; }
-        .res-header { background: #e3f2fd; padding: 8px; text-align: center; font-size: 0.95rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #bbdefb; }
+        .res-header { background: #e3f2fd; padding: 8px; text-align: center; font-size: 0.9rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #bbdefb; }
         
-        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; }
-        .c-row { padding: 6px 12px; border-bottom: 1px solid #f5f5f5; display: flex; justify-content: space-between; align-items: center; }
-        .c-row:nth-child(odd) { border-right: 1px solid #f5f5f5; }
-        .c-label { color: #666; font-weight: 500; font-size: 0.8rem; }
-        .c-val { font-weight: 700; color: #222; }
+        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.8rem; }
+        
+        /* Flex Row with Fixed Label Width */
+        .c-row { 
+            padding: 6px 12px; 
+            border-bottom: 1px solid #f5f5f5; 
+            display: flex; 
+            align-items: center; 
+            justify-content: flex-start; 
+        }
+        
+        .c-row:not([style*="span 2"]):nth-child(odd) { border-right: 1px solid #f5f5f5; }
+        
+        /* Fixed Width Label */
+        .c-label { 
+            color: #666; 
+            font-weight: 500; 
+            font-size: 0.75rem; 
+            white-space: nowrap; 
+            width: 85px; 
+            flex-shrink: 0;
+            text-align: left;
+        }
+        
+        /* Value Left Aligned */
+        .c-val { 
+            font-weight: 700; 
+            color: #222; 
+            text-align: left; 
+            white-space: nowrap; 
+            overflow: hidden; 
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+        
+        /* Full width rows */
+        .c-row[style*="span 2"] .c-val {
+            white-space: normal; 
+            overflow: visible; 
+            text-overflow: unset;
+        }
+        
         .c-highlight { color: var(--primary); font-weight: 800; }
 
         /* ANALYZER SECTIONS */
         #analyzer-area { display: none; margin-top: 20px; }
-        
         .sec-title { 
-            font-size: 1rem; font-weight: 700; color: #333; margin: 15px 0 10px 0; 
+            font-size: 0.95rem; font-weight: 700; color: #333; margin: 15px 0 10px 0; 
             border-left: 4px solid var(--primary); padding-left: 8px; display: flex; align-items: center; justify-content: space-between;
         }
         .shift-color { border-color: var(--accent); color: var(--accent); }
 
         /* Range Box */
         .range-filter-box {
-            background: #fdfdfd; border: 1px dashed #ced4da; padding: 8px; border-radius: var(--radius);
-            display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 15px; flex-wrap: wrap;
+            background: #fdfdfd; border: 1px dashed #ced4da; padding: 6px; border-radius: var(--radius);
+            display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 15px; flex-wrap: wrap;
         }
-        .range-inp { width: 70px; padding: 5px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-weight: bold; font-size: 0.9rem; }
-        .range-btn { background: var(--accent); color: white; border: none; padding: 6px 15px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
+        .range-inp { width: 60px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-weight: bold; font-size: 0.85rem; }
+        .range-btn { background: var(--accent); color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
 
-        /* Badges */
-        .rank-badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 15px; }
-        @media (max-width: 450px) { .rank-badges { grid-template-columns: repeat(2, 1fr); } }
-        .badge { background: #fff; border: 1px solid #eee; padding: 8px 4px; border-radius: var(--radius); text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.02); }
-        .badge span { display: block; font-size: 0.65rem; color: #888; margin-bottom: 2px; text-transform: uppercase; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .badge strong { display: block; font-size: 1.1rem; color: var(--primary); line-height: 1; font-weight: 800; }
+        /* Badges Grid */
+        .rank-badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
+        .badge { background: #fff; border: 1px solid #eee; padding: 6px 2px; border-radius: var(--radius); text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
+        .badge span { display: block; font-size: 0.6rem; color: #888; margin-bottom: 2px; text-transform: uppercase; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .badge strong { display: block; font-size: 1rem; color: var(--primary); line-height: 1; font-weight: 800; }
         .badge.b-shift strong { color: var(--accent); }
+        .badge.b-gray strong { color: #aaa; font-size: 0.85rem; }
 
         /* Tables */
         .table-wrapper { overflow-x: auto; border: 1px solid #eee; border-radius: var(--radius); margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
-        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 100%; }
+        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 100%; }
+        .stats-table th { background: #f8f9fa; color: #555; font-weight: 700; text-transform: uppercase; padding: 6px 4px; text-align: center; border-bottom: 2px solid #ddd; font-size: 0.65rem; white-space: nowrap; }
+        .stats-table td { padding: 5px 4px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444; font-weight: 500; }
         
-        .stats-table th { background: #f8f9fa; color: #555; font-weight: 700; text-transform: uppercase; padding: 8px 4px; text-align: center; border-bottom: 2px solid #ddd; font-size: 0.7rem; white-space: nowrap; }
-        .stats-table td { padding: 6px 4px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444; font-weight: 500; }
-        
-        /* Columns */
         .col-cat { width: 25%; text-align: left !important; padding-left: 8px !important; }
-        .col-data { width: 14%; }
         .tsp-head { color: #888 !important; font-style: italic; background: #fff !important; border-left: 1px solid #eee; }
         .tsp-cell { color: #999; font-style: italic; background: #fcfcfc; border-left: 1px solid #eee; font-size: 0.7rem; }
-        
-        /* Tags & Rows */
-        .cat-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; color: white; font-size: 0.7rem; font-weight: bold; width: 35px; text-align: center;}
+        .cat-tag { display: inline-block; padding: 2px 5px; border-radius: 3px; color: white; font-size: 0.65rem; font-weight: bold; width: 32px; text-align: center;}
         .bg-GEN { background-color: #6c757d; } .bg-OBC { background-color: #007bff; } .bg-EWS { background-color: #17a2b8; }
         .bg-MBC { background-color: #6610f2; } .bg-SC { background-color: #e83e8c; } .bg-ST { background-color: #fd7e14; } .bg-SAH { background-color: #28a745; }
-
-        .sub-row td { background-color: #fcfcfc; color: #666; font-size: 0.7rem; border-bottom: 1px dashed #eee; height: 25px;}
+        .sub-row td { background-color: #fcfcfc; color: #666; font-size: 0.65rem; border-bottom: 1px dashed #eee; height: 22px;}
         .sub-label { display: flex; align-items: center; gap: 4px; color: #555; font-weight: 400; padding-left: 12px !important; }
         .sub-icon { font-size: 0.6rem; color: #bbb; }
-        .row-total { font-weight: 800; color: #000; background: #f9f9f9; }
+        .grand-total-row td { background-color: #e8eaf6; color: #1a237e; font-weight: 800; border-top: 2px solid #c5cae9; font-size: 0.75rem; }
 
-        /* NEW: Grand Total Row Style */
-        .grand-total-row td {
-            background-color: #e8eaf6;
-            color: #1a237e;
-            font-weight: 800;
-            border-top: 2px solid #c5cae9;
-            font-size: 0.8rem;
+        /* BUTTONS */
+        .home-action-area { text-align: center; margin-top: auto; padding: 20px 0; }
+        .result-action-area { text-align: center; margin-top: 20px; padding-bottom: 10px; }
+        
+        .print-btn {
+            background-color: #28a745; color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); margin-bottom: 15px; transition: 0.2s;
         }
+        .print-btn:active { transform: scale(0.95); }
 
-        /* Print Settings */
+        .telegram-btn {
+            display: inline-block; background-color: #0088cc; color: white; text-decoration: none; padding: 10px 25px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 10px rgba(0,136,204,0.3); transition: 0.2s;
+        }
+        .telegram-btn:active { transform: scale(0.95); }
+        
+        footer { text-align: center; padding: 15px; font-size: 0.7rem; color: #aaa; border-top: 1px solid #eee; background: #fff;}
+
         @media print {
-            header, .search-box, button, footer, .range-filter-box { display: none !important; }
-            body { background: white; margin: 0; padding: 0; }
+            header, .search-box, button, footer, .range-filter-box, .result-action-area, .home-action-area { display: none !important; }
+            body { background: white; margin: 0; padding: 0; display: block; }
             .container { box-shadow: none; border: none; margin: 0; padding: 0; max-width: 100%; }
             #result-area, #analyzer-area { display: block !important; }
             #print-header { display: block !important; text-align: center; border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 5px; }
@@ -112,6 +158,7 @@
             table th { background: #eee !important; color: #000; }
             .grand-total-row td { background-color: #ddd !important; -webkit-print-color-adjust: exact; }
             .shift-section-wrapper { page-break-before: always; margin-top: 20px; display: block; }
+            .c-row[style*="span 2"] .c-val { white-space: normal; max-width: none; }
         }
     </style>
 </head>
@@ -141,7 +188,7 @@
             </div>
         </div>
         <button class="search-btn" onclick="processResult()">Search & Analyze</button>
-        <div id="status-msg" style="text-align: center; margin-top: 5px; font-weight: 500; font-size: 0.8rem; min-height: 15px;"></div>
+        <div id="status-msg" style="text-align: center; margin-top: 15px; font-weight: 600; font-size: 0.9rem; min-height: 20px;"></div>
 
         <div id="result-area">
             <div class="res-header">CANDIDATE SCORECARD</div>
@@ -149,21 +196,24 @@
                 <div class="c-row"><div class="c-label">Roll No</div> <div class="c-val" id="d_roll">-</div></div>
                 <div class="c-row"><div class="c-label">Category</div> <div class="c-val" id="d_cat">-</div></div>
                 
-                <div class="c-row"><div class="c-label">Name</div> <div class="c-val" id="d_name">-</div></div>
+                <div class="c-row" style="grid-column: span 2;"><div class="c-label">Name</div> <div class="c-val" id="d_name">-</div></div>
+                <div class="c-row" style="grid-column: span 2;"><div class="c-label">Father</div> <div class="c-val" id="d_father">-</div></div>
+                <div class="c-row" style="grid-column: span 2;"><div class="c-label">Mother</div> <div class="c-val" id="d_mother">-</div></div>
+
                 <div class="c-row"><div class="c-label">Gender</div> <div class="c-val" id="d_gender">-</div></div>
-
-                <div class="c-row"><div class="c-label">Father</div> <div class="c-val" id="d_father">-</div></div>
-                <div class="c-row"><div class="c-label">Mother</div> <div class="c-val" id="d_mother">-</div></div>
-
+                <div class="c-row"><div class="c-label">Special Cat</div> <div class="c-val" id="d_subcat">-</div></div>
+                
+                <div class="c-row"><div class="c-label">TSP Status</div> <div class="c-val" id="d_tsp">-</div></div>
                 <div class="c-row"><div class="c-label">Shift</div> <div class="c-val" id="d_shift">-</div></div>
-                <div class="c-row"><div class="c-label">Final Marks</div> <div class="c-val c-highlight" id="d_final">-</div></div>
 
                 <div class="c-row"><div class="c-label">Raw Marks</div> <div class="c-val" id="d_raw">-</div></div>
                 <div class="c-row"><div class="c-label">Right Que</div> <div class="c-val" id="d_rightq" style="color: green;">-</div></div>
+
+                <div class="c-row" style="background:#f0f8ff;"><div class="c-label">Final Marks</div> <div class="c-val c-highlight" id="d_final">-</div></div>
                 
-                <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 8px; border-top: 1px solid #e0e0e0; padding: 8px;">
-                    <span class="c-label">OVERALL MERIT RANK:</span> 
-                    <span class="c-val c-highlight" style="font-size: 1rem;" id="d_merit">-</span>
+                <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 8px; border-top: 1px solid #e0e0e0; padding: 10px;">
+                    <span class="c-label" style="font-size: 0.9rem; width: auto;">OVERALL MERIT RANK:</span> 
+                    <span class="c-val c-highlight" style="font-size: 1.2rem; max-width: none; flex: initial;" id="d_merit">-</span>
                 </div>
             </div>
         </div>
@@ -171,15 +221,19 @@
         <div id="analyzer-area">
             
             <div class="sec-title">📊 Deep Merit Analysis</div>
-             <div class="rank-badges">
-                <div class="badge"><span>Overall</span><strong id="an_merit">-</strong></div>
-                <div class="badge"><span id="lbl_cat_rank">Cat Rank</span><strong id="an_cat_rank">-</strong></div>
-                <div class="badge"><span id="lbl_gen_rank">Gen Rank</span><strong id="an_gen_rank">-</strong></div>
-                <div class="badge"><span id="lbl_mix_rank">Mix Rank</span><strong id="an_cat_gen_rank">-</strong></div>
+            
+            <div class="rank-badges">
+                <div class="badge"><span>Overall/NTSP</span><strong id="an_merit">-</strong></div>
+                <div class="badge"><span id="lbl_cat_rank">Category</span><strong id="an_cat_rank">-</strong></div>
+                <div class="badge"><span id="lbl_gen_rank">Gender</span><strong id="an_gen_rank">-</strong></div>
+                
+                <div class="badge"><span id="lbl_mix_rank">Cat+Gen</span><strong id="an_cat_gen_rank">-</strong></div>
+                <div class="badge"><span id="lbl_sub_rank">Cat+Special</span><strong id="an_sub_rank">-</strong></div>
+                <div class="badge"><span id="lbl_tsp_rank">TSP</span><strong id="an_tsp_rank">-</strong></div>
             </div>
 
             <div class="range-filter-box">
-                <span class="range-label">Analyze Range:</span>
+                <span style="font-size:0.8rem; color:#666;">Range:</span>
                 <input type="number" id="range_start" class="range-inp" placeholder="Start">
                 <span style="font-weight:bold; color:#aaa;">-</span>
                 <input type="number" id="range_end" class="range-inp" placeholder="End">
@@ -187,7 +241,7 @@
             </div>
 
             <div class="sec-title" style="margin-top:0;">
-                <span id="overall-header">🌐 Overall Stats (Range)</span>
+                <span id="overall-header">🌐 Overall Stats</span>
             </div>
             <div class="table-wrapper">
                 <table class="stats-table">
@@ -209,11 +263,15 @@
                 <div class="sec-title shift-color">
                     <span id="shift-header-text">⚡ Shift Statistics</span>
                 </div>
+                
                 <div class="rank-badges">
                     <div class="badge b-shift"><span>Shift Rank</span><strong id="sh_merit">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_cat">Shift Cat</span><strong id="sh_cat_rank">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_gen">Shift Gen</span><strong id="sh_gen_rank">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_mix">Shift Mix</span><strong id="sh_cat_gen_rank">-</strong></div>
+                    <div class="badge b-shift"><span id="lbl_sh_cat">Sh Cat</span><strong id="sh_cat_rank">-</strong></div>
+                    <div class="badge b-shift"><span id="lbl_sh_gen">Sh Gen</span><strong id="sh_gen_rank">-</strong></div>
+                    
+                    <div class="badge b-shift"><span id="lbl_sh_mix">Sh Mix</span><strong id="sh_cat_gen_rank">-</strong></div>
+                    <div class="badge b-shift"><span id="lbl_sh_sub">Sh Special</span><strong id="sh_sub_rank">-</strong></div>
+                    <div class="badge b-shift"><span id="lbl_sh_tsp">Sh TSP</span><strong id="sh_tsp_rank">-</strong></div>
                 </div>
 
                 <div class="table-wrapper" style="border-top: 2px solid var(--accent);">
@@ -232,58 +290,86 @@
                     </table>
                 </div>
             </div>
-
-            <div style="text-align: center; margin-top: 25px;">
-                <button onclick="window.print()" style="background: #28a745; border:none; color:white; padding: 8px 20px; border-radius: 50px; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-                    🖨️ Print Report
-                </button>
-            </div>
         </div>
+
+        <div class="result-action-area" id="printActionDiv" style="display:none;">
+            <button class="print-btn" onclick="window.print()">🖨️ Print Result</button>
+        </div>
+
     </div>
 
-    <footer>&copy; 2026 Dream-Link Analytics</footer>
+    <div class="home-action-area" id="homeActionDiv">
+        <a href="https://t.me/YOUR_LINK_HERE" class="telegram-btn" target="_blank">✈️ Join Telegram Channel</a>
+    </div>
+
+    <footer>
+        &copy; 2026 Dream-Link Analytics
+    </footer>
 
     <script src="data_roll_ntsp_part1.js"></script>
     <script src="data_roll_ntsp_part2.js"></script>
     <script src="data_ntsp_merit_part1.js"></script>
     <script src="data_merit_part2.js"></script>
 
+    <script src="data_roll_tsp.js"></script>
+    <script src="data_merit_tsp.js"></script>
+
     <script>
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
+        
         const SUB_TYPES = [
             { key: "EXM", label: "Ex-Serviceman" },
             { key: "LDCP", label: "LDCP/PH" },
             { key: "SP", label: "Sports Person" },
-            { key: "DV", label: "Divorcee" },
+            { key: "DIV", label: "Divorcee" }, 
             { key: "WD", label: "Widow" }
         ];
 
         let GLOBAL_MERIT_DB = {};
         let CURRENT_CANDIDATE_SHIFT = "";
         let CURRENT_CANDIDATE_MERIT = 0;
+        let CURRENT_CANDIDATE_SUB = "";
+        let CURRENT_CANDIDATE_TSP = false;
 
         function processResult() {
             const roll = document.getElementById('rollInput').value.trim();
             const status = document.getElementById('status-msg');
             const resArea = document.getElementById('result-area');
             const anArea = document.getElementById('analyzer-area');
+            const printDiv = document.getElementById('printActionDiv');
+            const homeDiv = document.getElementById('homeActionDiv');
+            const type = document.getElementById('examType').value;
 
             resArea.style.display = 'none';
             anArea.style.display = 'none';
-            status.innerHTML = 'Wait...';
-            status.style.color = 'orange';
+            printDiv.style.display = 'none';
+            homeDiv.style.display = 'none'; 
+            
+            status.innerHTML = 'Processing Data... Please Wait...';
+            status.style.color = '#0056b3';
 
-            if(!roll) { status.innerHTML = "Enter Roll Number"; status.style.color = 'red'; return; }
+            if(!roll) { 
+                status.innerHTML = "Enter Roll Number"; status.style.color = 'red'; 
+                homeDiv.style.display = 'block'; 
+                return; 
+            }
 
             setTimeout(() => {
-                const rollDB = window.NTSP_ROLL_DATA || {};
-                GLOBAL_MERIT_DB = window.NTSP_MERIT_DATA || {}; 
+                let rollDB, meritDB;
+                if (type === "TSP") {
+                    rollDB = window.TSP_ROLL_DATA || {}; 
+                    GLOBAL_MERIT_DB = window.TSP_MERIT_DATA || {};
+                } else {
+                    rollDB = window.NTSP_ROLL_DATA || {};
+                    GLOBAL_MERIT_DB = window.NTSP_MERIT_DATA || {};
+                }
 
                 const candidate = rollDB[roll];
 
                 if (!candidate) {
-                    status.innerHTML = `Roll Not Found`;
+                    status.innerHTML = `Roll Not Found in ${type}`;
                     status.style.color = 'red';
+                    homeDiv.style.display = 'block'; 
                     return;
                 }
 
@@ -296,46 +382,71 @@
                 const myShift = String(myDetails.Shift);
                 CURRENT_CANDIDATE_SHIFT = myShift;
 
-                // Basic UI
+                // Sub Category
+                const mySubRaw = (myDetails.SubCat || "").toUpperCase();
+                let displaySub = "None"; 
+                SUB_TYPES.forEach(s => {
+                    if(mySubRaw.includes(s.key) || (s.key === "LDCP" && (mySubRaw.includes("BL") || mySubRaw.includes("LD")))) {
+                        displaySub = s.label;
+                    }
+                });
+                if(displaySub === "None" && mySubRaw.length > 1) displaySub = mySubRaw;
+
+                // TSP
+                const myTsp = (myDetails.TSP || "").toUpperCase().includes("YES") || (myDetails.TSP || "").toUpperCase().includes("TSP");
+                CURRENT_CANDIDATE_TSP = myTsp;
+                const displayTsp = myTsp ? "YES" : "NO";
+
+                // UI Populate
                 document.getElementById('d_roll').innerText = roll;
                 document.getElementById('d_name').innerText = candidate.Name;
                 document.getElementById('d_father').innerText = candidate.Father;
-                document.getElementById('d_mother').innerText = candidate.Mother; // Show Mother
+                document.getElementById('d_mother').innerText = candidate.Mother; 
                 document.getElementById('d_raw').innerText = candidate.RawMark;
                 document.getElementById('d_final').innerText = candidate.FinalMark;
                 document.getElementById('d_merit').innerText = myMerit;
                 document.getElementById('d_cat').innerText = myCat;
                 document.getElementById('d_gender').innerText = myGen;
                 document.getElementById('d_shift').innerText = "Shift " + myShift;
+                document.getElementById('d_subcat').innerText = displaySub;
+                document.getElementById('d_tsp').innerText = displayTsp;
 
-                // --- Calculate Right Que ---
                 let rawVal = parseFloat(candidate.RawMark);
                 let rightQ = "N/A";
-                if(!isNaN(rawVal)) {
-                    rightQ = (rawVal / 1.66).toFixed(2);
-                }
+                if(!isNaN(rawVal)) rightQ = (rawVal / 1.66).toFixed(2);
                 document.getElementById('d_rightq').innerText = rightQ;
 
-                // Labels
+                // Labels - Overall
                 document.getElementById('lbl_cat_rank').innerText = `${myCat}`;
                 document.getElementById('lbl_gen_rank').innerText = `${myGen}`;
                 document.getElementById('lbl_mix_rank').innerText = `${myCat}+${myGen.charAt(0)}`;
-                document.getElementById('lbl_sh_cat').innerText = `Sh ${myCat}`;
-                document.getElementById('lbl_sh_gen').innerText = `Sh ${myGen}`;
-                document.getElementById('lbl_sh_mix').innerText = `Mix Rank`;
+                document.getElementById('lbl_sub_rank').innerText = displaySub !== "None" ? `Cat+${displaySub.split(' ')[0]}` : "Cat+Special";
+                document.getElementById('lbl_tsp_rank').innerText = type === "TSP" ? "TSP Rank" : "TSP Area";
+
+                // Labels - Shift (DYNAMIC UPDATE)
+                // Using "Shift X" format instead of "SH"
+                document.getElementById('lbl_sh_cat').innerText = `Shift ${myShift} ${myCat}`;
+                document.getElementById('lbl_sh_gen').innerText = `Shift ${myShift} ${myGen}`;
+                // Full Mix Label: Shift X OBC F
+                document.getElementById('lbl_sh_mix').innerText = `Shift ${myShift} ${myCat} ${myGen.charAt(0)}`;
+                
+                document.getElementById('lbl_sh_sub').innerText = `Shift ${myShift} Spl`;
+                document.getElementById('lbl_sh_tsp').innerText = `Shift ${myShift} TSP`;
+                
                 document.getElementById('shift-header-text').innerText = `⚡ Shift ${myShift} Statistics`;
 
                 document.getElementById('range_start').value = 1;
                 document.getElementById('range_end').value = myMerit;
 
-                calculateBadges(myMerit, myCat, myGen, myShift);
+                calculateBadges(myMerit, myCat, myGen, myShift, (displaySub!=="None"? mySubRaw : ""), myTsp);
                 calculateTables(1, myMerit, myShift);
 
                 status.innerHTML = "";
                 resArea.style.display = 'block';
                 anArea.style.display = 'block';
+                printDiv.style.display = 'block'; 
 
-            }, 100);
+            }, 2000); 
         }
 
         function updateStatsByRange() {
@@ -348,9 +459,14 @@
             calculateTables(start, end, CURRENT_CANDIDATE_SHIFT);
         }
 
-        function calculateBadges(limit, myCat, myGen, myShift) {
-            let gBadges = { cat: 0, gen: 0, mix: 0 };
-            let sBadges = { rank: 0, cat: 0, gen: 0, mix: 0 };
+        function calculateBadges(limit, myCat, myGen, myShift, mySubRaw, isTsp) {
+            let gBadges = { cat: 0, gen: 0, mix: 0, sub: 0, tsp: 0 };
+            let sBadges = { rank: 0, cat: 0, gen: 0, mix: 0, sub: 0, tsp: 0 };
+            
+            let mySubKey = "";
+             SUB_TYPES.forEach(s => {
+                if(mySubRaw.includes(s.key) || (s.key === "LDCP" && (mySubRaw.includes("BL") || mySubRaw.includes("LD")))) mySubKey = s.key;
+            });
 
             for (let i = 1; i <= limit; i++) {
                 const p = GLOBAL_MERIT_DB[i];
@@ -360,33 +476,63 @@
                 if (!CAT_ORDER.includes(pCat)) pCat = "OTHER";
                 let pGen = (p.Gender || "OTHER").toUpperCase();
                 let pShift = String(p.Shift);
+                let pSubRaw = (p.SubCat || "").toUpperCase();
+                let pTsp = (p.TSP || "").toUpperCase().includes("YES") || (p.TSP || "").toUpperCase().includes("TSP");
 
                 if (pCat === myCat) gBadges.cat++;
                 if (pGen === myGen) gBadges.gen++;
                 if (pCat === myCat && pGen === myGen) gBadges.mix++;
+                
+                if (mySubKey && pCat === myCat && (pSubRaw.includes(mySubKey) || (mySubKey === "LDCP" && (pSubRaw.includes("BL") || pSubRaw.includes("LD"))))) {
+                     gBadges.sub++;
+                }
+                
+                if (isTsp && pTsp) gBadges.tsp++;
 
                 if (pShift === myShift) {
                     sBadges.rank++;
                     if (pCat === myCat) sBadges.cat++;
                     if (pGen === myGen) sBadges.gen++;
                     if (pCat === myCat && pGen === myGen) sBadges.mix++;
+                    
+                    if (mySubKey && pCat === myCat && (pSubRaw.includes(mySubKey) || (mySubKey === "LDCP" && (pSubRaw.includes("BL") || pSubRaw.includes("LD"))))) {
+                        sBadges.sub++;
+                    }
+                    if (isTsp && pTsp) sBadges.tsp++;
                 }
             }
+
             document.getElementById('an_merit').innerText = limit;
             document.getElementById('an_cat_rank').innerText = gBadges.cat;
             document.getElementById('an_gen_rank').innerText = gBadges.gen;
             document.getElementById('an_cat_gen_rank').innerText = gBadges.mix;
+            updateBadgeUI('an_sub_rank', gBadges.sub, mySubKey);
+            updateBadgeUI('an_tsp_rank', gBadges.tsp, isTsp);
 
             document.getElementById('sh_merit').innerText = sBadges.rank;
             document.getElementById('sh_cat_rank').innerText = sBadges.cat;
             document.getElementById('sh_gen_rank').innerText = sBadges.gen;
             document.getElementById('sh_cat_gen_rank').innerText = sBadges.mix;
+            updateBadgeUI('sh_sub_rank', sBadges.sub, mySubKey);
+            updateBadgeUI('sh_tsp_rank', sBadges.tsp, isTsp);
+        }
+
+        function updateBadgeUI(id, value, isActive) {
+            const el = document.getElementById(id);
+            if(isActive) {
+                el.innerText = value;
+                el.parentElement.className = "badge"; 
+                if(id.includes("sh_")) el.parentElement.classList.add("b-shift");
+            } else {
+                el.innerText = "N/A";
+                el.parentElement.className = "badge b-gray";
+            }
         }
 
         function calculateTables(start, end, myShift) {
             const createCatStat = () => ({
                 m: 0, f: 0, o: 0, tot: 0, tsp: 0,
-                subs: { "EXM": z(), "LDCP": z(), "SP": z(), "DV": z(), "WD": z() }
+                subs: { "EXM": z(), "LDCP": z(), "SP": z(), "DIV": z(), "WD": z() } // Fixed Key here too
             });
             const z = () => ({ m: 0, f: 0, o: 0, tot: 0, tsp: 0 });
 
@@ -441,20 +587,14 @@
         function renderDeepTable(id, data) {
             const tbody = document.getElementById(id);
             tbody.innerHTML = "";
-            
-            // Grand Total Tracker
             let gTotal = { m:0, f:0, o:0, tsp:0, all:0 };
 
             [...CAT_ORDER, "OTHER"].forEach(cat => {
                 const d = data[cat];
                 if (d.tot === 0) return;
 
-                // Add to Grand Total
-                gTotal.m += d.m;
-                gTotal.f += d.f;
-                gTotal.o += d.o;
-                gTotal.tsp += d.tsp;
-                gTotal.all += d.tot;
+                gTotal.m += d.m; gTotal.f += d.f; gTotal.o += d.o;
+                gTotal.tsp += d.tsp; gTotal.all += d.tot;
 
                 let html = `
                     <tr style="background:#fff;">
@@ -485,7 +625,6 @@
                 tbody.innerHTML += html;
             });
 
-            // APPEND GRAND TOTAL ROW
             if(gTotal.all > 0) {
                 tbody.innerHTML += `
                     <tr class="grand-total-row">
