@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dream-Link 4th Grade Results</title>
+    <title>Dream-Link 4th Grade 2 MODE</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --primary: #0056b3; 
-            --accent: #6f42c1; 
+            --accent: #6f42c1;
             --bg: #f4f7f6;
             --text: #333;
             --radius: 8px;
@@ -35,130 +35,122 @@
             box-sizing: border-box; flex: 1; 
         }
 
-        /* Search Box */
-        .search-box { display: flex; gap: 8px; margin-bottom: 15px; }
+        /* --- MODE TOGGLE BUTTONS (HOME PAGE) --- */
+        .mode-toggle { display: flex; background: #e9ecef; border-radius: 50px; padding: 4px; margin-bottom: 20px; }
+        .toggle-btn { flex: 1; border: none; background: transparent; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; font-size: 0.9rem; }
+        .toggle-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+        /* INPUT SECTIONS */
+        .input-section { display: none; animation: fadeIn 0.3s ease; }
+        .input-section.active { display: block; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .search-inputs { display: flex; gap: 8px; margin-bottom: 15px; }
         .form-group { flex: 1; }
-        select, input { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: var(--radius); font-size: 0.9rem; box-sizing: border-box; outline: none; background: #fafafa; }
+        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius); font-size: 0.95rem; box-sizing: border-box; outline: none; background: #fafafa; }
         select:focus, input:focus { border-color: var(--primary); background: #fff; }
-        
-        button.search-btn { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.95rem; }
 
-        /* COMPACT RESULT CARD - ALIGNMENT */
-        #result-area { display: none; margin-top: 15px; border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; background: #fff; }
-        .res-header { background: #e3f2fd; padding: 8px; text-align: center; font-size: 0.9rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #bbdefb; }
-        
-        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.8rem; }
-        
-        /* Flex Row with Fixed Label Width */
-        .c-row { 
-            padding: 6px 12px; 
-            border-bottom: 1px solid #f5f5f5; 
-            display: flex; 
-            align-items: center; 
-            justify-content: flex-start; 
-        }
-        
+        /* ACTION BUTTONS */
+        .main-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-bottom: 10px;}
+        .analyze-btn { background: var(--accent); }
+        .main-btn:active { transform: scale(0.98); }
+
+        /* Range Inputs for Analyze Mode */
+        .range-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .range-inp-home { flex: 1; text-align: center; font-weight: bold; }
+
+        /* RESULT SECTIONS */
+        .result-container { display: none; margin-top: 20px; }
+
+        /* Score Card Styling */
+        .res-card { border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; background: #fff; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .res-header { background: #e3f2fd; padding: 10px; text-align: center; font-size: 0.95rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #bbdefb; }
+        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; }
+        .c-row { padding: 8px 12px; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; }
         .c-row:not([style*="span 2"]):nth-child(odd) { border-right: 1px solid #f5f5f5; }
-        
-        /* Fixed Width Label */
-        .c-label { 
-            color: #666; 
-            font-weight: 500; 
-            font-size: 0.75rem; 
-            white-space: nowrap; 
-            width: 85px; 
-            flex-shrink: 0;
-            text-align: left;
-        }
-        
-        /* Value Left Aligned */
-        .c-val { 
-            font-weight: 700; 
-            color: #222; 
-            text-align: left; 
-            white-space: nowrap; 
-            overflow: hidden; 
-            text-overflow: ellipsis;
-            flex: 1;
-        }
-        
-        /* Full width rows */
-        .c-row[style*="span 2"] .c-val {
-            white-space: normal; 
-            overflow: visible; 
-            text-overflow: unset;
-        }
-        
+        .c-label { color: #666; font-weight: 500; width: 90px; flex-shrink: 0; }
+        .c-val { font-weight: 700; color: #222; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         .c-highlight { color: var(--primary); font-weight: 800; }
+        .c-row[style*="span 2"] .c-val { white-space: normal; }
 
-        /* ANALYZER SECTIONS */
-        #analyzer-area { display: none; margin-top: 20px; }
-        .sec-title { 
-            font-size: 0.95rem; font-weight: 700; color: #333; margin: 15px 0 10px 0; 
-            border-left: 4px solid var(--primary); padding-left: 8px; display: flex; align-items: center; justify-content: space-between;
-        }
+        /* Toolbar inside Result (Refresh/Range Update) */
+        .inner-toolbar { background: #fff; border: 1px solid #eee; padding: 10px; border-radius: var(--radius); margin-bottom: 20px; display: flex; justify-content: center; gap: 8px; align-items: center; }
+        .mini-inp { width: 70px; padding: 6px; text-align: center; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; }
+        .mini-btn { padding: 6px 12px; border-radius: 4px; background: var(--accent); color: white; border: none; cursor: pointer; font-size: 0.85rem; }
+        .refresh-icon-btn { background: #28a745; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; font-size: 1rem; }
+
+        /* Table Styles */
+        .sec-title { font-size: 1rem; font-weight: 700; color: #333; margin: 25px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; page-break-after: avoid; }
         .shift-color { border-color: var(--accent); color: var(--accent); }
-
-        /* Range Box */
-        .range-filter-box {
-            background: #fdfdfd; border: 1px dashed #ced4da; padding: 6px; border-radius: var(--radius);
-            display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 15px; flex-wrap: wrap;
-        }
-        .range-inp { width: 60px; padding: 4px; border: 1px solid #ccc; border-radius: 4px; text-align: center; font-weight: bold; font-size: 0.85rem; }
-        .range-btn { background: var(--accent); color: white; border: none; padding: 5px 12px; border-radius: 4px; cursor: pointer; font-size: 0.8rem; font-weight: 600; }
-
-        /* Badges Grid */
-        .rank-badges { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-bottom: 15px; }
-        .badge { background: #fff; border: 1px solid #eee; padding: 6px 2px; border-radius: var(--radius); text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,0.02); }
-        .badge span { display: block; font-size: 0.6rem; color: #888; margin-bottom: 2px; text-transform: uppercase; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .badge strong { display: block; font-size: 1rem; color: var(--primary); line-height: 1; font-weight: 800; }
-        .badge.b-shift strong { color: var(--accent); }
-        .badge.b-gray strong { color: #aaa; font-size: 0.85rem; }
-
-        /* Tables */
-        .table-wrapper { overflow-x: auto; border: 1px solid #eee; border-radius: var(--radius); margin-bottom: 10px; -webkit-overflow-scrolling: touch; }
-        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; min-width: 100%; }
-        .stats-table th { background: #f8f9fa; color: #555; font-weight: 700; text-transform: uppercase; padding: 6px 4px; text-align: center; border-bottom: 2px solid #ddd; font-size: 0.65rem; white-space: nowrap; }
-        .stats-table td { padding: 5px 4px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444; font-weight: 500; }
         
+        .rank-table-wrapper { border: 1px solid #ddd; border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; transition: opacity 0.3s; page-break-inside: avoid; }
+        table.rank-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+        table.rank-table th { background: #0056b3; color: white; padding: 8px; text-align: center; font-weight: 500; border-right: 1px solid rgba(255,255,255,0.2); }
+        table.rank-table th:first-child { text-align: left; padding-left: 15px; width: 40%; }
+        table.rank-table td { padding: 8px; text-align: center; border-bottom: 1px solid #eee; color: #333; font-weight: 600; }
+        table.rank-table td:first-child { text-align: left; padding-left: 15px; color: #555; background: #f9f9f9; border-right: 1px solid #eee; }
+        .shift-rank-table th { background: var(--accent); }
+
+        .table-wrapper { overflow-x: auto; border: 1px solid #eee; border-radius: var(--radius); margin-bottom: 25px; background: white; page-break-inside: avoid; }
+        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 100%; }
+        .stats-table th { background: #f8f9fa; color: #555; font-weight: 700; text-transform: uppercase; padding: 8px 5px; text-align: center; border-bottom: 2px solid #ddd; font-size: 0.7rem; white-space: nowrap; }
+        .stats-table td { padding: 6px 5px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444; font-weight: 500; }
         .col-cat { width: 25%; text-align: left !important; padding-left: 8px !important; }
-        .tsp-head { color: #888 !important; font-style: italic; background: #fff !important; border-left: 1px solid #eee; }
-        .tsp-cell { color: #999; font-style: italic; background: #fcfcfc; border-left: 1px solid #eee; font-size: 0.7rem; }
-        .cat-tag { display: inline-block; padding: 2px 5px; border-radius: 3px; color: white; font-size: 0.65rem; font-weight: bold; width: 32px; text-align: center;}
+        .cat-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; color: white; font-size: 0.7rem; font-weight: bold; width: 35px; text-align: center;}
         .bg-GEN { background-color: #6c757d; } .bg-OBC { background-color: #007bff; } .bg-EWS { background-color: #17a2b8; }
         .bg-MBC { background-color: #6610f2; } .bg-SC { background-color: #e83e8c; } .bg-ST { background-color: #fd7e14; } .bg-SAH { background-color: #28a745; }
-        .sub-row td { background-color: #fcfcfc; color: #666; font-size: 0.65rem; border-bottom: 1px dashed #eee; height: 22px;}
-        .sub-label { display: flex; align-items: center; gap: 4px; color: #555; font-weight: 400; padding-left: 12px !important; }
-        .sub-icon { font-size: 0.6rem; color: #bbb; }
-        .grand-total-row td { background-color: #e8eaf6; color: #1a237e; font-weight: 800; border-top: 2px solid #c5cae9; font-size: 0.75rem; }
-
-        /* BUTTONS */
-        .home-action-area { text-align: center; margin-top: auto; padding: 20px 0; }
-        .result-action-area { text-align: center; margin-top: 20px; padding-bottom: 10px; }
+        .sub-row td { background-color: #fcfcfc; color: #666; font-size: 0.7rem; border-bottom: 1px dashed #eee; }
+        .grand-total-row td { background-color: #e8eaf6; color: #1a237e; font-weight: 800; border-top: 2px solid #c5cae9; }
         
-        .print-btn {
-            background-color: #28a745; color: white; border: none; padding: 10px 25px; border-radius: 50px; cursor: pointer; font-size: 0.9rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); margin-bottom: 15px; transition: 0.2s;
-        }
-        .print-btn:active { transform: scale(0.95); }
+        .dynamic-shift-label { background: #f3e5f5; color: #4a148c; padding: 10px; font-weight: 700; border-bottom: 2px solid #d1c4e9; border-radius: var(--radius) var(--radius) 0 0; margin-bottom: -1px; }
 
-        .telegram-btn {
-            display: inline-block; background-color: #0088cc; color: white; text-decoration: none; padding: 10px 25px; border-radius: 50px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 10px rgba(0,136,204,0.3); transition: 0.2s;
-        }
-        .telegram-btn:active { transform: scale(0.95); }
+        /* Footer & Buttons */
+        .home-action-area { text-align: center; margin-top: auto; padding: 10px 0 10px 0; width: 100%; }
         
-        footer { text-align: center; padding: 15px; font-size: 0.7rem; color: #aaa; border-top: 1px solid #eee; background: #fff;}
+        .print-btn { background-color: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-size: 1rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); margin: 20px auto; display: block; }
+        
+        /* UPDATED TELEGRAM BUTTON (Barik aur Halka) */
+        .telegram-btn { 
+            display: inline-block; 
+            background-color: #f8f9fa; /* Light background */
+            color: #6c757d; /* Grey text */
+            text-decoration: none; 
+            padding: 5px 15px; /* Small padding */
+            border-radius: 4px; /* Slight radius */
+            font-size: 0.7rem; /* Small font */
+            font-weight: 500; 
+            border: 1px solid #dee2e6; /* Thin border */
+            box-shadow: none;
+            transition: 0.2s;
+        }
+        .telegram-btn:hover { background-color: #e2e6ea; color: #333; }
+        
+        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #aaa; border-top: 1px solid #eee; background: #fff; margin-top: 0;}
 
         @media print {
-            header, .search-box, button, footer, .range-filter-box, .result-action-area, .home-action-area { display: none !important; }
-            body { background: white; margin: 0; padding: 0; display: block; }
-            .container { box-shadow: none; border: none; margin: 0; padding: 0; max-width: 100%; }
-            #result-area, #analyzer-area { display: block !important; }
-            #print-header { display: block !important; text-align: center; border-bottom: 2px solid #000; margin-bottom: 15px; padding-bottom: 5px; }
-            .badge { border: 1px solid #000; }
+            header, .mode-toggle, .input-section, .inner-toolbar, .print-btn, .telegram-btn, footer, .home-action-area { display: none !important; }
+            body { background: white; margin: 0; }
+            .container { padding: 0; margin: 0; max-width: 100%; border: none; box-shadow: none; }
+            
+            #print-header { display: block !important; text-align: center; border-bottom: 2px solid #000; margin-bottom: 20px; }
             table th { background: #eee !important; color: #000; }
             .grand-total-row td { background-color: #ddd !important; -webkit-print-color-adjust: exact; }
-            .shift-section-wrapper { page-break-before: always; margin-top: 20px; display: block; }
-            .c-row[style*="span 2"] .c-val { white-space: normal; max-width: none; }
+            
+            /* FIX FOR PRINTING ONLY ACTIVE SECTION */
+            /* We don't force display:block on all containers. We let JS controlled display:block persist */
+            /* Ensure the active one isn't hidden by other rules */
+            .result-container[style*="block"] { display: block !important; }
+            .result-container[style*="none"] { display: none !important; }
+
+            /* PAGE BREAK LOGIC */
+            .page-break { page-break-before: always; }
+            
+            /* Separate Shift Section in Search View */
+            #search-shift-section { page-break-before: always; }
+            
+            /* Separate Each Shift in Analyze View */
+            .dynamic-shift-wrapper { page-break-before: always; }
         }
     </style>
 </head>
@@ -176,468 +168,448 @@
             <p style="font-size: 0.9rem;">Analyse by MP SALODIYA</p>
         </div>
         
-        <div class="search-box">
-            <div class="form-group" style="flex: 0.6;">
-                <select id="examType">
+        <div class="mode-toggle">
+            <button class="toggle-btn active" onclick="switchMode('search')">🔍 Search Result</button>
+            <button class="toggle-btn" onclick="switchMode('analyze')">📊 Analyze Stats</button>
+        </div>
+
+        <div id="input-search" class="input-section active">
+            <div class="search-inputs">
+                <div class="form-group" style="flex: 0.6;">
+                    <select id="examTypeSearch">
+                        <option value="NTSP">NTSP</option>
+                        <option value="TSP">TSP</option>
+                    </select>
+                </div>
+                <div class="form-group" style="flex: 1.4;">
+                    <input type="number" id="rollInput" placeholder="Enter Roll Number">
+                </div>
+            </div>
+            <button class="main-btn" onclick="executeSearch()">Check Result</button>
+        </div>
+
+        <div id="input-analyze" class="input-section">
+            <div class="form-group" style="margin-bottom: 10px;">
+                <select id="examTypeAnalyze">
                     <option value="NTSP">NTSP</option>
                     <option value="TSP">TSP</option>
                 </select>
             </div>
-            <div class="form-group" style="flex: 1.4;">
-                <input type="number" id="rollInput" placeholder="Enter Roll Number">
+            <div class="range-row">
+                <input type="number" id="ana_start" class="range-inp-home" placeholder="Start Rank">
+                <span style="font-weight: bold; color: #999;">-</span>
+                <input type="number" id="ana_end" class="range-inp-home" placeholder="End Rank">
             </div>
+            <button class="main-btn analyze-btn" onclick="executeAnalyze()">Analyze Stats 🚀</button>
         </div>
-        <button class="search-btn" onclick="processResult()">Search & Analyze</button>
+
         <div id="status-msg" style="text-align: center; margin-top: 15px; font-weight: 600; font-size: 0.9rem; min-height: 20px;"></div>
 
-        <div id="result-area">
-            <div class="res-header">CANDIDATE SCORE CARD</div>
-            <div class="compact-grid">
-                <div class="c-row"><div class="c-label">Roll No</div> <div class="c-val" id="d_roll">-</div></div>
-                <div class="c-row"><div class="c-label">Category</div> <div class="c-val" id="d_cat">-</div></div>
-                
-                <div class="c-row" style="grid-column: span 2;"><div class="c-label">Name</div> <div class="c-val" id="d_name">-</div></div>
-                <div class="c-row" style="grid-column: span 2;"><div class="c-label">Father</div> <div class="c-val" id="d_father">-</div></div>
-                <div class="c-row" style="grid-column: span 2;"><div class="c-label">Mother</div> <div class="c-val" id="d_mother">-</div></div>
-
-                <div class="c-row"><div class="c-label">Gender</div> <div class="c-val" id="d_gender">-</div></div>
-                <div class="c-row"><div class="c-label">Special Cat</div> <div class="c-val" id="d_subcat">-</div></div>
-                
-                <div class="c-row"><div class="c-label">TSP Status</div> <div class="c-val" id="d_tsp">-</div></div>
-                <div class="c-row"><div class="c-label">Shift</div> <div class="c-val" id="d_shift">-</div></div>
-
-                <div class="c-row"><div class="c-label">Raw Marks</div> <div class="c-val" id="d_raw">-</div></div>
-                <div class="c-row"><div class="c-label">Right Que</div> <div class="c-val" id="d_rightq" style="color: green;">-</div></div>
-
-                <div class="c-row" style="background:#f0f8ff;"><div class="c-label">Final Marks</div> <div class="c-val c-highlight" id="d_final">-</div></div>
-                
-                <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 8px; border-top: 1px solid #e0e0e0; padding: 10px;">
-                    <span class="c-label" style="font-size: 0.9rem; width: auto;">OVERALL MERIT RANK:</span> 
-                    <span class="c-val c-highlight" style="font-size: 1.2rem; max-width: none; flex: initial;" id="d_merit">-</span>
+        <div id="result-search" class="result-container">
+            <div class="res-card">
+                <div class="res-header">CANDIDATE SCORE CARD</div>
+                <div class="compact-grid">
+                    <div class="c-row"><div class="c-label">Roll No</div> <div class="c-val" id="d_roll">-</div></div>
+                    <div class="c-row"><div class="c-label">Category</div> <div class="c-val" id="d_cat">-</div></div>
+                    <div class="c-row" style="grid-column: span 2;"><div class="c-label">Name</div> <div class="c-val" id="d_name">-</div></div>
+                    <div class="c-row" style="grid-column: span 2;"><div class="c-label">Father</div> <div class="c-val" id="d_father">-</div></div>
+                    <div class="c-row" style="grid-column: span 2;"><div class="c-label">Mother</div> <div class="c-val" id="d_mother">-</div></div>
+                    <div class="c-row"><div class="c-label">Gender</div> <div class="c-val" id="d_gender">-</div></div>
+                    <div class="c-row"><div class="c-label">Special Cat</div> <div class="c-val" id="d_subcat">-</div></div>
+                    <div class="c-row"><div class="c-label">TSP Status</div> <div class="c-val" id="d_tsp">-</div></div>
+                    <div class="c-row"><div class="c-label">Shift</div> <div class="c-val" id="d_shift">-</div></div>
+                    <div class="c-row"><div class="c-label">Raw Marks</div> <div class="c-val" id="d_raw">-</div></div>
+                    <div class="c-row"><div class="c-label">Right Que</div> <div class="c-val" id="d_rightq" style="color: green;">-</div></div>
+                    <div class="c-row" style="background:#f0f8ff;"><div class="c-label">Final Marks</div> <div class="c-val c-highlight" id="d_final">-</div></div>
+                    <div class="c-row" style="background:#f0f8ff;">
+    <div class="c-label">Difference</div> 
+    <div class="c-val" id="d_diff" style="font-weight:bold;">-</div>
+</div>
+                    <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 8px; border-top: 1px solid #e0e0e0; padding: 10px;">
+                        <span class="c-label" style="font-size: 0.9rem; width: auto;">OVERALL MERIT RANK:</span> 
+                        <span class="c-val c-highlight" style="font-size: 1.2rem; max-width: none; flex: initial;" id="d_merit">-</span>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div id="analyzer-area">
-            
-            <div class="sec-title">📊 Deep Merit Analysis</div>
-            
-            <div class="rank-badges">
-                <div class="badge"><span>Overall/NTSP</span><strong id="an_merit">-</strong></div>
-                <div class="badge"><span id="lbl_cat_rank">Category</span><strong id="an_cat_rank">-</strong></div>
-                <div class="badge"><span id="lbl_gen_rank">Gender</span><strong id="an_gen_rank">-</strong></div>
-                
-                <div class="badge"><span id="lbl_mix_rank">Cat+Gen</span><strong id="an_cat_gen_rank">-</strong></div>
-                <div class="badge"><span id="lbl_sub_rank">Cat+Special</span><strong id="an_sub_rank">-</strong></div>
-                <div class="badge"><span id="lbl_tsp_rank">TSP</span><strong id="an_tsp_rank">-</strong></div>
+            <div class="inner-toolbar">
+                <span style="font-size: 0.8rem; font-weight: 600;">Manual Range:</span>
+                <input type="number" id="res_start" class="mini-inp" placeholder="Start">
+                <span>-</span>
+                <input type="number" id="res_end" class="mini-inp" placeholder="End">
+                <button class="mini-btn" onclick="updateSearchResult()">Go</button>
+                <button class="refresh-icon-btn" onclick="resetSearchAnalysis()">↻</button>
             </div>
 
-            <div class="range-filter-box">
-                <span style="font-size:0.8rem; color:#666;">Range:</span>
-                <input type="number" id="range_start" class="range-inp" placeholder="Start">
-                <span style="font-weight:bold; color:#aaa;">-</span>
-                <input type="number" id="range_end" class="range-inp" placeholder="End">
-                <button class="range-btn" onclick="updateStatsByRange()">Go</button>
-            </div>
-
-            <div class="sec-title" style="margin-top:0;">
-                <span id="overall-header">🌐 Overall Stats</span>
-            </div>
-            <div class="table-wrapper">
-                <table class="stats-table">
-                    <thead>
-                        <tr>
-                            <th class="col-cat">Category</th>
-                            <th class="col-data">Male</th>
-                            <th class="col-data">Fem</th>
-                            <th class="col-data">Oth</th>
-                            <th class="col-data tsp-head">TSP</th>
-                            <th class="col-data">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="overall-table-body"></tbody>
+            <div class="sec-title" style="margin-top: 0;">📊 Deep Merit Analysis</div>
+            <div class="rank-table-wrapper" id="rt-wrapper-1">
+                <table class="rank-table">
+                    <thead><tr><th>Criteria</th><th>Rank (With TSP)</th><th>Rank (NTSP Only)</th></tr></thead>
+                    <tbody id="tb-overall-rank"></tbody>
                 </table>
             </div>
 
-            <div class="shift-section-wrapper">
-                <div class="sec-title shift-color">
-                    <span id="shift-header-text">⚡ Shift Statistics</span>
-                </div>
-                
-                <div class="rank-badges">
-                    <div class="badge b-shift"><span>Shift Rank</span><strong id="sh_merit">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_cat">Sh Cat</span><strong id="sh_cat_rank">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_gen">Sh Gen</span><strong id="sh_gen_rank">-</strong></div>
-                    
-                    <div class="badge b-shift"><span id="lbl_sh_mix">Sh Mix</span><strong id="sh_cat_gen_rank">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_sub">Sh Special</span><strong id="sh_sub_rank">-</strong></div>
-                    <div class="badge b-shift"><span id="lbl_sh_tsp">Sh TSP</span><strong id="sh_tsp_rank">-</strong></div>
-                </div>
+            <div class="sec-title"><span id="lbl-ov-stats">🌐 Overall Stats</span></div>
+            <div class="table-wrapper" id="rt-wrapper-2">
+                <table class="stats-table" id="tb-overall-stats"><thead></thead><tbody></tbody></table>
+            </div>
 
-                <div class="table-wrapper" style="border-top: 2px solid var(--accent);">
-                    <table class="stats-table">
-                        <thead>
-                            <tr>
-                                <th class="col-cat" style="background: #f3e5f5; color: #4a148c;">Category</th>
-                                <th class="col-data" style="background: #f3e5f5; color: #4a148c;">Male</th>
-                                <th class="col-data" style="background: #f3e5f5; color: #4a148c;">Fem</th>
-                                <th class="col-data" style="background: #f3e5f5; color: #4a148c;">Oth</th>
-                                <th class="col-data tsp-head" style="background: #fffbfb !important;">TSP</th>
-                                <th class="col-data" style="background: #f3e5f5; color: #4a148c;">Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="shift-table-body"></tbody>
+            <div id="search-shift-section">
+                <div class="sec-title shift-color"><span id="lbl-sh-stats">⚡ Shift Statistics</span></div>
+                <div class="rank-table-wrapper" id="rt-wrapper-3">
+                    <table class="rank-table shift-rank-table">
+                        <thead><tr><th>Criteria</th><th>Shift Rank (All)</th><th>Shift Rank (NTSP)</th></tr></thead>
+                        <tbody id="tb-shift-rank"></tbody>
                     </table>
                 </div>
+                <div class="table-wrapper" id="rt-wrapper-4">
+                    <table class="stats-table" id="tb-shift-stats"><thead></thead><tbody></tbody></table>
+                </div>
             </div>
-        </div>
-
-        <div class="result-action-area" id="printActionDiv" style="display:none;">
+            
             <button class="print-btn" onclick="window.print()">🖨️ Print Result</button>
         </div>
 
+        <div id="result-analyze" class="result-container">
+            <div class="sec-title" style="margin-top: 0;"><span id="ana-ov-header">🌐 Overall Stats Range Analysis</span></div>
+            <div id="ana-overall-container"></div>
+
+            <div class="sec-title shift-color">⚡ Multi-Shift Analysis</div>
+            <div id="ana-shifts-container"></div>
+
+            <button class="print-btn" onclick="window.print()">🖨️ Print Stats</button>
+        </div>
+
+        <div class="home-action-area">
+            <a href="https://t.me/YOUR_LINK_HERE" class="telegram-btn" target="_blank">Join Telegram</a>
+        </div>
+
     </div>
 
-    <div class="home-action-area" id="homeActionDiv">
-        <a href="https://t.me/YOUR_LINK_HERE" class="telegram-btn" target="_blank">✈️ Join Telegram Channel</a>
-    </div>
-
-    <footer>
-        &copy; 2026 Dream-Link Analytics
-    </footer>
+    <footer>&copy; 2026 Dream-Link Analytics</footer>
 
     <script src="data_roll_ntsp_part1.js"></script>
     <script src="data_roll_ntsp_part2.js"></script>
     <script src="data_ntsp_merit_part1.js"></script>
     <script src="data_merit_part2.js"></script>
-
     <script src="data_roll_tsp.js"></script>
     <script src="data_merit_tsp.js"></script>
 
     <script>
+        // CONFIG
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
-        
-        const SUB_TYPES = [
-            { key: "EXM", label: "Ex-Serviceman" },
-            { key: "LDCP", label: "LDCP/PH" },
-            { key: "SP", label: "Sports Person" },
-            { key: "DIV", label: "Divorcee" }, 
-            { key: "WD", label: "Widow" }
-        ];
+        const SUB_TYPES = [{key:"EXM",label:"Ex-Serviceman"},{key:"LDCP",label:"LDCP/PH"},{key:"SP",label:"Sports Person"},{key:"DIV",label:"Divorcee"},{key:"WD",label:"Widow"}];
 
-        let GLOBAL_MERIT_DB = {};
-        let CURRENT_CANDIDATE_SHIFT = "";
-        let CURRENT_CANDIDATE_MERIT = 0;
-        let CURRENT_CANDIDATE_SUB = "";
-        let CURRENT_CANDIDATE_TSP = false;
+        // GLOBALS
+        let CURRENT_DB = {}; // Merit DB
+        let CANDIDATE = null; // Current Candidate Object
+        let CURRENT_TYPE = "NTSP"; // Selected Type
 
-        function processResult() {
-            const roll = document.getElementById('rollInput').value.trim();
-            const status = document.getElementById('status-msg');
-            const resArea = document.getElementById('result-area');
-            const anArea = document.getElementById('analyzer-area');
-            const printDiv = document.getElementById('printActionDiv');
-            const homeDiv = document.getElementById('homeActionDiv');
-            const type = document.getElementById('examType').value;
-
-            resArea.style.display = 'none';
-            anArea.style.display = 'none';
-            printDiv.style.display = 'none';
-            homeDiv.style.display = 'none'; 
+        // --- TAB SWITCHING ---
+        function switchMode(mode) {
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.input-section').forEach(d => d.classList.remove('active'));
+            // Hide all result containers explicitly to fix print issue
+            document.querySelectorAll('.result-container').forEach(d => {
+                d.style.display = 'none';
+            });
+            document.getElementById('status-msg').innerHTML = "";
             
-            status.innerHTML = 'Processing Data... Please Wait...';
-            status.style.color = '#0056b3';
-
-            if(!roll) { 
-                status.innerHTML = "Enter Roll Number"; status.style.color = 'red'; 
-                homeDiv.style.display = 'block'; 
-                return; 
+            if(mode === 'search') {
+                document.querySelectorAll('.toggle-btn')[0].classList.add('active');
+                document.getElementById('input-search').classList.add('active');
+            } else {
+                document.querySelectorAll('.toggle-btn')[1].classList.add('active');
+                document.getElementById('input-analyze').classList.add('active');
             }
+        }
+
+        // --- DATA LOADER ---
+        function loadDB(type) {
+            CURRENT_TYPE = type;
+            if(type === "TSP") {
+                CURRENT_DB = window.TSP_MERIT_DATA || {};
+                return window.TSP_ROLL_DATA || {};
+            } else {
+                CURRENT_DB = window.NTSP_MERIT_DATA || {};
+                return window.NTSP_ROLL_DATA || {};
+            }
+        }
+
+        // --- FUNCTION 1: EXECUTE SEARCH ---
+        function executeSearch() {
+            const roll = document.getElementById('rollInput').value.trim();
+            const type = document.getElementById('examTypeSearch').value;
+            const status = document.getElementById('status-msg');
+            
+            document.getElementById('result-search').style.display = 'none';
+            status.innerHTML = "Searching..."; status.style.color = "#0056b3";
 
             setTimeout(() => {
-                let rollDB, meritDB;
-                if (type === "TSP") {
-                    rollDB = window.TSP_ROLL_DATA || {}; 
-                    GLOBAL_MERIT_DB = window.TSP_MERIT_DATA || {};
-                } else {
-                    rollDB = window.NTSP_ROLL_DATA || {};
-                    GLOBAL_MERIT_DB = window.NTSP_MERIT_DATA || {};
+                const rollDB = loadDB(type);
+                const candRaw = rollDB[roll];
+
+                if(!candRaw) {
+                    status.innerHTML = "Roll Number Not Found!"; status.style.color = "red"; return;
                 }
 
-                const candidate = rollDB[roll];
-
-                if (!candidate) {
-                    status.innerHTML = `Roll Not Found in ${type}`;
-                    status.style.color = 'red';
-                    homeDiv.style.display = 'block'; 
-                    return;
-                }
-
-                const myMerit = parseInt(candidate.Merit);
-                CURRENT_CANDIDATE_MERIT = myMerit;
-                const myDetails = GLOBAL_MERIT_DB[myMerit] || {};
                 
-                const myCat = (myDetails.Category || "OTHER").toUpperCase();
-                const myGen = (myDetails.Gender || "OTHER").toUpperCase();
-                const myShift = String(myDetails.Shift);
-                CURRENT_CANDIDATE_SHIFT = myShift;
+                CANDIDATE = { ...candRaw, Merit: parseInt(candRaw.Merit) };
+                const det = CURRENT_DB[CANDIDATE.Merit] || {};
+                CANDIDATE.Cat = (det.Category||"OTHER").toUpperCase();
+                CANDIDATE.Gen = (det.Gender||"OTHER").toUpperCase();
+                CANDIDATE.Shift = String(det.Shift);
+                CANDIDATE.SubRaw = (det.SubCat||"").toUpperCase();
+                CANDIDATE.Tsp = (det.TSP||"").toUpperCase().includes("YES") || (det.TSP||"").toUpperCase().includes("TSP");
 
-                // Sub Category
-                const mySubRaw = (myDetails.SubCat || "").toUpperCase();
-                let displaySub = "None"; 
-                SUB_TYPES.forEach(s => {
-                    if(mySubRaw.includes(s.key) || (s.key === "LDCP" && (mySubRaw.includes("BL") || mySubRaw.includes("LD")))) {
-                        displaySub = s.label;
-                    }
-                });
-                if(displaySub === "None" && mySubRaw.length > 1) displaySub = mySubRaw;
-
-                // TSP
-                const myTsp = (myDetails.TSP || "").toUpperCase().includes("YES") || (myDetails.TSP || "").toUpperCase().includes("TSP");
-                CURRENT_CANDIDATE_TSP = myTsp;
-                const displayTsp = myTsp ? "YES" : "NO";
-
-                // UI Populate
+               
                 document.getElementById('d_roll').innerText = roll;
-                document.getElementById('d_name').innerText = candidate.Name;
-                document.getElementById('d_father').innerText = candidate.Father;
-                document.getElementById('d_mother').innerText = candidate.Mother; 
-                document.getElementById('d_raw').innerText = candidate.RawMark;
-                document.getElementById('d_final').innerText = candidate.FinalMark;
-                document.getElementById('d_merit').innerText = myMerit;
-                document.getElementById('d_cat').innerText = myCat;
-                document.getElementById('d_gender').innerText = myGen;
-                document.getElementById('d_shift').innerText = "Shift " + myShift;
-                document.getElementById('d_subcat').innerText = displaySub;
-                document.getElementById('d_tsp').innerText = displayTsp;
-
-                let rawVal = parseFloat(candidate.RawMark);
-                let rightQ = "N/A";
-                if(!isNaN(rawVal)) rightQ = (rawVal / 1.66).toFixed(2);
-                document.getElementById('d_rightq').innerText = rightQ;
-
-                // Labels - Overall
-                document.getElementById('lbl_cat_rank').innerText = `${myCat}`;
-                document.getElementById('lbl_gen_rank').innerText = `${myGen}`;
-                document.getElementById('lbl_mix_rank').innerText = `${myCat}+${myGen.charAt(0)}`;
-                document.getElementById('lbl_sub_rank').innerText = displaySub !== "None" ? `Cat+${displaySub.split(' ')[0]}` : "Cat+Special";
-                document.getElementById('lbl_tsp_rank').innerText = type === "TSP" ? "TSP Rank" : "TSP Area";
-
-                // Labels - Shift (DYNAMIC UPDATE)
-                // Using "Shift X" format instead of "SH"
-                document.getElementById('lbl_sh_cat').innerText = `Shift ${myShift} ${myCat}`;
-                document.getElementById('lbl_sh_gen').innerText = `Shift ${myShift} ${myGen}`;
-                // Full Mix Label: Shift X OBC F
-                document.getElementById('lbl_sh_mix').innerText = `Shift ${myShift} ${myCat} ${myGen.charAt(0)}`;
+                document.getElementById('d_name').innerText = CANDIDATE.Name;
+                document.getElementById('d_father').innerText = CANDIDATE.Father;
+                document.getElementById('d_mother').innerText = CANDIDATE.Mother;
+                document.getElementById('d_raw').innerText = CANDIDATE.RawMark;
+                document.getElementById('d_final').innerText = CANDIDATE.FinalMark;
                 
-                document.getElementById('lbl_sh_sub').innerText = `Shift ${myShift} Spl`;
-                document.getElementById('lbl_sh_tsp').innerText = `Shift ${myShift} TSP`;
+                let rawM = parseFloat(CANDIDATE.RawMark) || 0;
+                let finM = parseFloat(CANDIDATE.FinalMark) || 0;
+                let diff = finM - rawM;
                 
-                document.getElementById('shift-header-text').innerText = `⚡ Shift ${myShift} Statistics`;
+                let diffEl = document.getElementById('d_diff');
+                if(diffEl) {
+                 
+                    diffEl.innerText = (diff > 0 ? "+" : "") + diff.toFixed(4);
+                   
+                    diffEl.style.color = diff >= 0 ? "#28a745" : "#dc3545";
+                }
+                document.getElementById('d_merit').innerText = CANDIDATE.Merit;
+                document.getElementById('d_cat').innerText = CANDIDATE.Cat;
+                document.getElementById('d_gender').innerText = CANDIDATE.Gen;
+                document.getElementById('d_shift').innerText = "Shift " + CANDIDATE.Shift;
+                document.getElementById('d_tsp').innerText = CANDIDATE.Tsp ? "YES" : "NO";
+                
+                let subDisp = "None";
+                SUB_TYPES.forEach(s => { if(CANDIDATE.SubRaw.includes(s.key) || (s.key==="LDCP"&&(CANDIDATE.SubRaw.includes("BL")||CANDIDATE.SubRaw.includes("LD")))) subDisp=s.label; });
+                if(subDisp==="None" && CANDIDATE.SubRaw.length>1) subDisp=CANDIDATE.SubRaw;
+                document.getElementById('d_subcat').innerText = subDisp;
+                
+                let rv = parseFloat(CANDIDATE.RawMark);
+                document.getElementById('d_rightq').innerText = !isNaN(rv) ? (rv/1.66).toFixed(2) : "N/A";
 
-                document.getElementById('range_start').value = 1;
-                document.getElementById('range_end').value = myMerit;
-
-                calculateBadges(myMerit, myCat, myGen, myShift, (displaySub!=="None"? mySubRaw : ""), myTsp);
-                calculateTables(1, myMerit, myShift);
+               
+                document.getElementById('res_start').value = 1;
+                document.getElementById('res_end').value = CANDIDATE.Merit;
+                
+              
+                runSearchLogic(1, CANDIDATE.Merit);
 
                 status.innerHTML = "";
-                resArea.style.display = 'block';
-                anArea.style.display = 'block';
-                printDiv.style.display = 'block'; 
-
-            }, 2000); 
+                document.getElementById('result-search').style.display = 'block';
+            }, 300);
         }
 
-        function updateStatsByRange() {
-            let start = parseInt(document.getElementById('range_start').value) || 1;
-            let end = parseInt(document.getElementById('range_end').value) || CURRENT_CANDIDATE_MERIT;
-            if(start > end) { alert("Invalid Range"); return; }
+       
+        function runSearchLogic(start, end) {
+            let deepStart = start, deepEnd = end;
+            let isSafeMode = false;
+
+            if(start > CANDIDATE.Merit) {
+                isSafeMode = true;
+                deepStart = 1; deepEnd = CANDIDATE.Merit;
+            }
+
+           
+            document.getElementById('lbl-ov-stats').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
+            document.getElementById('lbl-sh-stats').innerText = `⚡ Shift ${CANDIDATE.Shift} Stats (Rank ${start}-${end})`;
+
+           
+            const opacity = isSafeMode ? "0.4" : "1";
+            document.getElementById('rt-wrapper-1').style.opacity = opacity;
+            document.getElementById('rt-wrapper-3').style.opacity = opacity;
+            document.getElementById('rt-wrapper-2').style.opacity = "1";
+            document.getElementById('rt-wrapper-4').style.opacity = "1";
+
+           
+            calculateBadges(deepStart, deepEnd); 
+            calculateSearchTables(start, end);   
+        }
+
+        function updateSearchResult() {
+            let s = parseInt(document.getElementById('res_start').value)||1;
+            let e = parseInt(document.getElementById('res_end').value)||CANDIDATE.Merit;
+            if(s>e) { alert("Start > End!"); return; }
+            runSearchLogic(s, e);
+        }
+
+        function resetSearchAnalysis() {
+            document.getElementById('res_start').value = 1;
+            document.getElementById('res_end').value = CANDIDATE.Merit;
+            runSearchLogic(1, CANDIDATE.Merit);
+        }
+
+       
+        function executeAnalyze() {
+            const type = document.getElementById('examTypeAnalyze').value;
+            const start = parseInt(document.getElementById('ana_start').value);
+            const end = parseInt(document.getElementById('ana_end').value);
+            const status = document.getElementById('status-msg');
+
+          
+            document.getElementById('result-search').style.display = 'none';
+            document.getElementById('result-analyze').style.display = 'none';
+
+            if(!start || !end || start > end) {
+                status.innerHTML = "Invalid Range!"; status.style.color = "red"; return;
+            }
+
+            status.innerHTML = "Analyzing..."; status.style.color = "#0056b3";
+
+            setTimeout(() => {
+                loadDB(type); // Load correct DB
+
+                document.getElementById('ana-ov-header').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
+
+                calculateMultiShiftTables(start, end);
+
+                status.innerHTML = "";
+                document.getElementById('result-analyze').style.display = 'block';
+            }, 300);
+        }
+
+
+        // ================= CORE CALCULATIONS =================
+
+        // 1. BADGES (For Search View)
+        function calculateBadges(start, end) {
+            let mySubKey = ""; SUB_TYPES.forEach(s => { if(CANDIDATE.SubRaw.includes(s.key)||(s.key==="LDCP"&&(CANDIDATE.SubRaw.includes("BL")||CANDIDATE.SubRaw.includes("LD")))) mySubKey=s.key; });
             
-            document.getElementById('overall-header').innerText = `🌐 Overall Stats (Rank ${start} to ${end})`;
-            document.getElementById('shift-header-text').innerText = `⚡ Shift ${CURRENT_CANDIDATE_SHIFT} Stats (Rank ${start} to ${end})`;
-            calculateTables(start, end, CURRENT_CANDIDATE_SHIFT);
+            let stats = { range: {l:"Range Count",a:0,n:0}, cat: {l:"Category Rank ("+CANDIDATE.Cat+")",a:0,n:0}, gen: {l:"Gender Rank ("+CANDIDATE.Gen+")",a:0,n:0}, mix: {l:"Mix ("+CANDIDATE.Cat+"+"+CANDIDATE.Gen.charAt(0)+")",a:0,n:0}, sub: {l:"Special Category",a:0,n:0}, tsp: {l:"TSP Status Check",a:0,n:0} };
+            let shiftStats = JSON.parse(JSON.stringify(stats));
+
+            for(let i=start; i<=end; i++) {
+                const p = CURRENT_DB[i]; if(!p) continue;
+                let pCat=(p.Category||"OTHER").toUpperCase(); if(!CAT_ORDER.includes(pCat)) pCat="OTHER";
+                let pGen=(p.Gender||"OTHER").toUpperCase(), pTsp=(p.TSP||"").toUpperCase().includes("YES")||(p.TSP||"").toUpperCase().includes("TSP");
+                let pSub=(p.SubCat||"").toUpperCase();
+
+                const inc = (o,t) => { o.a++; if(!t) o.n++; };
+
+                inc(stats.range, pTsp);
+                if(pCat===CANDIDATE.Cat) inc(stats.cat, pTsp);
+                if(pGen===CANDIDATE.Gen) inc(stats.gen, pTsp);
+                if(pCat===CANDIDATE.Cat && pGen===CANDIDATE.Gen) inc(stats.mix, pTsp);
+                if(mySubKey && pCat===CANDIDATE.Cat && (pSub.includes(mySubKey)||(mySubKey==="LDCP"&&(pSub.includes("BL")||pSub.includes("LD"))))) inc(stats.sub, pTsp);
+                if(CANDIDATE.Tsp && pTsp) stats.tsp.a++;
+
+                if(String(p.Shift)===CANDIDATE.Shift) {
+                    inc(shiftStats.range, pTsp);
+                    if(pCat===CANDIDATE.Cat) inc(shiftStats.cat, pTsp);
+                    if(pGen===CANDIDATE.Gen) inc(shiftStats.gen, pTsp);
+                    if(pCat===CANDIDATE.Cat && pGen===CANDIDATE.Gen) inc(shiftStats.mix, pTsp);
+                    if(mySubKey && pCat===CANDIDATE.Cat && (pSub.includes(mySubKey)||(mySubKey==="LDCP"&&(pSub.includes("BL")||pSub.includes("LD"))))) inc(shiftStats.sub, pTsp);
+                    if(CANDIDATE.Tsp && pTsp) shiftStats.tsp.a++;
+                }
+            }
+            renderRankTable("tb-overall-rank", stats, mySubKey, CANDIDATE.Tsp);
+            renderRankTable("tb-shift-rank", shiftStats, mySubKey, CANDIDATE.Tsp);
         }
 
-        function calculateBadges(limit, myCat, myGen, myShift, mySubRaw, isTsp) {
-            let gBadges = { cat: 0, gen: 0, mix: 0, sub: 0, tsp: 0 };
-            let sBadges = { rank: 0, cat: 0, gen: 0, mix: 0, sub: 0, tsp: 0 };
+        // 2. SEARCH TABLES (Search View)
+        function calculateSearchTables(start, end) {
+            let gm = createEmptyMatrix(), sm = createEmptyMatrix();
+            for(let i=start; i<=end; i++) {
+                const p = CURRENT_DB[i]; if(!p) continue;
+                processRow(gm, p);
+                if(String(p.Shift)===CANDIDATE.Shift) processRow(sm, p);
+            }
+            // Populate Tables (Manually injecting Header to ensure reset)
+            document.getElementById("tb-overall-stats").innerHTML = getTableHeader() + `<tbody id="b1"></tbody>`;
+            renderDeepTable(document.getElementById("b1"), gm);
             
-            let mySubKey = "";
-             SUB_TYPES.forEach(s => {
-                if(mySubRaw.includes(s.key) || (s.key === "LDCP" && (mySubRaw.includes("BL") || mySubRaw.includes("LD")))) mySubKey = s.key;
-            });
-
-            for (let i = 1; i <= limit; i++) {
-                const p = GLOBAL_MERIT_DB[i];
-                if (!p) continue;
-
-                let pCat = (p.Category || "OTHER").toUpperCase();
-                if (!CAT_ORDER.includes(pCat)) pCat = "OTHER";
-                let pGen = (p.Gender || "OTHER").toUpperCase();
-                let pShift = String(p.Shift);
-                let pSubRaw = (p.SubCat || "").toUpperCase();
-                let pTsp = (p.TSP || "").toUpperCase().includes("YES") || (p.TSP || "").toUpperCase().includes("TSP");
-
-                if (pCat === myCat) gBadges.cat++;
-                if (pGen === myGen) gBadges.gen++;
-                if (pCat === myCat && pGen === myGen) gBadges.mix++;
-                
-                if (mySubKey && pCat === myCat && (pSubRaw.includes(mySubKey) || (mySubKey === "LDCP" && (pSubRaw.includes("BL") || pSubRaw.includes("LD"))))) {
-                     gBadges.sub++;
-                }
-                
-                if (isTsp && pTsp) gBadges.tsp++;
-
-                if (pShift === myShift) {
-                    sBadges.rank++;
-                    if (pCat === myCat) sBadges.cat++;
-                    if (pGen === myGen) sBadges.gen++;
-                    if (pCat === myCat && pGen === myGen) sBadges.mix++;
-                    
-                    if (mySubKey && pCat === myCat && (pSubRaw.includes(mySubKey) || (mySubKey === "LDCP" && (pSubRaw.includes("BL") || pSubRaw.includes("LD"))))) {
-                        sBadges.sub++;
-                    }
-                    if (isTsp && pTsp) sBadges.tsp++;
-                }
-            }
-
-            document.getElementById('an_merit').innerText = limit;
-            document.getElementById('an_cat_rank').innerText = gBadges.cat;
-            document.getElementById('an_gen_rank').innerText = gBadges.gen;
-            document.getElementById('an_cat_gen_rank').innerText = gBadges.mix;
-            updateBadgeUI('an_sub_rank', gBadges.sub, mySubKey);
-            updateBadgeUI('an_tsp_rank', gBadges.tsp, isTsp);
-
-            document.getElementById('sh_merit').innerText = sBadges.rank;
-            document.getElementById('sh_cat_rank').innerText = sBadges.cat;
-            document.getElementById('sh_gen_rank').innerText = sBadges.gen;
-            document.getElementById('sh_cat_gen_rank').innerText = sBadges.mix;
-            updateBadgeUI('sh_sub_rank', sBadges.sub, mySubKey);
-            updateBadgeUI('sh_tsp_rank', sBadges.tsp, isTsp);
+            document.getElementById("tb-shift-stats").innerHTML = getTableHeader(true) + `<tbody id="b2"></tbody>`;
+            renderDeepTable(document.getElementById("b2"), sm);
         }
 
-        function updateBadgeUI(id, value, isActive) {
-            const el = document.getElementById(id);
-            if(isActive) {
-                el.innerText = value;
-                el.parentElement.className = "badge"; 
-                if(id.includes("sh_")) el.parentElement.classList.add("b-shift");
-            } else {
-                el.innerText = "N/A";
-                el.parentElement.className = "badge b-gray";
+        // 3. MULTI-SHIFT TABLES (Analyze View)
+        function calculateMultiShiftTables(start, end) {
+            let gm = createEmptyMatrix();
+            let shifts = {};
+
+            for(let i=start; i<=end; i++) {
+                const p = CURRENT_DB[i]; if(!p) continue;
+                processRow(gm, p);
+                let s = String(p.Shift);
+                if(!shifts[s]) shifts[s] = createEmptyMatrix();
+                processRow(shifts[s], p);
             }
+
+            // Render Overall
+            const ovCont = document.getElementById('ana-overall-container');
+            ovCont.innerHTML = `<div class="table-wrapper"><table class="stats-table">${getTableHeader()}<tbody></tbody></table></div>`;
+            renderDeepTable(ovCont.querySelector('tbody'), gm);
+
+            // Render Shifts with Page Breaks
+            const shCont = document.getElementById('ana-shifts-container');
+            shCont.innerHTML = "";
+            Object.keys(shifts).sort().forEach(sk => {
+                let div = document.createElement('div');
+                div.className = "dynamic-shift-wrapper"; // Class for page break
+                div.innerHTML = `<div class="dynamic-shift-label">Shift ${sk}</div><div class="table-wrapper"><table class="stats-table">${getTableHeader()}<tbody></tbody></table></div>`;
+                shCont.appendChild(div);
+                renderDeepTable(div.querySelector('tbody'), shifts[sk]);
+            });
         }
 
-        function calculateTables(start, end, myShift) {
-            const createCatStat = () => ({
-                m: 0, f: 0, o: 0, tot: 0, tsp: 0,
-                subs: { "EXM": z(), "LDCP": z(), "SP": z(), "DIV": z(), "WD": z() } // Fixed Key here too
-            });
-            const z = () => ({ m: 0, f: 0, o: 0, tot: 0, tsp: 0 });
+        // --- HELPERS ---
+        const z = () => ({m:0,f:0,o:0,tot:0,tsp:0});
+        const createEmptyMatrix = () => {
+            let m={}; [...CAT_ORDER,"OTHER"].forEach(c => { m[c]={...z(),subs:{"EXM":z(),"LDCP":z(),"SP":z(),"DIV":z(),"WD":z()}}; }); return m;
+        };
+        function processRow(m, p) {
+            let cat=(p.Category||"OTHER").toUpperCase(); if(!CAT_ORDER.includes(cat)) cat="OTHER";
+            let gen=(p.Gender||"OTHER").toUpperCase(), tsp=(p.TSP||"").toUpperCase().includes("YES")||(p.TSP||"").toUpperCase().includes("TSP");
+            let sub=(p.SubCat||"").toUpperCase();
+            
+            let r = m[cat];
+            if(gen==='MALE') r.m++; else if(gen==='FEMALE') r.f++; else r.o++;
+            r.tot++; if(tsp) r.tsp++;
 
-            let globalM = {};
-            let shiftM = {};
-            [...CAT_ORDER, "OTHER"].forEach(c => {
-                globalM[c] = createCatStat();
-                shiftM[c] = createCatStat();
-            });
-
-            for (let i = start; i <= end; i++) {
-                const p = GLOBAL_MERIT_DB[i];
-                if (!p) continue;
-
-                let pCat = (p.Category || "OTHER").toUpperCase();
-                if (!CAT_ORDER.includes(pCat)) pCat = "OTHER";
-                let pGen = (p.Gender || "OTHER").toUpperCase();
-                let pShift = String(p.Shift);
-                let pSub = (p.SubCat || "").toUpperCase();
-                let pTsp = (p.TSP || "").toUpperCase().includes("YES") || (p.TSP || "").toUpperCase().includes("TSP");
-
-                const updateRow = (matrix) => {
-                    let row = matrix[pCat];
-                    if (pGen === 'MALE') row.m++;
-                    else if (pGen === 'FEMALE') row.f++;
-                    else row.o++;
-                    row.tot++;
-                    if (pTsp) row.tsp++;
-
-                    SUB_TYPES.forEach(sub => {
-                        if (pSub.includes(sub.key) || (sub.key === "LDCP" && (pSub.includes("BL") || pSub.includes("LD")))) {
-                            let sRow = row.subs[sub.key];
-                            if (pGen === 'MALE') sRow.m++;
-                            else if (pGen === 'FEMALE') sRow.f++;
-                            else sRow.o++;
-                            sRow.tot++;
-                            if (pTsp) sRow.tsp++;
-                        }
-                    });
-                };
-
-                updateRow(globalM);
-                if (pShift === myShift) {
-                    updateRow(shiftM);
+            SUB_TYPES.forEach(s => {
+                if(sub.includes(s.key) || (s.key==="LDCP"&&(sub.includes("BL")||sub.includes("LD")))) {
+                    let sr = r.subs[s.key];
+                    if(gen==='MALE') sr.m++; else if(gen==='FEMALE') sr.f++; else sr.o++;
+                    sr.tot++; if(tsp) sr.tsp++;
                 }
-            }
-
-            renderDeepTable("overall-table-body", globalM);
-            renderDeepTable("shift-table-body", shiftM);
+            });
         }
 
-        function renderDeepTable(id, data) {
-            const tbody = document.getElementById(id);
-            tbody.innerHTML = "";
-            let gTotal = { m:0, f:0, o:0, tsp:0, all:0 };
+        function renderRankTable(id, d, hasSub, hasTsp) {
+            const tb = document.getElementById(id); tb.innerHTML = "";
+            const k = ["range","cat","gen","mix"]; if(hasSub) k.push("sub"); if(hasTsp) k.push("tsp");
+            k.forEach(key => {
+                let v = d[key], nv = (key==='tsp')?"-":v.n;
+                tb.innerHTML += `<tr><td>${v.l}</td><td class="st-val">${v.a}</td><td class="st-val">${nv}</td></tr>`;
+            });
+        }
 
-            [...CAT_ORDER, "OTHER"].forEach(cat => {
-                const d = data[cat];
-                if (d.tot === 0) return;
-
-                gTotal.m += d.m; gTotal.f += d.f; gTotal.o += d.o;
-                gTotal.tsp += d.tsp; gTotal.all += d.tot;
-
-                let html = `
-                    <tr style="background:#fff;">
-                        <td class="col-cat"><span class="cat-tag bg-${cat}">${cat}</span></td>
-                        <td>${d.m}</td>
-                        <td>${d.f}</td>
-                        <td>${d.o}</td>
-                        <td class="tsp-cell">${d.tsp}</td>
-                        <td class="row-total">${d.tot}</td>
-                    </tr>
-                `;
-
-                SUB_TYPES.forEach(sub => {
-                    let sd = d.subs[sub.key];
-                    if (sd.tot > 0) {
-                        html += `
-                            <tr class="sub-row">
-                                <td class="col-cat sub-label"><span class="sub-icon">↳</span> ${sub.label}</td>
-                                <td>${sd.m || ""}</td>
-                                <td>${sd.f || ""}</td>
-                                <td>${sd.o || ""}</td>
-                                <td class="tsp-cell">${sd.tsp || ""}</td>
-                                <td>${sd.tot}</td>
-                            </tr>
-                        `;
-                    }
+        function renderDeepTable(tbody, data) {
+            let gt = z(); gt.all=0;
+            [...CAT_ORDER,"OTHER"].forEach(c => {
+                let d = data[c]; if(d.tot===0) return;
+                gt.m+=d.m; gt.f+=d.f; gt.o+=d.o; gt.tsp+=d.tsp; gt.all+=d.tot;
+                let h = `<tr><td class="col-cat"><span class="cat-tag bg-${c}">${c}</span></td><td>${d.m}</td><td>${d.f}</td><td>${d.o}</td><td class="tsp-cell">${d.tsp}</td><td style="font-weight:bold;">${d.tot}</td></tr>`;
+                SUB_TYPES.forEach(s => {
+                    let sd = d.subs[s.key]; if(sd.tot>0) h+=`<tr class="sub-row"><td class="col-cat sub-label">↳ ${s.label}</td><td>${sd.m}</td><td>${sd.f}</td><td>${sd.o}</td><td class="tsp-cell">${sd.tsp}</td><td>${sd.tot}</td></tr>`;
                 });
-                tbody.innerHTML += html;
+                tbody.innerHTML += h;
             });
-
-            if(gTotal.all > 0) {
-                tbody.innerHTML += `
-                    <tr class="grand-total-row">
-                        <td class="col-cat">GRAND TOTAL</td>
-                        <td>${gTotal.m}</td>
-                        <td>${gTotal.f}</td>
-                        <td>${gTotal.o}</td>
-                        <td class="tsp-cell" style="font-weight:800; color:#1a237e;">${gTotal.tsp}</td>
-                        <td>${gTotal.all}</td>
-                    </tr>
-                `;
-            }
+            if(gt.all>0) tbody.innerHTML += `<tr class="grand-total-row"><td class="col-cat">TOTAL</td><td>${gt.m}</td><td>${gt.f}</td><td>${gt.o}</td><td class="tsp-cell">${gt.tsp}</td><td>${gt.all}</td></tr>`;
         }
+
+        function getTableHeader(isShift=false) {
+            let bg = isShift ? "background:#f3e5f5;color:#4a148c;" : "";
+            return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Fem</th><th style="${bg}">Oth</th><th class="tsp-head">TSP</th><th style="${bg}">Total</th></tr></thead>`;
+        }
+
     </script>
 </body>
 </html>
