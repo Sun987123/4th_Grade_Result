@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dream-Link 4th Grade 2 MODE</title>
+    <title>Dream-Link 4th Grade Result</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
             --primary: #0056b3; 
             --accent: #6f42c1;
-            --bg: #f4f7f6;
+            --bg: #f0f2f5;
             --text: #333;
-            --radius: 8px;
+            --radius: 6px;
         }
 
         body { 
@@ -23,133 +23,141 @@
             display: flex; flex-direction: column; min-height: 100vh;
         }
 
-        /* Header */
-        header { background: linear-gradient(135deg, #0056b3, #004494); color: white; padding: 12px 0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        header h1 { margin: 0; font-size: 1.3rem; letter-spacing: 0.5px; }
-        .sub-head { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; font-weight: 400; }
+        /* COMPACT HEADER */
+        header { background: linear-gradient(135deg, #0056b3, #004494); color: white; padding: 8px 0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 1.1rem; letter-spacing: 0.5px; }
+        .sub-head { font-size: 0.7rem; opacity: 0.9; margin-top: 1px; font-weight: 400; }
 
-        /* Container */
+        /* ULTRA COMPACT CONTAINER */
         .container { 
-            max-width: 800px; margin: 10px auto; padding: 10px; 
-            background: white; border-radius: var(--radius); width: 95%; 
+            max-width: 600px; margin: 5px auto; padding: 5px; 
+            background: white; border-radius: var(--radius); width: 98%; 
             box-sizing: border-box; flex: 1; 
         }
 
-        /* --- MODE TOGGLE BUTTONS (HOME PAGE) --- */
-        .mode-toggle { display: flex; background: #e9ecef; border-radius: 50px; padding: 4px; margin-bottom: 20px; }
-        .toggle-btn { flex: 1; border: none; background: transparent; padding: 10px; border-radius: 50px; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; font-size: 0.9rem; }
-        .toggle-btn.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        /* COMPACT TOGGLE */
+        .mode-toggle { display: flex; background: #e9ecef; border-radius: 50px; padding: 3px; margin-bottom: 10px; }
+        .toggle-btn { flex: 1; border: none; background: transparent; padding: 8px; border-radius: 50px; cursor: pointer; font-weight: 600; color: #666; transition: 0.3s; font-size: 0.8rem; }
+        .toggle-btn.active { background: white; color: var(--primary); box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
 
-        /* INPUT SECTIONS */
+        /* COMPACT INPUTS */
         .input-section { display: none; animation: fadeIn 0.3s ease; }
         .input-section.active { display: block; }
-        
         @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
-        .search-inputs { display: flex; gap: 8px; margin-bottom: 15px; }
+        .search-inputs { display: flex; gap: 5px; margin-bottom: 10px; }
         .form-group { flex: 1; }
-        select, input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius); font-size: 0.95rem; box-sizing: border-box; outline: none; background: #fafafa; }
+        select, input { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: var(--radius); font-size: 0.85rem; box-sizing: border-box; outline: none; background: #fafafa; height: 38px; }
         select:focus, input:focus { border-color: var(--primary); background: #fff; }
 
-        /* ACTION BUTTONS */
-        .main-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 1rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-bottom: 10px;}
+        .main-btn { width: 100%; padding: 10px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-bottom: 5px;}
         .analyze-btn { background: var(--accent); }
         .main-btn:active { transform: scale(0.98); }
 
-        /* Range Inputs for Analyze Mode */
-        .range-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .range-row { display: flex; align-items: center; gap: 5px; margin-bottom: 10px; }
         .range-inp-home { flex: 1; text-align: center; font-weight: bold; }
 
-        /* RESULT SECTIONS */
-        .result-container { display: none; margin-top: 20px; }
+        /* RESULT AREA */
+        .result-container { display: none; margin-top: 10px; }
 
-        /* Score Card Styling */
-        .res-card { border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; background: #fff; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .res-header { background: #e3f2fd; padding: 10px; text-align: center; font-size: 0.95rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #bbdefb; }
-        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; }
-        .c-row { padding: 8px 12px; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; }
+        /* COMPACT SCORE CARD */
+        .res-card { border: 1px solid #eee; border-radius: var(--radius); overflow: hidden; background: #fff; margin-bottom: 15px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .res-header { background: #e3f2fd; padding: 6px; text-align: center; font-size: 0.85rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #bbdefb; }
+        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.75rem; }
+        .c-row { padding: 4px 8px; border-bottom: 1px solid #f5f5f5; display: flex; align-items: center; min-height: 24px; }
         .c-row:not([style*="span 2"]):nth-child(odd) { border-right: 1px solid #f5f5f5; }
-        .c-label { color: #666; font-weight: 500; width: 90px; flex-shrink: 0; }
-        .c-val { font-weight: 700; color: #222; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .c-label { color: #666; font-weight: 500; width: 75px; flex-shrink: 0; font-size: 0.7rem; }
+        .c-val { font-weight: 700; color: #222; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.75rem; }
         .c-highlight { color: var(--primary); font-weight: 800; }
         .c-row[style*="span 2"] .c-val { white-space: normal; }
 
-        /* Toolbar inside Result (Refresh/Range Update) */
-        .inner-toolbar { background: #fff; border: 1px solid #eee; padding: 10px; border-radius: var(--radius); margin-bottom: 20px; display: flex; justify-content: center; gap: 8px; align-items: center; }
-        .mini-inp { width: 70px; padding: 6px; text-align: center; font-weight: bold; border: 1px solid #ccc; border-radius: 4px; }
-        .mini-btn { padding: 6px 12px; border-radius: 4px; background: var(--accent); color: white; border: none; cursor: pointer; font-size: 0.85rem; }
-        .refresh-icon-btn { background: #28a745; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; font-size: 1rem; }
+        /* INNER TOOLBAR */
+        .inner-toolbar { background: #f8f9fa; border: 1px solid #eee; padding: 6px; border-radius: var(--radius); margin-bottom: 15px; display: flex; justify-content: center; gap: 5px; align-items: center; font-size: 0.75rem;}
+        .mini-inp { width: 55px; padding: 4px; text-align: center; font-weight: bold; border: 1px solid #ccc; border-radius: 3px; font-size: 0.75rem; }
+        .mini-btn { padding: 4px 10px; border-radius: 3px; background: var(--accent); color: white; border: none; cursor: pointer; font-size: 0.75rem; }
+        .refresh-icon-btn { background: #28a745; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; border: none; cursor: pointer; font-size: 0.9rem; }
 
-        /* Table Styles */
-        .sec-title { font-size: 1rem; font-weight: 700; color: #333; margin: 25px 0 10px 0; border-left: 4px solid var(--primary); padding-left: 10px; page-break-after: avoid; }
+        /* COMPACT TABLES */
+        .sec-title { font-size: 0.85rem; font-weight: 700; color: #333; margin: 15px 0 5px 0; border-left: 3px solid var(--primary); padding-left: 6px; page-break-after: avoid; }
         .shift-color { border-color: var(--accent); color: var(--accent); }
         
-        .rank-table-wrapper { border: 1px solid #ddd; border-radius: var(--radius); overflow: hidden; margin-bottom: 20px; transition: opacity 0.3s; page-break-inside: avoid; }
-        table.rank-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        table.rank-table th { background: #0056b3; color: white; padding: 8px; text-align: center; font-weight: 500; border-right: 1px solid rgba(255,255,255,0.2); }
-        table.rank-table th:first-child { text-align: left; padding-left: 15px; width: 40%; }
-        table.rank-table td { padding: 8px; text-align: center; border-bottom: 1px solid #eee; color: #333; font-weight: 600; }
-        table.rank-table td:first-child { text-align: left; padding-left: 15px; color: #555; background: #f9f9f9; border-right: 1px solid #eee; }
+        .rank-table-wrapper { border: 1px solid #ddd; border-radius: var(--radius); overflow: hidden; margin-bottom: 15px; transition: opacity 0.3s; page-break-inside: avoid; }
+        table.rank-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        table.rank-table th { background: #0056b3; color: white; padding: 5px; text-align: center; font-weight: 500; border-right: 1px solid rgba(255,255,255,0.2); font-size: 0.7rem; white-space: normal; vertical-align: bottom;}
+        table.rank-table th:first-child { text-align: left; padding-left: 10px; width: 45%; }
+        table.rank-table td { padding: 5px; text-align: center; border-bottom: 1px solid #eee; color: #333; font-weight: 600; font-size: 0.75rem; white-space: normal; }
+        table.rank-table td:first-child { text-align: left; padding-left: 10px; color: #555; background: #f9f9f9; border-right: 1px solid #eee; }
         .shift-rank-table th { background: var(--accent); }
 
-        .table-wrapper { overflow-x: auto; border: 1px solid #eee; border-radius: var(--radius); margin-bottom: 25px; background: white; page-break-inside: avoid; }
-        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; min-width: 100%; }
-        .stats-table th { background: #f8f9fa; color: #555; font-weight: 700; text-transform: uppercase; padding: 8px 5px; text-align: center; border-bottom: 2px solid #ddd; font-size: 0.7rem; white-space: nowrap; }
-        .stats-table td { padding: 6px 5px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444; font-weight: 500; }
-        .col-cat { width: 25%; text-align: left !important; padding-left: 8px !important; }
-        .cat-tag { display: inline-block; padding: 2px 6px; border-radius: 3px; color: white; font-size: 0.7rem; font-weight: bold; width: 35px; text-align: center;}
+        .table-wrapper { overflow-x: auto; border: 1px solid #eee; border-radius: var(--radius); margin-bottom: 15px; background: white; page-break-inside: avoid; }
+        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.65rem; min-width: 100%; }
+        
+        .stats-table th { 
+            background: #f8f9fa; 
+            color: #555; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            padding: 5px 3px; 
+            text-align: center; 
+            border-bottom: 2px solid #ddd; 
+            font-size: 0.6rem; 
+            white-space: normal;
+            vertical-align: bottom;
+            line-height: 1.1;
+            border: 1px solid #eee; 
+        }
+        
+        .ntsp-header { background: #e3f2fd !important; color: #0277bd !important; border-bottom: none !important; }
+        .tsp-super-header { background: #fff3e0 !important; color: #ef6c00 !important; }
+        
+        .stats-table td { padding: 4px 2px; border-bottom: 1px solid #f0f0f0; text-align: center; color: #444; font-weight: 500; white-space: normal; border-right: 1px solid #f9f9f9;}
+        .col-cat { width: 22%; text-align: left !important; padding-left: 5px !important; }
+        .cat-tag { display: inline-block; padding: 1px 4px; border-radius: 3px; color: white; font-size: 0.6rem; font-weight: bold; min-width: 30px; text-align: center;}
         .bg-GEN { background-color: #6c757d; } .bg-OBC { background-color: #007bff; } .bg-EWS { background-color: #17a2b8; }
         .bg-MBC { background-color: #6610f2; } .bg-SC { background-color: #e83e8c; } .bg-ST { background-color: #fd7e14; } .bg-SAH { background-color: #28a745; }
-        .sub-row td { background-color: #fcfcfc; color: #666; font-size: 0.7rem; border-bottom: 1px dashed #eee; }
-        .grand-total-row td { background-color: #e8eaf6; color: #1a237e; font-weight: 800; border-top: 2px solid #c5cae9; }
+        .sub-row td { background-color: #fcfcfc; color: #666; font-size: 0.6rem; border-bottom: 1px dashed #eee; }
+        .grand-total-row td { background-color: #e8eaf6; color: #1a237e; font-weight: 800; border-top: 1px solid #c5cae9; }
         
-        .dynamic-shift-label { background: #f3e5f5; color: #4a148c; padding: 10px; font-weight: 700; border-bottom: 2px solid #d1c4e9; border-radius: var(--radius) var(--radius) 0 0; margin-bottom: -1px; }
+        .dynamic-shift-label { background: #f3e5f5; color: #4a148c; padding: 6px; font-weight: 700; border-bottom: 2px solid #d1c4e9; border-radius: var(--radius) var(--radius) 0 0; margin-bottom: -1px; font-size: 0.8rem; }
 
-        /* Footer & Buttons */
-        .home-action-area { text-align: center; margin-top: auto; padding: 10px 0 10px 0; width: 100%; }
+        /* FOOTER & BUTTONS */
+        .home-action-area { text-align: center; margin-top: auto; padding: 15px 0 5px 0; width: 100%; }
         
-        .print-btn { background-color: #28a745; color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-size: 1rem; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); margin: 20px auto; display: block; }
+        .print-btn { background-color: #28a745; color: white; border: none; padding: 8px 20px; border-radius: 50px; cursor: pointer; font-size: 0.85rem; font-weight: 600; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3); margin: 10px auto; display: block; }
         
-        /* UPDATED TELEGRAM BUTTON (Barik aur Halka) */
         .telegram-btn { 
-            display: inline-block; 
-            background-color: #f8f9fa; /* Light background */
-            color: #6c757d; /* Grey text */
-            text-decoration: none; 
-            padding: 5px 15px; /* Small padding */
-            border-radius: 4px; /* Slight radius */
-            font-size: 0.7rem; /* Small font */
-            font-weight: 500; 
-            border: 1px solid #dee2e6; /* Thin border */
-            box-shadow: none;
-            transition: 0.2s;
+            display: inline-block; background-color: #f1f3f5; color: #adb5bd; text-decoration: none; padding: 4px 10px; border-radius: 4px; font-size: 0.65rem; font-weight: 500; border: 1px solid #e9ecef; transition: 0.2s;
         }
-        .telegram-btn:hover { background-color: #e2e6ea; color: #333; }
+        .telegram-btn:hover { background-color: #e9ecef; color: #495057; }
         
-        footer { text-align: center; padding: 20px; font-size: 0.8rem; color: #aaa; border-top: 1px solid #eee; background: #fff; margin-top: 0;}
+        footer { text-align: center; padding: 10px; font-size: 0.65rem; color: #aaa; border-top: 1px solid #eee; background: #fff; margin-top: 0;}
 
         @media print {
             header, .mode-toggle, .input-section, .inner-toolbar, .print-btn, .telegram-btn, footer, .home-action-area { display: none !important; }
             body { background: white; margin: 0; }
             .container { padding: 0; margin: 0; max-width: 100%; border: none; box-shadow: none; }
+            #print-header { display: block !important; text-align: center; border-bottom: 1px solid #000; margin-bottom: 15px; }
             
-            #print-header { display: block !important; text-align: center; border-bottom: 2px solid #000; margin-bottom: 20px; }
-            table th { background: #eee !important; color: #000; }
+            /* Better Table Headers in Print */
+            table th { 
+                background: #eee !important; 
+                color: #000 !important; 
+                border: 1px solid #999 !important; /* Soft grey border */
+                -webkit-print-color-adjust: exact;
+            }
             .grand-total-row td { background-color: #ddd !important; -webkit-print-color-adjust: exact; }
             
-            /* FIX FOR PRINTING ONLY ACTIVE SECTION */
-            /* We don't force display:block on all containers. We let JS controlled display:block persist */
-            /* Ensure the active one isn't hidden by other rules */
             .result-container[style*="block"] { display: block !important; }
             .result-container[style*="none"] { display: none !important; }
 
             /* PAGE BREAK LOGIC */
             .page-break { page-break-before: always; }
             
-            /* Separate Shift Section in Search View */
-            #search-shift-section { page-break-before: always; }
+            /* Force Shift Analysis to new page in Search Result */
+            #search-shift-section { page-break-before: always; display: block; }
             
-            /* Separate Each Shift in Analyze View */
+            /* Force Multi-Shift Analysis to new page in Analyze Mode */
+            .sec-title.shift-color { page-break-before: always; }
             .dynamic-shift-wrapper { page-break-before: always; }
         }
     </style>
@@ -189,7 +197,7 @@
         </div>
 
         <div id="input-analyze" class="input-section">
-            <div class="form-group" style="margin-bottom: 10px;">
+            <div class="form-group" style="margin-bottom: 8px;">
                 <select id="examTypeAnalyze">
                     <option value="NTSP">NTSP</option>
                     <option value="TSP">TSP</option>
@@ -203,7 +211,7 @@
             <button class="main-btn analyze-btn" onclick="executeAnalyze()">Analyze Stats 🚀</button>
         </div>
 
-        <div id="status-msg" style="text-align: center; margin-top: 15px; font-weight: 600; font-size: 0.9rem; min-height: 20px;"></div>
+        <div id="status-msg" style="text-align: center; margin-top: 10px; font-weight: 600; font-size: 0.8rem; min-height: 18px;"></div>
 
         <div id="result-search" class="result-container">
             <div class="res-card">
@@ -220,20 +228,19 @@
                     <div class="c-row"><div class="c-label">Shift</div> <div class="c-val" id="d_shift">-</div></div>
                     <div class="c-row"><div class="c-label">Raw Marks</div> <div class="c-val" id="d_raw">-</div></div>
                     <div class="c-row"><div class="c-label">Right Que</div> <div class="c-val" id="d_rightq" style="color: green;">-</div></div>
+                    
                     <div class="c-row" style="background:#f0f8ff;"><div class="c-label">Final Marks</div> <div class="c-val c-highlight" id="d_final">-</div></div>
-                    <div class="c-row" style="background:#f0f8ff;">
-    <div class="c-label">Difference</div> 
-    <div class="c-val" id="d_diff" style="font-weight:bold;">-</div>
-</div>
-                    <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 8px; border-top: 1px solid #e0e0e0; padding: 10px;">
-                        <span class="c-label" style="font-size: 0.9rem; width: auto;">OVERALL MERIT RANK:</span> 
-                        <span class="c-val c-highlight" style="font-size: 1.2rem; max-width: none; flex: initial;" id="d_merit">-</span>
+                    <div class="c-row" style="background:#f0f8ff;"><div class="c-label">Diff.</div> <div class="c-val" id="d_diff" style="font-weight:bold;">-</div></div>
+
+                    <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 8px; border-top: 1px solid #e0e0e0; padding: 8px;">
+                        <span class="c-label" style="font-size: 0.8rem; width: auto;">OVERALL MERIT RANK:</span> 
+                        <span class="c-val c-highlight" style="font-size: 1.1rem; max-width: none; flex: initial;" id="d_merit">-</span>
                     </div>
                 </div>
             </div>
 
             <div class="inner-toolbar">
-                <span style="font-size: 0.8rem; font-weight: 600;">Manual Range:</span>
+                <span>Rank:</span>
                 <input type="number" id="res_start" class="mini-inp" placeholder="Start">
                 <span>-</span>
                 <input type="number" id="res_end" class="mini-inp" placeholder="End">
@@ -251,7 +258,7 @@
 
             <div class="sec-title"><span id="lbl-ov-stats">🌐 Overall Stats</span></div>
             <div class="table-wrapper" id="rt-wrapper-2">
-                <table class="stats-table" id="tb-overall-stats"><thead></thead><tbody></tbody></table>
+                <table class="stats-table" id="tb-overall-stats"></table>
             </div>
 
             <div id="search-shift-section">
@@ -263,7 +270,7 @@
                     </table>
                 </div>
                 <div class="table-wrapper" id="rt-wrapper-4">
-                    <table class="stats-table" id="tb-shift-stats"><thead></thead><tbody></tbody></table>
+                    <table class="stats-table" id="tb-shift-stats"></table>
                 </div>
             </div>
             
@@ -296,23 +303,17 @@
     <script src="data_merit_tsp.js"></script>
 
     <script>
-        // CONFIG
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
-        const SUB_TYPES = [{key:"EXM",label:"Ex-Serviceman"},{key:"LDCP",label:"LDCP/PH"},{key:"SP",label:"Sports Person"},{key:"DIV",label:"Divorcee"},{key:"WD",label:"Widow"}];
+        const SUB_TYPES = [{key:"EXM",label:"Ex-Serviceman"},{key:"LDCP",label:"LDCP/PH"},{key:"SP",label:"Sports"},{key:"DIV",label:"Divorcee"},{key:"WD",label:"Widow"}];
 
-        // GLOBALS
-        let CURRENT_DB = {}; // Merit DB
-        let CANDIDATE = null; // Current Candidate Object
-        let CURRENT_TYPE = "NTSP"; // Selected Type
+        let CURRENT_DB = {}; 
+        let CANDIDATE = null; 
+        let CURRENT_TYPE = "NTSP"; 
 
-        // --- TAB SWITCHING ---
         function switchMode(mode) {
             document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.input-section').forEach(d => d.classList.remove('active'));
-            // Hide all result containers explicitly to fix print issue
-            document.querySelectorAll('.result-container').forEach(d => {
-                d.style.display = 'none';
-            });
+            document.querySelectorAll('.result-container').forEach(d => d.style.display = 'none');
             document.getElementById('status-msg').innerHTML = "";
             
             if(mode === 'search') {
@@ -324,7 +325,6 @@
             }
         }
 
-        // --- DATA LOADER ---
         function loadDB(type) {
             CURRENT_TYPE = type;
             if(type === "TSP") {
@@ -336,7 +336,6 @@
             }
         }
 
-        // --- FUNCTION 1: EXECUTE SEARCH ---
         function executeSearch() {
             const roll = document.getElementById('rollInput').value.trim();
             const type = document.getElementById('examTypeSearch').value;
@@ -353,7 +352,6 @@
                     status.innerHTML = "Roll Number Not Found!"; status.style.color = "red"; return;
                 }
 
-                
                 CANDIDATE = { ...candRaw, Merit: parseInt(candRaw.Merit) };
                 const det = CURRENT_DB[CANDIDATE.Merit] || {};
                 CANDIDATE.Cat = (det.Category||"OTHER").toUpperCase();
@@ -362,25 +360,12 @@
                 CANDIDATE.SubRaw = (det.SubCat||"").toUpperCase();
                 CANDIDATE.Tsp = (det.TSP||"").toUpperCase().includes("YES") || (det.TSP||"").toUpperCase().includes("TSP");
 
-               
                 document.getElementById('d_roll').innerText = roll;
                 document.getElementById('d_name').innerText = CANDIDATE.Name;
                 document.getElementById('d_father').innerText = CANDIDATE.Father;
                 document.getElementById('d_mother').innerText = CANDIDATE.Mother;
                 document.getElementById('d_raw').innerText = CANDIDATE.RawMark;
                 document.getElementById('d_final').innerText = CANDIDATE.FinalMark;
-                
-                let rawM = parseFloat(CANDIDATE.RawMark) || 0;
-                let finM = parseFloat(CANDIDATE.FinalMark) || 0;
-                let diff = finM - rawM;
-                
-                let diffEl = document.getElementById('d_diff');
-                if(diffEl) {
-                 
-                    diffEl.innerText = (diff > 0 ? "+" : "") + diff.toFixed(4);
-                   
-                    diffEl.style.color = diff >= 0 ? "#28a745" : "#dc3545";
-                }
                 document.getElementById('d_merit').innerText = CANDIDATE.Merit;
                 document.getElementById('d_cat').innerText = CANDIDATE.Cat;
                 document.getElementById('d_gender').innerText = CANDIDATE.Gen;
@@ -395,11 +380,18 @@
                 let rv = parseFloat(CANDIDATE.RawMark);
                 document.getElementById('d_rightq').innerText = !isNaN(rv) ? (rv/1.66).toFixed(2) : "N/A";
 
-               
+                let rawM = parseFloat(CANDIDATE.RawMark) || 0;
+                let finM = parseFloat(CANDIDATE.FinalMark) || 0;
+                let diff = finM - rawM;
+                let diffEl = document.getElementById('d_diff');
+                if(diffEl) {
+                    diffEl.innerText = (diff > 0 ? "+" : "") + diff.toFixed(4);
+                    diffEl.style.color = diff >= 0 ? "#28a745" : "#dc3545";
+                }
+
                 document.getElementById('res_start').value = 1;
                 document.getElementById('res_end').value = CANDIDATE.Merit;
                 
-              
                 runSearchLogic(1, CANDIDATE.Merit);
 
                 status.innerHTML = "";
@@ -407,30 +399,32 @@
             }, 300);
         }
 
-       
         function runSearchLogic(start, end) {
-            let deepStart = start, deepEnd = end;
+            let deepStart = start;
+            let deepEnd = CANDIDATE.Merit; // FORCE End to be Candidate Merit for Deep Analysis
             let isSafeMode = false;
 
+            // Deep Merit Logic: If start > Candidate.Merit, fade and reset to 1-Merit (Safe Mode)
             if(start > CANDIDATE.Merit) {
                 isSafeMode = true;
-                deepStart = 1; deepEnd = CANDIDATE.Merit;
+                deepStart = 1;
+                deepEnd = CANDIDATE.Merit;
             }
 
-           
             document.getElementById('lbl-ov-stats').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
             document.getElementById('lbl-sh-stats').innerText = `⚡ Shift ${CANDIDATE.Shift} Stats (Rank ${start}-${end})`;
 
-           
             const opacity = isSafeMode ? "0.4" : "1";
             document.getElementById('rt-wrapper-1').style.opacity = opacity;
             document.getElementById('rt-wrapper-3').style.opacity = opacity;
+            // Stats tables always use exact inputs (start-end), no opacity needed
             document.getElementById('rt-wrapper-2').style.opacity = "1";
             document.getElementById('rt-wrapper-4').style.opacity = "1";
 
-           
-            calculateBadges(deepStart, deepEnd); 
-            calculateSearchTables(start, end);   
+            // Stats use MANUAL range
+            calculateSearchTables(start, end);
+            // Deep Merit uses Start-to-Merit (or Safe Mode)
+            calculateBadges(deepStart, deepEnd);
         }
 
         function updateSearchResult() {
@@ -446,14 +440,12 @@
             runSearchLogic(1, CANDIDATE.Merit);
         }
 
-       
         function executeAnalyze() {
             const type = document.getElementById('examTypeAnalyze').value;
             const start = parseInt(document.getElementById('ana_start').value);
             const end = parseInt(document.getElementById('ana_end').value);
             const status = document.getElementById('status-msg');
 
-          
             document.getElementById('result-search').style.display = 'none';
             document.getElementById('result-analyze').style.display = 'none';
 
@@ -464,21 +456,14 @@
             status.innerHTML = "Analyzing..."; status.style.color = "#0056b3";
 
             setTimeout(() => {
-                loadDB(type); // Load correct DB
-
+                loadDB(type);
                 document.getElementById('ana-ov-header').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
-
                 calculateMultiShiftTables(start, end);
-
                 status.innerHTML = "";
                 document.getElementById('result-analyze').style.display = 'block';
             }, 300);
         }
 
-
-        // ================= CORE CALCULATIONS =================
-
-        // 1. BADGES (For Search View)
         function calculateBadges(start, end) {
             let mySubKey = ""; SUB_TYPES.forEach(s => { if(CANDIDATE.SubRaw.includes(s.key)||(s.key==="LDCP"&&(CANDIDATE.SubRaw.includes("BL")||CANDIDATE.SubRaw.includes("LD")))) mySubKey=s.key; });
             
@@ -513,7 +498,70 @@
             renderRankTable("tb-shift-rank", shiftStats, mySubKey, CANDIDATE.Tsp);
         }
 
-        // 2. SEARCH TABLES (Search View)
+        const z = () => ({m:0,f:0,o:0,tot:0,tsp:0});
+        const createEmptyMatrix = () => {
+            let m={}; [...CAT_ORDER,"OTHER"].forEach(c => { m[c]={...z(),subs:{"EXM":z(),"LDCP":z(),"SP":z(),"DIV":z(),"WD":z()}}; }); return m;
+        };
+
+        function processRow(m, p) {
+            let cat=(p.Category||"OTHER").toUpperCase(); if(!CAT_ORDER.includes(cat)) cat="OTHER";
+            let gen=(p.Gender||"OTHER").toUpperCase(), tsp=(p.TSP||"").toUpperCase().includes("YES")||(p.TSP||"").toUpperCase().includes("TSP");
+            let sub=(p.SubCat||"").toUpperCase();
+            
+            let r = m[cat];
+            
+            if (CURRENT_TYPE === 'NTSP') {
+                if(tsp) {
+                    r.tsp++; r.tot++;
+                } else {
+                    if(gen==='MALE') r.m++; else if(gen==='FEMALE') r.f++; else r.o++;
+                    r.tot++;
+                }
+            } else {
+                // TSP MODE
+                if(gen==='MALE') r.m++; else if(gen==='FEMALE') r.f++; else r.o++;
+                r.tot++;
+            }
+
+            SUB_TYPES.forEach(s => {
+                if(sub.includes(s.key) || (s.key==="LDCP"&&(sub.includes("BL")||sub.includes("LD")))) {
+                    let sr = r.subs[s.key];
+                    if (CURRENT_TYPE === 'NTSP') {
+                        if(tsp) { sr.tsp++; sr.tot++; }
+                        else {
+                            if(gen==='MALE') sr.m++; else if(gen==='FEMALE') sr.f++; else sr.o++;
+                            sr.tot++;
+                        }
+                    } else {
+                        if(gen==='MALE') sr.m++; else if(gen==='FEMALE') sr.f++; else sr.o++;
+                        sr.tot++;
+                    }
+                }
+            });
+        }
+
+        function getTableHeader(isShift=false) {
+            let bg = isShift ? "background:#f3e5f5;color:#4a148c;" : "";
+            
+            if (CURRENT_TYPE === 'NTSP') {
+                return `<thead>
+                    <tr>
+                        <th class="col-cat" rowspan="2" style="${bg}">Category</th>
+                        <th colspan="3" class="ntsp-header">NTSP</th>
+                        <th rowspan="2" class="tsp-super-header">TSP</th>
+                        <th rowspan="2" style="${bg}">Total</th>
+                    </tr>
+                    <tr>
+                        <th style="${bg}">Male</th>
+                        <th style="${bg}">Female</th>
+                        <th style="${bg}">Other</th>
+                    </tr>
+                </thead>`;
+            } else {
+                return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Female</th><th style="${bg}">Other</th><th style="${bg}">Total</th></tr></thead>`;
+            }
+        }
+
         function calculateSearchTables(start, end) {
             let gm = createEmptyMatrix(), sm = createEmptyMatrix();
             for(let i=start; i<=end; i++) {
@@ -521,15 +569,12 @@
                 processRow(gm, p);
                 if(String(p.Shift)===CANDIDATE.Shift) processRow(sm, p);
             }
-            // Populate Tables (Manually injecting Header to ensure reset)
             document.getElementById("tb-overall-stats").innerHTML = getTableHeader() + `<tbody id="b1"></tbody>`;
             renderDeepTable(document.getElementById("b1"), gm);
-            
             document.getElementById("tb-shift-stats").innerHTML = getTableHeader(true) + `<tbody id="b2"></tbody>`;
             renderDeepTable(document.getElementById("b2"), sm);
         }
 
-        // 3. MULTI-SHIFT TABLES (Analyze View)
         function calculateMultiShiftTables(start, end) {
             let gm = createEmptyMatrix();
             let shifts = {};
@@ -542,43 +587,18 @@
                 processRow(shifts[s], p);
             }
 
-            // Render Overall
             const ovCont = document.getElementById('ana-overall-container');
             ovCont.innerHTML = `<div class="table-wrapper"><table class="stats-table">${getTableHeader()}<tbody></tbody></table></div>`;
             renderDeepTable(ovCont.querySelector('tbody'), gm);
 
-            // Render Shifts with Page Breaks
             const shCont = document.getElementById('ana-shifts-container');
             shCont.innerHTML = "";
             Object.keys(shifts).sort().forEach(sk => {
                 let div = document.createElement('div');
-                div.className = "dynamic-shift-wrapper"; // Class for page break
+                div.className = "dynamic-shift-wrapper";
                 div.innerHTML = `<div class="dynamic-shift-label">Shift ${sk}</div><div class="table-wrapper"><table class="stats-table">${getTableHeader()}<tbody></tbody></table></div>`;
                 shCont.appendChild(div);
                 renderDeepTable(div.querySelector('tbody'), shifts[sk]);
-            });
-        }
-
-        // --- HELPERS ---
-        const z = () => ({m:0,f:0,o:0,tot:0,tsp:0});
-        const createEmptyMatrix = () => {
-            let m={}; [...CAT_ORDER,"OTHER"].forEach(c => { m[c]={...z(),subs:{"EXM":z(),"LDCP":z(),"SP":z(),"DIV":z(),"WD":z()}}; }); return m;
-        };
-        function processRow(m, p) {
-            let cat=(p.Category||"OTHER").toUpperCase(); if(!CAT_ORDER.includes(cat)) cat="OTHER";
-            let gen=(p.Gender||"OTHER").toUpperCase(), tsp=(p.TSP||"").toUpperCase().includes("YES")||(p.TSP||"").toUpperCase().includes("TSP");
-            let sub=(p.SubCat||"").toUpperCase();
-            
-            let r = m[cat];
-            if(gen==='MALE') r.m++; else if(gen==='FEMALE') r.f++; else r.o++;
-            r.tot++; if(tsp) r.tsp++;
-
-            SUB_TYPES.forEach(s => {
-                if(sub.includes(s.key) || (s.key==="LDCP"&&(sub.includes("BL")||sub.includes("LD")))) {
-                    let sr = r.subs[s.key];
-                    if(gen==='MALE') sr.m++; else if(gen==='FEMALE') sr.f++; else sr.o++;
-                    sr.tot++; if(tsp) sr.tsp++;
-                }
             });
         }
 
@@ -596,20 +616,26 @@
             [...CAT_ORDER,"OTHER"].forEach(c => {
                 let d = data[c]; if(d.tot===0) return;
                 gt.m+=d.m; gt.f+=d.f; gt.o+=d.o; gt.tsp+=d.tsp; gt.all+=d.tot;
-                let h = `<tr><td class="col-cat"><span class="cat-tag bg-${c}">${c}</span></td><td>${d.m}</td><td>${d.f}</td><td>${d.o}</td><td class="tsp-cell">${d.tsp}</td><td style="font-weight:bold;">${d.tot}</td></tr>`;
+                
+                let tspCell = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${d.tsp}</td>` : '';
+
+                let h = `<tr><td class="col-cat"><span class="cat-tag bg-${c}">${c}</span></td><td>${d.m}</td><td>${d.f}</td><td>${d.o}</td>${tspCell}<td style="font-weight:bold;">${d.tot}</td></tr>`;
+                
                 SUB_TYPES.forEach(s => {
-                    let sd = d.subs[s.key]; if(sd.tot>0) h+=`<tr class="sub-row"><td class="col-cat sub-label">↳ ${s.label}</td><td>${sd.m}</td><td>${sd.f}</td><td>${sd.o}</td><td class="tsp-cell">${sd.tsp}</td><td>${sd.tot}</td></tr>`;
+                    let sd = d.subs[s.key]; 
+                    if(sd.tot>0) {
+                        let tspCellSub = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${sd.tsp}</td>` : '';
+                        h+=`<tr class="sub-row"><td class="col-cat sub-label">↳ ${s.label}</td><td>${sd.m}</td><td>${sd.f}</td><td>${sd.o}</td>${tspCellSub}<td>${sd.tot}</td></tr>`;
+                    }
                 });
                 tbody.innerHTML += h;
             });
-            if(gt.all>0) tbody.innerHTML += `<tr class="grand-total-row"><td class="col-cat">TOTAL</td><td>${gt.m}</td><td>${gt.f}</td><td>${gt.o}</td><td class="tsp-cell">${gt.tsp}</td><td>${gt.all}</td></tr>`;
+            
+            if(gt.all>0) {
+                let tspCellTot = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${gt.tsp}</td>` : '';
+                tbody.innerHTML += `<tr class="grand-total-row"><td class="col-cat">TOTAL</td><td>${gt.m}</td><td>${gt.f}</td><td>${gt.o}</td>${tspCellTot}<td>${gt.all}</td></tr>`;
+            }
         }
-
-        function getTableHeader(isShift=false) {
-            let bg = isShift ? "background:#f3e5f5;color:#4a148c;" : "";
-            return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Fem</th><th style="${bg}">Oth</th><th class="tsp-head">TSP</th><th style="${bg}">Total</th></tr></thead>`;
-        }
-
     </script>
 </body>
 </html>
