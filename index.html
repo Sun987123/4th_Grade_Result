@@ -3,346 +3,424 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dream-Link Result Portal</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e1e2e">
+    <title>Dream-Link Results</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --primary-color: #0056b3; 
-            --secondary-color: #f0f4f8; 
-            --accent-color: #ff9800; 
-            --text-dark: #333;
-            --border-radius: 8px;
+            --primary: #0056b3; 
+            --accent: #6f42c1; /* Purple for Shift Stats */
+            --bg: #f4f7f6;
+            --text: #333;
+            --radius: 8px;
         }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: var(--secondary-color);
-            margin: 0;
-            padding: 0;
-            color: var(--text-dark);
-        }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: var(--text); }
 
-        /* Header Style */
-        header {
-            background: linear-gradient(135deg, #0056b3, #004494);
-            color: white;
-            padding: 15px 0;
-            text-align: center;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            letter-spacing: 1px;
-        }
+        /* Header */
+        header { background: linear-gradient(135deg, #0056b3, #004494); color: white; padding: 15px 0; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        header h1 { margin: 0; font-size: 1.4rem; letter-spacing: 0.5px; }
+        .sub-head { font-size: 0.8rem; opacity: 0.9; margin-top: 2px; font-weight: 500; }
 
         /* Container */
-        .container {
-            max-width: 600px; /* Compact width */
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; background: white; border-radius: var(--radius); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        /* Form Elements */
-        .form-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: 500;
-            font-size: 0.9rem;
-            color: #555;
-        }
-
-        select, input[type="number"] {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e0e0e0;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        select:focus, input:focus {
-            border-color: var(--primary-color);
-            outline: none;
-        }
-
-        button.search-btn {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        button.search-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Result Card Design */
-        #result-area {
-            display: none; /* Hidden by default */
-            margin-top: 25px;
-            border: 1px solid #e0e0e0;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-        }
-
-        .result-header {
-            background-color: #e3f2fd;
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #bbdefb;
-        }
-
-        .result-header h2 {
-            margin: 0;
-            color: var(--primary-color);
-            font-size: 1.2rem;
-        }
-
-        .info-grid {
-            padding: 15px;
-        }
-
-        .info-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px dashed #eee;
-        }
-
-        .info-row:last-child {
-            border-bottom: none;
-        }
-
-        .label {
-            color: #777;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        .value {
-            font-weight: 600;
-            color: #222;
-            text-align: right;
-        }
-
-        .highlight {
-            color: var(--primary-color);
-        }
-
-        /* Status Messages */
-        #status-msg {
-            text-align: center;
-            margin-top: 10px;
-            font-weight: 500;
-        }
-        .error { color: red; }
-        .loading { color: orange; }
-
-        /* Print Button */
-        .print-btn-container {
-            text-align: center;
-            margin-top: 20px;
-            display: none;
-        }
+        /* Search Form */
+        .search-box { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 140px; }
+        select, input { width: 100%; padding: 10px; border: 2px solid #eee; border-radius: var(--radius); font-size: 0.95rem; box-sizing: border-box; outline: none; transition: 0.3s; }
+        select:focus, input:focus { border-color: var(--primary); }
         
-        .print-btn {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
+        button.search-btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: var(--radius); cursor: pointer; font-weight: 600; font-size: 1rem; transition: 0.2s; }
+        button.search-btn:active { transform: scale(0.98); }
 
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 20px;
-            font-size: 0.8rem;
-            color: #888;
-        }
+        /* RESULT CARD */
+        #result-area { display: none; margin-top: 20px; border: 1px solid #e0e0e0; border-radius: var(--radius); overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.02); }
+        .res-header { background: #f0f8ff; padding: 10px; text-align: center; font-size: 1rem; color: var(--primary); font-weight: 700; border-bottom: 1px solid #dbeafe; }
+        
+        .compact-grid { display: grid; grid-template-columns: 1fr 1fr; font-size: 0.85rem; }
+        .c-row { padding: 8px 15px; border-bottom: 1px solid #f0f0f0; display: flex; justify-content: space-between; align-items: center; }
+        .c-row:nth-child(odd) { border-right: 1px solid #f0f0f0; background: #fafafa; }
+        .c-label { color: #666; font-weight: 500; font-size: 0.8rem; }
+        .c-val { font-weight: 700; color: #222; }
+        .c-highlight { color: var(--primary); font-weight: 800; }
 
-        /* Print Specific CSS */
+        /* ANALYZER SECTIONS */
+        #analyzer-area { display: none; margin-top: 30px; }
+        
+        /* Section Dividers */
+        .sec-title { 
+            font-size: 1.1rem; font-weight: 700; color: #333; margin: 30px 0 15px 0; 
+            border-left: 5px solid var(--primary); padding-left: 10px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .shift-color { border-color: var(--accent); color: var(--accent); }
+
+        /* Rank Badges */
+        .rank-badges { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 15px; }
+        /* Mobile responsive for badges */
+        @media (max-width: 600px) { .rank-badges { grid-template-columns: 1fr 1fr; } }
+
+        .badge { background: #fff; border: 1px solid #eee; padding: 12px; border-radius: var(--radius); text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.03); transition: 0.3s; }
+        .badge:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.08); }
+        
+        .badge span { display: block; font-size: 0.7rem; color: #777; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 600;}
+        .badge strong { display: block; font-size: 1.4rem; color: var(--primary); line-height: 1.1; font-weight: 800; }
+        
+        /* Shift specific badge styles */
+        .badge.b-shift strong { color: var(--accent); }
+        .badge.b-shift { border-color: #f3e5f5; background: #fffbfb; }
+
+        /* Tables */
+        .table-wrapper { overflow-x: auto; border: 1px solid #e0e0e0; border-radius: var(--radius); margin-bottom: 10px; }
+        table.stats-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; min-width: 600px; }
+        
+        .stats-table th { background: #f8f9fa; color: #555; font-weight: 700; text-transform: uppercase; padding: 10px; text-align: center; border-bottom: 2px solid #ddd; }
+        .stats-table td { padding: 8px 10px; border-bottom: 1px solid #eee; text-align: center; color: #444; font-weight: 500; }
+        
+        /* Category Colors */
+        .cat-tag { display: inline-block; padding: 3px 8px; border-radius: 4px; color: white; font-size: 0.75rem; font-weight: bold; width: 45px; text-align: center;}
+        .bg-GEN { background-color: #6c757d; }
+        .bg-OBC { background-color: #007bff; }
+        .bg-EWS { background-color: #17a2b8; }
+        .bg-MBC { background-color: #6610f2; }
+        .bg-SC { background-color: #e83e8c; }
+        .bg-ST { background-color: #fd7e14; }
+        .bg-SAH { background-color: #28a745; }
+
+        .sub-row td { background-color: #fcfcfc; color: #777; font-size: 0.75rem; border-bottom: 1px dashed #eee; }
+        .row-total { font-weight: 800; color: #000; background: #fafafa; }
+
+        /* Print Specifics */
         @media print {
-            header, .form-group, .search-btn, footer, .print-btn-container {
-                display: none !important;
-            }
-            body { background-color: white; }
-            .container { 
-                box-shadow: none; 
-                border: 1px solid #ccc;
-                max-width: 100%;
-                margin: 0;
-            }
-            #result-area { display: block !important; border: 2px solid #000; }
+            header, .search-box, button, footer { display: none !important; }
+            body { background: white; -webkit-print-color-adjust: exact; margin: 0; padding: 10px; }
+            .container { box-shadow: none; border: none; margin: 0; padding: 0; max-width: 100%; }
+            #result-area, #analyzer-area { display: block !important; }
+            
+            /* Custom Print Header */
+            #print-header { display: block !important; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #000; padding-bottom: 10px; }
+            #print-header h1 { margin: 0; font-size: 1.8rem; color: #000; }
+            #print-header p { margin: 5px 0 0 0; font-size: 1rem; color: #444; font-weight: 600;}
+
+            /* Layout Fixes */
+            .rank-badges { grid-template-columns: repeat(4, 1fr) !important; gap: 5px; page-break-inside: avoid; }
+            .badge { padding: 5px; border: 1px solid #000; box-shadow: none; }
+            .badge strong { font-size: 1.2rem; color: #000 !important; }
+            .table-wrapper { border: 1px solid #000; page-break-inside: avoid; }
+            table th { background-color: #eee !important; color: #000; border-bottom: 1px solid #000; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Dream-Link</h1>
-        <div style="font-size: 0.8rem; opacity: 0.9;">Official Result Portal</div>
+        <h1>Dream-Link Results</h1>
+        <div class="sub-head">Analyse by MP SALODIYA</div>
     </header>
 
     <div class="container">
+
+        <div id="print-header" style="display: none;">
+            <h1>Dream-Link Results</h1>
+            <p>Analyse by MP SALODIYA</p>
+        </div>
         
-        <div class="no-print">
+        <div class="search-box">
             <div class="form-group">
-                <label>Select Exam Category</label>
                 <select id="examType">
                     <option value="NTSP">NTSP (Non-TSP Area)</option>
                     <option value="TSP">TSP Area</option>
                 </select>
             </div>
-
             <div class="form-group">
-                <label>Enter Roll Number</label>
-                <input type="number" id="rollInput" placeholder="Ex: 101876">
+                <input type="number" id="rollInput" placeholder="Enter Roll Number">
             </div>
-
-            <button class="search-btn" onclick="searchResult()">Search Result</button>
-            <div id="status-msg"></div>
         </div>
+        <button class="search-btn" onclick="processResult()">Search & Analyze Result</button>
+        <div id="status-msg" style="text-align: center; margin-top: 10px; font-weight: 500; min-height: 20px;"></div>
 
         <div id="result-area">
-            <div class="result-header">
-                <h2>CANDIDATE SCORE CARD</h2>
-                <div style="font-size: 0.85rem; margin-top:5px;">Result Verification</div>
-            </div>
-            
-            <div class="info-grid">
-                <div class="info-row"><span class="label">Candidate Name</span> <span class="value" id="res_name">-</span></div>
-                <div class="info-row"><span class="label">Father's Name</span> <span class="value" id="res_father">-</span></div>
-                <div class="info-row"><span class="label">Mother's Name</span> <span class="value" id="res_mother">-</span></div>
-                <div class="info-row"><span class="label">Roll Number</span> <span class="value" id="res_roll">-</span></div>
+            <div class="res-header">CANDIDATE SCORECARD</div>
+            <div class="compact-grid">
+                <div class="c-row"><div class="c-label">Roll No</div> <div class="c-val" id="d_roll">-</div></div>
+                <div class="c-row"><div class="c-label">Category</div> <div class="c-val" id="d_cat">-</div></div>
                 
-                <div class="info-row"><span class="label">Raw Marks</span> <span class="value" id="res_raw">-</span></div>
-                <div class="info-row"><span class="label">Final Marks</span> <span class="value highlight" id="res_final">-</span></div>
-                
-                <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+                <div class="c-row"><div class="c-label">Name</div> <div class="c-val" id="d_name">-</div></div>
+                <div class="c-row"><div class="c-label">Gender</div> <div class="c-val" id="d_gender">-</div></div>
 
-                <div class="info-row"><span class="label">Merit Rank</span> <span class="value highlight" style="font-size: 1.1rem;" id="res_merit">-</span></div>
-                <div class="info-row"><span class="label">Category</span> <span class="value" id="res_cat">-</span></div>
-                <div class="info-row"><span class="label">Gender</span> <span class="value" id="res_gender">-</span></div>
-                <div class="info-row"><span class="label">Shift</span> <span class="value" id="res_shift">-</span></div>
-                <div class="info-row"><span class="label">Special Category</span> <span class="value" id="res_subcat">-</span></div>
+                <div class="c-row"><div class="c-label">Father</div> <div class="c-val" id="d_father">-</div></div>
+                <div class="c-row"><div class="c-label">Shift</div> <div class="c-val" id="d_shift">-</div></div>
+
+                <div class="c-row"><div class="c-label">Raw Marks</div> <div class="c-val" id="d_raw">-</div></div>
+                <div class="c-row"><div class="c-label">Final Marks</div> <div class="c-val c-highlight" id="d_final">-</div></div>
+                
+                <div class="c-row" style="grid-column: span 2; background: #fffbe6; justify-content: center; gap: 10px; border-top: 1px solid #e0e0e0;">
+                    <span class="c-label">OVERALL MERIT RANK:</span> 
+                    <span class="c-val c-highlight" style="font-size: 1.1rem;" id="d_merit">-</span>
+                </div>
             </div>
         </div>
 
-        <div class="print-btn-container" id="printBtnDiv">
-            <button class="print-btn" onclick="window.print()">🖨️ Print Result</button>
+        <div id="analyzer-area">
+            
+            <div class="sec-title">📊 Overall Statistics (Rank 1 to You)</div>
+            
+            <div class="rank-badges">
+                <div class="badge"><span>Overall Rank</span><strong id="an_merit">-</strong></div>
+                <div class="badge"><span id="lbl_cat_rank">Category Rank</span><strong id="an_cat_rank">-</strong></div>
+                <div class="badge"><span id="lbl_gen_rank">Gender Rank</span><strong id="an_gen_rank">-</strong></div>
+                <div class="badge"><span id="lbl_mix_rank">Cat + Gender</span><strong id="an_cat_gen_rank">-</strong></div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left;">Category</th>
+                            <th>Male</th>
+                            <th>Female</th>
+                            <th>Other</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="overall-table-body"></tbody>
+                </table>
+            </div>
+
+            <div class="sec-title shift-color">
+                <span id="shift-header-text">⚡ Shift Statistics</span>
+            </div>
+
+            <div class="rank-badges">
+                <div class="badge b-shift"><span>Shift Rank</span><strong id="sh_merit">-</strong></div>
+                <div class="badge b-shift"><span id="lbl_sh_cat">Shift Cat</span><strong id="sh_cat_rank">-</strong></div>
+                <div class="badge b-shift"><span id="lbl_sh_gen">Shift Gen</span><strong id="sh_gen_rank">-</strong></div>
+                <div class="badge b-shift"><span id="lbl_sh_mix">Shift Mix</span><strong id="sh_cat_gen_rank">-</strong></div>
+            </div>
+
+            <div class="table-wrapper" style="border-top: 2px solid var(--accent);">
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th style="text-align: left; background: #f3e5f5; color: #4a148c;">Category</th>
+                            <th style="background: #f3e5f5; color: #4a148c;">Male</th>
+                            <th style="background: #f3e5f5; color: #4a148c;">Female</th>
+                            <th style="background: #f3e5f5; color: #4a148c;">Other</th>
+                            <th style="background: #f3e5f5; color: #4a148c;">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody id="shift-table-body"></tbody>
+                </table>
+            </div>
+
+            <div style="text-align: center; margin-top: 30px;">
+                <button onclick="window.print()" style="background: #28a745; border:none; color:white; padding: 10px 25px; border-radius: 50px; font-size: 0.9rem; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                    🖨️ Print Detailed Report
+                </button>
+            </div>
         </div>
 
     </div>
 
-    <footer>
-        &copy; 2026 Dream-Link Portal. All rights reserved.
-    </footer>
+    <footer>&copy; 2026 Dream-Link Analytics Portal</footer>
+
     <script src="data_roll_ntsp_part1.js"></script>
     <script src="data_roll_ntsp_part2.js"></script>
-
     <script src="data_ntsp_merit_part1.js"></script>
     <script src="data_merit_part2.js"></script>
+
     <script>
-        function searchResult() {
-            // 1. Inputs लेना
-            const type = document.getElementById('examType').value;
+        const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
+        
+        function processResult() {
             const roll = document.getElementById('rollInput').value.trim();
-            const resultArea = document.getElementById('result-area');
-            const printDiv = document.getElementById('printBtnDiv');
+            const type = document.getElementById('examType').value;
             const status = document.getElementById('status-msg');
+            const resArea = document.getElementById('result-area');
+            const anArea = document.getElementById('analyzer-area');
 
-            // Reset UI
-            status.innerHTML = "";
-            status.className = "";
-            resultArea.style.display = "none";
-            printDiv.style.display = "none";
+            resArea.style.display = 'none';
+            anArea.style.display = 'none';
+            status.innerHTML = 'Analyzing Data...';
+            status.style.color = 'orange';
 
-            if (!roll) {
-                status.innerHTML = "Please enter a Roll Number.";
-                status.className = "error";
-                return;
+            if(!roll) { 
+                status.innerHTML = "❌ Please enter Roll Number"; 
+                status.style.color = 'red';
+                return; 
             }
 
-            status.innerHTML = "Searching records...";
-            status.className = "loading";
+            setTimeout(() => {
+                const rollDB = window.NTSP_ROLL_DATA || {};
+                const meritDB = window.NTSP_MERIT_DATA || {}; 
 
-            // 2. Data Selection Logic (NTSP vs TSP)
-            let rollDB, meritDB;
-
-            if (type === "NTSP") {
-                rollDB = window.NTSP_ROLL_DATA || {};
-                meritDB = window.NTSP_MERIT_DATA || {};
-            } else {
-                rollDB = window.NTSP_ROLL_DATA || {}; // अभी TSP के लिए भी यही demo data use कर रहे हैं
-                meritDB = window.NTSP_MERIT_DATA || {}; 
-                // असली में: rollDB = window.TSP_ROLL_DATA;
-            }
-
-            // 3. Search Logic
-            setTimeout(() => { // Timeout सिर्फ़ लोडिंग फील देने के लिए
                 const candidate = rollDB[roll];
 
-                if (candidate) {
-                    // Step A: Roll Data मिल गया
-                    const meritRank = candidate.Merit;
-                    
-                    // Step B: Merit Data ढूँढना (Cross Reference)
-                    const extraDetails = meritDB[meritRank] || { 
-                        "Gender": "N/A", "Category": "N/A", "Shift": "N/A", "SubCat": "" 
-                    };
-
-                    // Step C: Display Data populate करना
-                    document.getElementById('res_name').innerText = candidate.Name;
-                    document.getElementById('res_father').innerText = candidate.Father;
-                    document.getElementById('res_mother').innerText = candidate.Mother;
-                    document.getElementById('res_roll').innerText = roll;
-                    document.getElementById('res_raw').innerText = candidate.RawMark;
-                    document.getElementById('res_final').innerText = candidate.FinalMark;
-                    
-                    document.getElementById('res_merit').innerText = meritRank;
-                    document.getElementById('res_cat').innerText = extraDetails.Category;
-                    document.getElementById('res_gender').innerText = extraDetails.Gender;
-                    document.getElementById('res_shift').innerText = "Shift " + extraDetails.Shift;
-                    document.getElementById('res_subcat').innerText = extraDetails.SubCat || "None";
-
-                    // Show Result
-                    status.innerHTML = "";
-                    resultArea.style.display = "block";
-                    printDiv.style.display = "block";
-                } else {
-                    status.innerHTML = "Roll Number not found in " + type + " list.";
-                    status.className = "error";
+                if (!candidate) {
+                    status.innerHTML = `❌ Roll Number ${roll} not found.`;
+                    status.style.color = 'red';
+                    return;
                 }
-            }, 300);
+
+                // --- 1. Basic Info & Formatting ---
+                const myMerit = parseInt(candidate.Merit);
+                const myDetails = meritDB[myMerit] || { Gender: "-", Category: "-", Shift: "-", SubCat: "" };
+                
+                const myCat = (myDetails.Category || "OTHER").toUpperCase();
+                const myGen = (myDetails.Gender || "OTHER").toUpperCase();
+                const myShift = String(myDetails.Shift);
+                const mySub = (myDetails.SubCat || "").toUpperCase();
+
+                // Update UI Texts
+                document.getElementById('d_roll').innerText = roll;
+                document.getElementById('d_name').innerText = candidate.Name;
+                document.getElementById('d_father').innerText = candidate.Father;
+                document.getElementById('d_raw').innerText = candidate.RawMark;
+                document.getElementById('d_final').innerText = candidate.FinalMark;
+                document.getElementById('d_merit').innerText = myMerit;
+                document.getElementById('d_cat').innerText = myCat;
+                document.getElementById('d_gender').innerText = myGen;
+                document.getElementById('d_shift').innerText = "Shift " + myShift;
+
+                // --- 2. Dynamic Label Updates ---
+                // Set badge titles based on candidate data
+                document.getElementById('lbl_cat_rank').innerText = `${myCat} Rank`;
+                document.getElementById('lbl_gen_rank').innerText = `${myGen} Rank`;
+                document.getElementById('lbl_mix_rank').innerText = `${myCat} + ${myGen}`;
+
+                document.getElementById('lbl_sh_cat').innerText = `Shift ${myCat}`;
+                document.getElementById('lbl_sh_gen').innerText = `Shift ${myGen}`;
+                document.getElementById('lbl_sh_mix').innerText = `${myCat} + ${myGen}`;
+                document.getElementById('shift-header-text').innerText = `⚡ Shift ${myShift} Statistics (Rank 1 to You)`;
+
+                // --- 3. LOGIC ENGINE ---
+                
+                // Initialize Matrix Helper
+                const createMatrix = () => {
+                    let obj = { "OTHER": { m:0, f:0, o:0, tot:0 } };
+                    CAT_ORDER.forEach(c => obj[c] = { m:0, f:0, o:0, tot:0, exm:0, ldcp:0, sp:0, dv:0, wd:0 });
+                    return obj;
+                };
+
+                let globalMatrix = createMatrix();
+                let shiftMatrix = createMatrix();
+
+                // Counters [Rank, CatRank, GenRank, MixRank]
+                let gStats = { rank: 0, cat: 0, gen: 0, mix: 0 };
+                let sStats = { rank: 0, cat: 0, gen: 0, mix: 0 };
+
+                // MAIN LOOP: From 1 to My Merit
+                for (let i = 1; i <= myMerit; i++) {
+                    const p = meritDB[i];
+                    if (!p) continue;
+
+                    // Normalize
+                    let pCat = (p.Category || "OTHER").toUpperCase();
+                    let pGen = (p.Gender || "OTHER").toUpperCase();
+                    let pShift = String(p.Shift);
+                    let pSub = (p.SubCat || "").toUpperCase();
+
+                    // --- GLOBAL LOGIC ---
+                    gStats.rank++; // Simply Rank i
+                    if (pCat === myCat) gStats.cat++;
+                    if (pGen === myGen) gStats.gen++;
+                    if (pCat === myCat && pGen === myGen) gStats.mix++;
+                    
+                    // Fill Global Table Matrix
+                    updateMatrixRow(globalMatrix, pCat, pGen, pSub);
+
+                    // --- SHIFT LOGIC (Filtered by Shift) ---
+                    if (pShift === myShift) {
+                        sStats.rank++;
+                        if (pCat === myCat) sStats.cat++;
+                        if (pGen === myGen) sStats.gen++;
+                        if (pCat === myCat && pGen === myGen) sStats.mix++;
+
+                        // Fill Shift Table Matrix
+                        updateMatrixRow(shiftMatrix, pCat, pGen, pSub);
+                    }
+                }
+
+                // --- 4. Render Badges ---
+                // Global Badges
+                document.getElementById('an_merit').innerText = myMerit;
+                document.getElementById('an_cat_rank').innerText = gStats.cat;
+                document.getElementById('an_gen_rank').innerText = gStats.gen;
+                document.getElementById('an_cat_gen_rank').innerText = gStats.mix;
+
+                // Shift Badges
+                document.getElementById('sh_merit').innerText = sStats.rank;
+                document.getElementById('sh_cat_rank').innerText = sStats.cat;
+                document.getElementById('sh_gen_rank').innerText = sStats.gen;
+                document.getElementById('sh_cat_gen_rank').innerText = sStats.mix;
+
+                // --- 5. Render Tables ---
+                renderTable("overall-table-body", globalMatrix);
+                renderTable("shift-table-body", shiftMatrix);
+
+                // Show UI
+                status.innerHTML = "";
+                resArea.style.display = 'block';
+                anArea.style.display = 'block';
+
+            }, 200);
+        }
+
+        // Helper to update matrix object
+        function updateMatrixRow(matrix, pCat, pGen, pSub) {
+            let key = CAT_ORDER.includes(pCat) ? pCat : "OTHER";
+            
+            // Gender Count
+            if (pGen === 'MALE') matrix[key].m++;
+            else if (pGen === 'FEMALE') matrix[key].f++;
+            else matrix[key].o++;
+            
+            matrix[key].tot++;
+
+            // Sub Categories
+            if(pSub.includes("EXM")) matrix[key].exm++;
+            if(pSub.includes("LD") || pSub.includes("BL")) matrix[key].ldcp++;
+            if(pSub.includes("SP")) matrix[key].sp++;
+            if(pSub.includes("DV")) matrix[key].dv++;
+            if(pSub.includes("WD")) matrix[key].wd++;
+        }
+
+        // Render Table HTML
+        function renderTable(elementId, statsData) {
+            const tbody = document.getElementById(elementId);
+            tbody.innerHTML = "";
+
+            CAT_ORDER.forEach(cat => {
+                const d = statsData[cat];
+                if(d.tot === 0) return;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="text-align:left;"><span class="cat-tag bg-${cat}">${cat}</span></td>
+                        <td>${d.m}</td>
+                        <td>${d.f}</td>
+                        <td>${d.o}</td>
+                        <td class="row-total">${d.tot}</td>
+                    </tr>
+                `;
+
+                if(d.exm > 0) tbody.innerHTML += createSubRow("Ex-Serviceman", d.exm);
+                if(d.ldcp > 0) tbody.innerHTML += createSubRow("LDCP/PH", d.ldcp);
+                if(d.sp > 0) tbody.innerHTML += createSubRow("Sports Person", d.sp);
+                if(d.dv > 0) tbody.innerHTML += createSubRow("Divorcee", d.dv);
+                if(d.wd > 0) tbody.innerHTML += createSubRow("Widow", d.wd);
+            });
+            
+            // Render Other if exists
+            if(statsData["OTHER"].tot > 0) {
+                 const d = statsData["OTHER"];
+                 tbody.innerHTML += `<tr><td style="text-align:left;">OTHER</td><td>${d.m}</td><td>${d.f}</td><td>${d.o}</td><td class="row-total">${d.tot}</td></tr>`;
+            }
+        }
+
+        function createSubRow(label, count) {
+            return `<tr class="sub-row"><td style="text-align:left; padding-left: 20px;"><span style="margin-right:5px;">↳</span> ${label}</td><td colspan="3"></td><td>${count}</td></tr>`;
         }
     </script>
-  <script>
-  if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');
-</script>
 </body>
 </html>
