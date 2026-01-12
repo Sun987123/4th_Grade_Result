@@ -293,12 +293,12 @@
 
     </div>
 
-    <footer>&copy; 2026 Dream-Link Analytics</footer>
+    <footer>&copy; 2026 Dream-Link MP SALODIYA</footer>
 
     <script src="data_roll_ntsp_part1.js"></script>
     <script src="data_roll_ntsp_part2.js"></script>
     <script src="data_ntsp_merit_part1.js"></script>
-    <script src="data_ntsp_merit_part2"></script>
+    <script src="data_merit_part2.js"></script>
     <script src="data_roll_tsp.js"></script>
     <script src="data_merit_tsp.js"></script>
 
@@ -602,38 +602,139 @@
             });
         }
 
-        function renderRankTable(id, d, hasSub, hasTsp) {
-            const tb = document.getElementById(id); tb.innerHTML = "";
-            const k = ["range","cat","gen","mix"]; if(hasSub) k.push("sub"); if(hasTsp) k.push("tsp");
+       function renderRankTable(id, d, hasSub, hasTsp) {
+            const tbody = document.getElementById(id); 
+            tbody.innerHTML = "";
+            
+            // 1. Check if Current Candidate is TSP
+            const isTspCand = CANDIDATE.Tsp;
+
+            // 2. Dynamic Header Logic (Change Text based on Candidate)
+            // यह कोड टेबल के 3rd कॉलम का नाम अपने आप बदल देगा
+            const table = tbody.closest('table');
+            if(table) {
+                const th3 = table.querySelector('th:nth-child(3)');
+                if(th3) {
+                    if(isTspCand) {
+                        th3.innerText = "Rank (TSP Only)";
+                        th3.style.background = "#fd7e14"; // TSP के लिए ऑरेंज कलर (Optional)
+                    } else {
+                        th3.innerText = "Rank (NTSP Only)";
+                        th3.style.background = ""; // NTSP के लिए डिफ़ॉल्ट (Blue)
+                    }
+                }
+            }
+
+            // 3. Define Rows (Removed 'tsp' row as requested)
+            // Order: Overall -> Gender -> Category -> Mix -> Subcategory
+            const k = ["range", "gen", "cat", "mix"]; 
+            if(hasSub) k.push("sub"); 
+            // Note: 'tsp' key is removed, so that row won't show anymore.
+
             k.forEach(key => {
-                let v = d[key], nv = (key==='tsp')?"-":v.n;
-                tb.innerHTML += `<tr><td>${v.l}</td><td class="st-val">${v.a}</td><td class="st-val">${nv}</td></tr>`;
+                let v = d[key];
+                
+                // 4. Calculate Logic for 2nd Column
+                // v.a = Total Count
+                // v.n = NTSP Count
+                // So, TSP Count = v.a - v.n
+                let col2Val = 0;
+
+                if(isTspCand) {
+                    // अगर कैंडिडेट TSP है, तो "All - NTSP" = TSP Rank दिखाएं
+                    col2Val = v.a - v.n;
+                } else {
+                    // अगर कैंडिडेट NTSP है, तो सीधा NTSP Rank दिखाएं
+                    col2Val = v.n;
+                }
+
+                tbody.innerHTML += `<tr>
+                    <td>${v.l}</td>
+                    <td class="st-val">${v.a}</td>
+                    <td class="st-val" style="font-weight:800; color:${isTspCand ? '#d35400' : '#0056b3'}">
+                        ${col2Val}
+                    </td>
+                </tr>`;
             });
         }
 
-        function renderDeepTable(tbody, data) {
-            let gt = z(); gt.all=0;
+       function renderDeepTable(tbody, data) {
+            let gt = z(); gt.all=0; // Grand Total tracker
+            
             [...CAT_ORDER,"OTHER"].forEach(c => {
-                let d = data[c]; if(d.tot===0) return;
-                gt.m+=d.m; gt.f+=d.f; gt.o+=d.o; gt.tsp+=d.tsp; gt.all+=d.tot;
-                
-                let tspCell = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${d.tsp}</td>` : '';
+                let d = data[c]; 
+                if(d.tot===0) return;
 
-                let h = `<tr><td class="col-cat"><span class="cat-tag bg-${c}">${c}</span></td><td>${d.m}</td><td>${d.f}</td><td>${d.o}</td>${tspCell}<td style="font-weight:bold;">${d.tot}</td></tr>`;
+                // Update Grand Total with strict logic
+                gt.m+=d.m; gt.f+=d.f; gt.o+=d.o; gt.tsp+=d.tsp; gt.all+=d.tot;
+
+                // 1. Calculate Subcategory Totals to find "Pure/Open" candidates
+                let subSum = {m:0, f:0, o:0, tsp:0, tot:0};
+                let hasSubs = false;
+
+                SUB_TYPES.forEach(s => {
+                    let sd = d.subs[s.key];
+                    if(sd.tot > 0) {
+                        hasSubs = true;
+                        subSum.m += sd.m; subSum.f += sd.f; subSum.o += sd.o;
+                        subSum.tsp += sd.tsp; subSum.tot += sd.tot;
+                    }
+                });
+
+                // Pure (Open) = Total - Sum of all Subcategories
+                let openM = d.m - subSum.m;
+                let openF = d.f - subSum.f;
+                let openO = d.o - subSum.o;
+                let openTsp = d.tsp - subSum.tsp;
+                let openTot = d.tot - subSum.tot;
+
+                // 2. Render OPEN/GENERAL Row (Category Main without Subcats)
+                let label = hasSubs ? `${c} (Open)` : c; // Change label if subcats exist
+                let tspCellOpen = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${openTsp}</td>` : '';
                 
+                let h = `<tr>
+                    <td class="col-cat"><span class="cat-tag bg-${c}">${label}</span></td>
+                    <td>${openM}</td><td>${openF}</td><td>${openO}</td>
+                    ${tspCellOpen}<td style="font-weight:bold;">${openTot}</td>
+                </tr>`;
+                
+                // 3. Render Subcategory Rows
                 SUB_TYPES.forEach(s => {
                     let sd = d.subs[s.key]; 
                     if(sd.tot>0) {
                         let tspCellSub = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${sd.tsp}</td>` : '';
-                        h+=`<tr class="sub-row"><td class="col-cat sub-label">↳ ${s.label}</td><td>${sd.m}</td><td>${sd.f}</td><td>${sd.o}</td>${tspCellSub}<td>${sd.tot}</td></tr>`;
+                        h+=`<tr class="sub-row">
+                            <td class="col-cat sub-label">↳ ${s.label}</td>
+                            <td>${sd.m}</td><td>${sd.f}</td><td>${sd.o}</td>
+                            ${tspCellSub}<td>${sd.tot}</td>
+                        </tr>`;
                     }
                 });
+
+                // 4. Render Category TOTAL Row (ONLY if subcategories exist)
+                if(hasSubs) {
+                    let tspCellTot = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell" style="font-weight:bold;">${d.tsp}</td>` : '';
+                    h += `<tr style="background:#fff3cd; border-bottom:2px solid #ddd;">
+                        <td class="col-cat" style="font-weight:bold; color:#856404; text-align:right!important; padding-right:10px!important;">Total ${c} ➤</td>
+                        <td style="font-weight:bold;">${d.m}</td>
+                        <td style="font-weight:bold;">${d.f}</td>
+                        <td style="font-weight:bold;">${d.o}</td>
+                        ${tspCellTot}
+                        <td style="font-weight:bold; color:#000;">${d.tot}</td>
+                    </tr>`;
+                }
+
                 tbody.innerHTML += h;
             });
             
+            // 5. Grand Total Row (Last Row of Table)
             if(gt.all>0) {
                 let tspCellTot = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${gt.tsp}</td>` : '';
-                tbody.innerHTML += `<tr class="grand-total-row"><td class="col-cat">TOTAL</td><td>${gt.m}</td><td>${gt.f}</td><td>${gt.o}</td>${tspCellTot}<td>${gt.all}</td></tr>`;
+                tbody.innerHTML += `<tr class="grand-total-row">
+                    <td class="col-cat">GRAND TOTAL</td>
+                    <td>${gt.m}</td><td>${gt.f}</td><td>${gt.o}</td>
+                    ${tspCellTot}<td>${gt.all}</td>
+                </tr>`;
             }
         }
     </script>
