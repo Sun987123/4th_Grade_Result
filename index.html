@@ -160,6 +160,41 @@
             .sec-title.shift-color { page-break-before: always; }
             .dynamic-shift-wrapper { page-break-before: always; }
         }
+      /* CUTOFF TABLE STYLES (Watermark Look) */
+        #cutoff-display-area {
+            margin-top: 25px;
+            background: rgba(255, 255, 255, 0.4); /* बहुत हल्का बैकग्राउंड */
+            border: 2px dashed #ddd;               /* टूटी हुई लाइन */
+            border-radius: var(--radius);
+            padding: 10px;
+            opacity: 0.5;                          /* 50% धुंधला (Watermark जैसा) */
+            filter: grayscale(100%);               /* रंग हटा दें (Grey look) */
+            transition: 0.3s;
+            pointer-events: none;                  /* इस पर क्लिक न हो (Optional) */
+        }
+        
+        /* जब माउस ले जाएं तो साफ़ दिखे */
+        #cutoff-display-area:hover { 
+            opacity: 1; 
+            filter: none; 
+            background: white; 
+            border-style: solid;
+            pointer-events: auto; 
+        }
+        
+        .cutoff-header { text-align: center; font-size: 0.8rem; font-weight: 700; color: #888; margin-bottom: 8px; letter-spacing: 0.5px; text-transform: uppercase; }
+        
+        .cutoff-table-wrapper { overflow-x: auto; }
+        .cutoff-table { width: 100%; border-collapse: collapse; font-size: 0.65rem; }
+        
+        .cutoff-table th { background: #f1f1f1; padding: 4px; text-align: center; border: 1px solid #ddd; color: #777; }
+        .cutoff-table td { padding: 4px; text-align: center; border: 1px solid #eee; color: #555; font-weight: 600; }
+        .cutoff-table tr:nth-child(even) { background: #f9f9f9; }
+        .cutoff-table td:first-child { background: #6c757d; color: white; font-weight: 500; text-align: left; padding-left: 6px; width: 40px; }
+
+        .hz-row { display: flex; justify-content: center; gap: 15px; margin-top: 8px; flex-wrap: wrap; }
+        .hz-tag { background: #eee; padding: 3px 8px; border-radius: 4px; font-size: 0.7rem; border: 1px solid #ccc; font-weight: bold; color: #666; }
+        
     </style>
 </head>
 <body>
@@ -195,6 +230,7 @@
             </div>
             <button class="main-btn" onclick="executeSearch()">Check Result</button>
         </div>
+      
 
         <div id="input-analyze" class="input-section">
             <div class="form-group" style="margin-bottom: 8px;">
@@ -209,6 +245,17 @@
                 <input type="number" id="ana_end" class="range-inp-home" placeholder="End Rank">
             </div>
             <button class="main-btn analyze-btn" onclick="executeAnalyze()">Analyze Stats 🚀</button>
+</div>
+        </div>
+        <div id="cutoff-display-area">
+            <div class="cutoff-header">
+                <span id="cutoff-title">🏆 NTSP OFFICIAL CUTOFF (PRE DV)</span>
+            </div>
+            <div class="cutoff-table-wrapper">
+                <table class="cutoff-table" id="cutoff-table-body">
+                    </table>
+            </div>
+            <div id="hz-cutoff-row" class="hz-row"></div>
         </div>
 
         <div id="status-msg" style="text-align: center; margin-top: 10px; font-weight: 600; font-size: 0.8rem; min-height: 18px;"></div>
@@ -295,6 +342,7 @@
 
     <footer>&copy; 2026 Dream-Link MP SALODIYA</footer>
 
+    <script src="cutoff_data.js"></script>
     <script src="data_roll_ntsp_part1.js"></script>
     <script src="data_roll_ntsp_part2.js"></script>
     <script src="data_ntsp_merit_part1.js"></script>
@@ -335,7 +383,79 @@
                 return window.NTSP_ROLL_DATA || {};
             }
         }
+        
+      // 1. Function to Render Cutoff Table
+        function renderCutoff(type) {
+            const display = document.getElementById('cutoff-display-area');
+            const tbody = document.getElementById('cutoff-table-body');
+            const title = document.getElementById('cutoff-title');
+            const hzRow = document.getElementById('hz-cutoff-row');
+            
+            // Set Title
+            title.innerText = `🏆 ${type} OFFICIAL CUTOFF (PRE DV)`
 
+            // Get Data
+            const mainData = CUTOFF_DB[type];
+            const hzData = HORIZONTAL_CUTOFF[type];
+
+            // Build Matrix Table Header
+            let html = `<thead>
+                <tr>
+                    <th>Cat</th>
+                    <th>GEN</th>
+                    <th>FEM</th>
+                    <th>WID</th>
+                    <th>DIV</th>
+                    <th>EX</th>
+                </tr>
+            </thead><tbody>`;
+
+            // Build Rows
+            for (const [cat, vals] of Object.entries(mainData)) {
+                html += `<tr>
+                    <td>${cat}</td>
+                    <td>${vals.GEN || '-'}</td>
+                    <td>${vals.FEM || '-'}</td>
+                    <td>${vals.WID || '-'}</td>
+                    <td>${vals.DIV || '-'}</td>
+                    <td>${vals.EX  || '-'}</td>
+                </tr>`;
+            }
+            html += `</tbody>`;
+            tbody.innerHTML = html;
+
+            // Build Horizontal Row (LDCP/SPORTS)
+            hzRow.innerHTML = hzData.map(d => 
+                `<span class="hz-tag">${d.label}: ${d.val}</span>`
+            ).join('');
+        }
+
+        // 2. Initialize on Load
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCutoff('NTSP'); // Default Load
+            
+            // Link Search Tab Dropdown
+            const searchSelect = document.getElementById('examTypeSearch');
+            if(searchSelect) {
+                searchSelect.addEventListener('change', (e) => {
+                    renderCutoff(e.target.value);
+                    // Sync Analyze dropdown also
+                    const anaSelect = document.getElementById('examTypeAnalyze');
+                    if(anaSelect) anaSelect.value = e.target.value;
+                });
+            }
+
+            // Link Analyze Tab Dropdown (ISKI KAMI THI)
+            const analyzeSelect = document.getElementById('examTypeAnalyze');
+            if(analyzeSelect) {
+                analyzeSelect.addEventListener('change', (e) => {
+                    renderCutoff(e.target.value);
+                    // Sync Search dropdown also
+                    const srchSelect = document.getElementById('examTypeSearch');
+                    if(srchSelect) srchSelect.value = e.target.value;
+                });
+            }
+        });
         function executeSearch() {
             const roll = document.getElementById('rollInput').value.trim();
             const type = document.getElementById('examTypeSearch').value;
@@ -351,6 +471,8 @@
                 if(!candRaw) {
                     status.innerHTML = "Roll Number Not Found!"; status.style.color = "red"; return;
                 }
+                // Hide Cutoff Table on Search
+                document.getElementById('cutoff-display-area').style.display = 'none';
 
                 CANDIDATE = { ...candRaw, Merit: parseInt(candRaw.Merit) };
                 const det = CURRENT_DB[CANDIDATE.Merit] || {};
@@ -438,6 +560,8 @@
             document.getElementById('res_start').value = 1;
             document.getElementById('res_end').value = CANDIDATE.Merit;
             runSearchLogic(1, CANDIDATE.Merit);
+            // Show Cutoff Table again
+            document.getElementById('cutoff-display-area').style.display = 'block';
         }
 
         function executeAnalyze() {
@@ -448,6 +572,8 @@
 
             document.getElementById('result-search').style.display = 'none';
             document.getElementById('result-analyze').style.display = 'none';
+            // Hide Cutoff Table on Analyze
+            document.getElementById('cutoff-display-area').style.display = 'none';
 
             if(!start || !end || start > end) {
                 status.innerHTML = "Invalid Range!"; status.style.color = "red"; return;
