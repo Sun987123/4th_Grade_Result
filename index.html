@@ -132,33 +132,74 @@
         
         footer { text-align: center; padding: 10px; font-size: 0.65rem; color: #aaa; border-top: 1px solid #eee; background: #fff; margin-top: 0;}
 
-        @media print {
-            header, .mode-toggle, .input-section, .inner-toolbar, .print-btn, .telegram-btn, footer, .home-action-area { display: none !important; }
-            body { background: white; margin: 0; }
-            .container { padding: 0; margin: 0; max-width: 100%; border: none; box-shadow: none; }
-            #print-header { display: block !important; text-align: center; border-bottom: 1px solid #000; margin-bottom: 15px; }
-            
-            /* Better Table Headers in Print */
-            table th { 
-                background: #eee !important; 
-                color: #000 !important; 
-                border: 1px solid #999 !important; /* Soft grey border */
-                -webkit-print-color-adjust: exact;
+       @media print {
+            /* 1. Hide unwanted elements */
+            header, .mode-toggle, .input-section, .inner-toolbar, .print-btn, .telegram-btn, footer, .home-action-area, #status-msg { 
+                display: none !important; 
             }
-            .grand-total-row td { background-color: #ddd !important; -webkit-print-color-adjust: exact; }
             
-            .result-container[style*="block"] { display: block !important; }
+            /* 2. Basic Setup (Use Flexbox to Reorder) */
+            body { background: white; margin: 0; padding: 0; font-size: 10pt; }
+            
+            /* Container ko Flex banayenge taaki Order change kar sakein */
+            .container { 
+                display: flex !important; 
+                flex-direction: column !important;
+                padding: 0; margin: 0; max-width: 100%; border: none; box-shadow: none; width: 100%; 
+            }
+
+            /* Header sabse upar (Order 1) */
+            #print-header { 
+                display: block !important; 
+                text-align: center; 
+                border-bottom: 2px solid #000; 
+                margin-bottom: 10px; 
+                padding-bottom: 5px; 
+                order: 1; 
+            }
+
+            /* Results beech me (Order 2) */
+            .result-container[style*="block"] { 
+                display: block !important; 
+                order: 2; 
+            }
             .result-container[style*="none"] { display: none !important; }
 
-            /* PAGE BREAK LOGIC */
-            .page-break { page-break-before: always; }
+            /* 3. CUTOFF TABLE LOGIC (MAGIC FIX) */
+            /* Isko sabse neeche bhejne ke liye Order: 999 use karenge */
+            #cutoff-display-area {
+                display: block !important;
+                order: 999 !important;        /* Sabse Last me bhejo */
+                margin-top: 40px !important;  /* Result se thoda door */
+                border: 2px solid #000 !important; /* Dark Border */
+                background: #fff !important;  /* White Background */
+                opacity: 1 !important;        /* FULL VISIBILITY (No Fade) */
+                filter: none !important;      /* No Grayscale */
+                page-break-inside: avoid !important;
+                width: 100%;
+            }
             
-            /* Force Shift Analysis to new page in Search Result */
-            #search-shift-section { page-break-before: always; display: block; }
-            
-            /* Force Multi-Shift Analysis to new page in Analyze Mode */
-            .sec-title.shift-color { page-break-before: always; }
-            .dynamic-shift-wrapper { page-break-before: always; }
+            /* Table Header/Cells ko solid black karein */
+            .cutoff-header { color: #000 !important; font-weight: 900 !important; }
+            .cutoff-table th { background: #ddd !important; color: #000 !important; border: 1px solid #000 !important; }
+            .cutoff-table td { color: #000 !important; border: 1px solid #000 !important; }
+            .hz-tag { border: 1px solid #000 !important; color: #000 !important; }
+
+            /* 4. Page Break Safety */
+            .sec-title, .cutoff-header, .res-header, .dynamic-shift-label {
+                page-break-after: avoid !important;
+                break-after: avoid !important;
+            }
+
+            .res-card, .rank-table-wrapper, .table-wrapper, .cutoff-table-wrapper, .dynamic-shift-wrapper {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+                margin-bottom: 15px;
+            }
+
+            tr, td, th {
+                page-break-inside: avoid !important;
+            }
         }
       /* CUTOFF TABLE STYLES (Watermark Look) */
         #cutoff-display-area {
@@ -232,20 +273,23 @@
         </div>
       
 
-        <div id="input-analyze" class="input-section">
-            <div class="form-group" style="margin-bottom: 8px;">
-                <select id="examTypeAnalyze">
-                    <option value="NTSP">NTSP</option>
-                    <option value="TSP">TSP</option>
-                </select>
-            </div>
-            <div class="range-row">
-                <input type="number" id="ana_start" class="range-inp-home" placeholder="Start Rank">
-                <span style="font-weight: bold; color: #999;">-</span>
-                <input type="number" id="ana_end" class="range-inp-home" placeholder="End Rank">
+       <div id="input-analyze" class="input-section">
+            
+            <div class="search-inputs">
+                
+                <div class="form-group" style="flex: 0.6;">
+                    <select id="examTypeAnalyze">
+                        <option value="NTSP">NTSP</option>
+                        <option value="TSP">TSP</option>
+                    </select>
+                </div>
+
+                <div class="form-group" style="flex: 1.4; display: flex; gap: 5px;">
+                    <input type="number" id="ana_start" placeholder="Start" style="width: 50%; padding: 8px;">
+                    <input type="number" id="ana_end" placeholder="End" style="width: 50%; padding: 8px;">
+                </div>
             </div>
             <button class="main-btn analyze-btn" onclick="executeAnalyze()">Analyze Stats 🚀</button>
-</div>
         </div>
         <div id="cutoff-display-area">
             <div class="cutoff-header">
