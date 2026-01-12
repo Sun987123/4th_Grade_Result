@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dream-Link 4th Grade Result</title>
+    <title>Dream-Link 4th TimeOUT</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -387,14 +387,68 @@
     <footer>&copy; 2026 Dream-Link MP SALODIYA</footer>
 
     <script src="cutoff_data.js"></script>
-    <script src="data_roll_ntsp_part1.js"></script>
-    <script src="data_roll_ntsp_part2.js"></script>
-    <script src="data_ntsp_merit_part1.js"></script>
-    <script src="data_ntsp_merit_part2.js"></script>
-    <script src="data_roll_tsp1.js"></script>
-    <script src="data_merit_tsp1.js"></script>
+   
 
     <script>
+        // 1. LIST OF ALL HEAVY DATA FILES (Yahan apni saari 30-35 files ke naam likhein)
+        const DATA_FILES_LIST = [
+            "data_roll_ntsp_part1.js",
+            "data_roll_ntsp_part2.js",
+            "data_ntsp_merit_part1.js",
+            "data_ntsp_merit_part2.js",
+            "data_roll_tsp1.js",
+            "data_merit_tsp1.js"
+            // ... Yahan apni baaki saari files ke naam comma lagakar jodein ...
+        ];
+
+        let IS_DATA_LOADED = false; // Flag to check loading status
+
+        // 2. Function to Load Scripts on Demand
+        async function loadAllDatabase() {
+            if(IS_DATA_LOADED) return; // Agar pehle se load hai to wapas mat karo
+
+            const status = document.getElementById('status-msg');
+            status.style.color = "#d35400";
+            
+            // Promise based loader
+            const loadScript = (src) => {
+                return new Promise((resolve, reject) => {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.onload = resolve;
+                    script.onerror = reject;
+                    document.body.appendChild(script);
+                });
+            };
+
+            // Load files one by one (Wait for all)
+            try {
+                let count = 0;
+                const total = DATA_FILES_LIST.length;
+                
+                // Show progress
+                status.innerText = `Connecting Database... 0%`;
+
+                // Hum parallel load karenge taaki fast ho
+                const promises = DATA_FILES_LIST.map(async (file) => {
+                    await loadScript(file);
+                    count++;
+                    status.innerText = `Loading Database... ${Math.round((count/total)*100)}%`;
+                });
+
+                await Promise.all(promises);
+
+                IS_DATA_LOADED = true;
+                status.innerText = ""; // Clear message
+                return true;
+
+            } catch (error) {
+                status.innerText = "Error loading database files!";
+                status.style.color = "red";
+                console.error(error);
+                return false;
+            }
+        }
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
         const SUB_TYPES = [{key:"EXM",label:"Ex-Serviceman"},{key:"LDCP",label:"LDCP/PH"},{key:"SP",label:"Sports"},{key:"DIV",label:"Divorcee"},{key:"WD",label:"Widow"}];
 
@@ -500,12 +554,23 @@
                 });
             }
         });
-        function executeSearch() {
+       // ASYNC keyword joda hai function ke aage
+        async function executeSearch() {
             const roll = document.getElementById('rollInput').value.trim();
             const type = document.getElementById('examTypeSearch').value;
             const status = document.getElementById('status-msg');
             
+            // 1. Hide Tables
             document.getElementById('result-search').style.display = 'none';
+            document.getElementById('cutoff-display-area').style.display = 'none';
+
+            if(!roll) { status.innerText = "Please enter Roll Number"; return; }
+
+            // 2. CHECK & LOAD DATA (Yeh nayi line hai)
+            if(!IS_DATA_LOADED) {
+                await loadAllDatabase();
+            }
+
             status.innerHTML = "Searching..."; status.style.color = "#0056b3";
 
             setTimeout(() => {
@@ -608,7 +673,7 @@
             document.getElementById('cutoff-display-area').style.display = 'block';
         }
 
-        function executeAnalyze() {
+        async function executeAnalyze() {
             const type = document.getElementById('examTypeAnalyze').value;
             const start = parseInt(document.getElementById('ana_start').value);
             const end = parseInt(document.getElementById('ana_end').value);
@@ -616,11 +681,15 @@
 
             document.getElementById('result-search').style.display = 'none';
             document.getElementById('result-analyze').style.display = 'none';
-            // Hide Cutoff Table on Analyze
             document.getElementById('cutoff-display-area').style.display = 'none';
 
             if(!start || !end || start > end) {
                 status.innerHTML = "Invalid Range!"; status.style.color = "red"; return;
+            }
+
+            // 1. CHECK & LOAD DATA (Yeh nayi line hai)
+            if(!IS_DATA_LOADED) {
+                await loadAllDatabase();
             }
 
             status.innerHTML = "Analyzing..."; status.style.color = "#0056b3";
