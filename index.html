@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dream-Link 4th TimeOUT</title>
+    <title>Dream-Link 4th FAST</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -390,65 +390,52 @@
    
 
     <script>
-        // 1. LIST OF ALL HEAVY DATA FILES (Yahan apni saari 30-35 files ke naam likhein)
-        const DATA_FILES_LIST = [
-            "data_roll_ntsp_part1.js",
-            "data_roll_ntsp_part2.js",
-            "data_ntsp_merit_part1.js",
-            "data_ntsp_merit_part2.js",
-            "data_roll_tsp1.js",
-            "data_merit_tsp1.js"
-            // ... Yahan apni baaki saari files ke naam comma lagakar jodein ...
-        ];
+        // --- 1. SMART FILE LISTS (Files ke naam sahi kram me likhein) ---
+    
+    // NTSP ROLL DATA FILES
+    const ROLL_FILES_NTSP = [
+        "data_roll_ntsp_part1.js",
+        "data_roll_ntsp_part2.js",
+        // ... aage ki files ...
+    ];
 
-        let IS_DATA_LOADED = false; // Flag to check loading status
+    // NTSP MERIT DATA FILES (Rank 1 se start hokar end tak)
+    const MERIT_FILES_NTSP = [
+        "data_ntsp_merit_part1.js",
+        "data_ntsp_merit_part2.js",
+        // ... aage ki files ...
+    ];
 
-        // 2. Function to Load Scripts on Demand
-        async function loadAllDatabase() {
-            if(IS_DATA_LOADED) return; // Agar pehle se load hai to wapas mat karo
+    // TSP FILES
+    const ROLL_FILES_TSP = ["data_roll_tsp1.js"]; 
+    const MERIT_FILES_TSP = ["data_merit_tsp1.js"];
 
-            const status = document.getElementById('status-msg');
-            status.style.color = "#d35400";
+    // Track loaded files
+    const LOADED_FILES = new Set();
+
+    // --- 2. SMART LOADER FUNCTIONS ---
+    function loadScript(src) {
+        return new Promise((resolve, reject) => {
+            if (LOADED_FILES.has(src)) { resolve(true); return; } 
             
-            // Promise based loader
-            const loadScript = (src) => {
-                return new Promise((resolve, reject) => {
-                    const script = document.createElement('script');
-                    script.src = src;
-                    script.onload = resolve;
-                    script.onerror = reject;
-                    document.body.appendChild(script);
-                });
-            };
+            const script = document.createElement('script');
+            script.src = src;
+            script.onload = () => { LOADED_FILES.add(src); resolve(true); };
+            script.onerror = () => { console.error("Error loading:", src); resolve(false); };
+            document.body.appendChild(script);
+        });
+    }
 
-            // Load files one by one (Wait for all)
-            try {
-                let count = 0;
-                const total = DATA_FILES_LIST.length;
-                
-                // Show progress
-                status.innerText = `Connecting Database... 0%`;
+    function checkRollInMemory(roll, type) {
+        const db = (type === "TSP") ? window.TSP_ROLL_DATA : window.NTSP_ROLL_DATA;
+        return db && db[roll];
+    }
 
-                // Hum parallel load karenge taaki fast ho
-                const promises = DATA_FILES_LIST.map(async (file) => {
-                    await loadScript(file);
-                    count++;
-                    status.innerText = `Loading Database... ${Math.round((count/total)*100)}%`;
-                });
-
-                await Promise.all(promises);
-
-                IS_DATA_LOADED = true;
-                status.innerText = ""; // Clear message
-                return true;
-
-            } catch (error) {
-                status.innerText = "Error loading database files!";
-                status.style.color = "red";
-                console.error(error);
-                return false;
-            }
-        }
+    function checkMeritInMemory(rank, type) {
+        const db = (type === "TSP") ? window.TSP_MERIT_DATA : window.NTSP_MERIT_DATA;
+        return db && db[rank];
+    }
+      
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
         const SUB_TYPES = [{key:"EXM",label:"Ex-Serviceman"},{key:"LDCP",label:"LDCP/PH"},{key:"SP",label:"Sports"},{key:"DIV",label:"Divorcee"},{key:"WD",label:"Widow"}];
 
@@ -554,81 +541,109 @@
                 });
             }
         });
-       // ASYNC keyword joda hai function ke aage
-        async function executeSearch() {
-            const roll = document.getElementById('rollInput').value.trim();
-            const type = document.getElementById('examTypeSearch').value;
-            const status = document.getElementById('status-msg');
-            
-            // 1. Hide Tables
-            document.getElementById('result-search').style.display = 'none';
-            document.getElementById('cutoff-display-area').style.display = 'none';
+       async function executeSearch() {
+        const roll = document.getElementById('rollInput').value.trim();
+        const type = document.getElementById('examTypeSearch').value;
+        const status = document.getElementById('status-msg');
+        
+        // Reset UI
+        document.getElementById('result-search').style.display = 'none';
+        document.getElementById('cutoff-display-area').style.display = 'none';
 
-            if(!roll) { status.innerText = "Please enter Roll Number"; return; }
+        if(!roll) { status.innerText = "Please enter Roll Number"; return; }
 
-            // 2. CHECK & LOAD DATA (Yeh nayi line hai)
-            if(!IS_DATA_LOADED) {
-                await loadAllDatabase();
+        status.innerText = "Searching Database..."; status.style.color = "#d35400";
+
+        // 1. SELECT FILE LIST
+        const rollFileList = (type === "TSP") ? ROLL_FILES_TSP : ROLL_FILES_NTSP;
+        const meritFileList = (type === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
+
+        let foundData = null;
+
+        // 2. FIND ROLL NUMBER (Load files one by one)
+        for (const file of rollFileList) {
+            foundData = checkRollInMemory(roll, type);
+            if (foundData) break; // Mil gaya!
+
+            if (!LOADED_FILES.has(file)) {
+                status.innerText = `Scanning File: ${file}...`;
+                await loadScript(file);
+                foundData = checkRollInMemory(roll, type);
+                if (foundData) break; 
             }
-
-            status.innerHTML = "Searching..."; status.style.color = "#0056b3";
-
-            setTimeout(() => {
-                const rollDB = loadDB(type);
-                const candRaw = rollDB[roll];
-
-                if(!candRaw) {
-                    status.innerHTML = "Roll Number Not Found!"; status.style.color = "red"; return;
-                }
-                // Hide Cutoff Table on Search
-                document.getElementById('cutoff-display-area').style.display = 'none';
-
-                CANDIDATE = { ...candRaw, Merit: parseInt(candRaw.Merit) };
-                const det = CURRENT_DB[CANDIDATE.Merit] || {};
-                CANDIDATE.Cat = (det.Category||"OTHER").toUpperCase();
-                CANDIDATE.Gen = (det.Gender||"OTHER").toUpperCase();
-                CANDIDATE.Shift = String(det.Shift);
-                CANDIDATE.SubRaw = (det.SubCat||"").toUpperCase();
-                CANDIDATE.Tsp = (det.TSP||"").toUpperCase().includes("YES") || (det.TSP||"").toUpperCase().includes("TSP");
-
-                document.getElementById('d_roll').innerText = roll;
-                document.getElementById('d_name').innerText = CANDIDATE.Name;
-                document.getElementById('d_father').innerText = CANDIDATE.Father;
-                document.getElementById('d_mother').innerText = CANDIDATE.Mother;
-                document.getElementById('d_raw').innerText = CANDIDATE.RawMark;
-                document.getElementById('d_final').innerText = CANDIDATE.FinalMark;
-                document.getElementById('d_merit').innerText = CANDIDATE.Merit;
-                document.getElementById('d_cat').innerText = CANDIDATE.Cat;
-                document.getElementById('d_gender').innerText = CANDIDATE.Gen;
-                document.getElementById('d_shift').innerText = "Shift " + CANDIDATE.Shift;
-                document.getElementById('d_tsp').innerText = CANDIDATE.Tsp ? "YES" : "NO";
-                
-                let subDisp = "None";
-                SUB_TYPES.forEach(s => { if(CANDIDATE.SubRaw.includes(s.key) || (s.key==="LDCP"&&(CANDIDATE.SubRaw.includes("BL")||CANDIDATE.SubRaw.includes("LD")))) subDisp=s.label; });
-                if(subDisp==="None" && CANDIDATE.SubRaw.length>1) subDisp=CANDIDATE.SubRaw;
-                document.getElementById('d_subcat').innerText = subDisp;
-                
-                let rv = parseFloat(CANDIDATE.RawMark);
-                document.getElementById('d_rightq').innerText = !isNaN(rv) ? (rv/1.66).toFixed(2) : "N/A";
-
-                let rawM = parseFloat(CANDIDATE.RawMark) || 0;
-                let finM = parseFloat(CANDIDATE.FinalMark) || 0;
-                let diff = finM - rawM;
-                let diffEl = document.getElementById('d_diff');
-                if(diffEl) {
-                    diffEl.innerText = (diff > 0 ? "+" : "") + diff.toFixed(4);
-                    diffEl.style.color = diff >= 0 ? "#28a745" : "#dc3545";
-                }
-
-                document.getElementById('res_start').value = 1;
-                document.getElementById('res_end').value = CANDIDATE.Merit;
-                
-                runSearchLogic(1, CANDIDATE.Merit);
-
-                status.innerHTML = "";
-                document.getElementById('result-search').style.display = 'block';
-            }, 300);
         }
+
+        if (!foundData) {
+            status.innerText = "Roll Number Not Found!"; 
+            status.style.color = "red"; 
+            return;
+        }
+
+        // 3. FIND MERIT DATA (Load Merit files until Rank is found)
+        const meritRank = parseInt(foundData.Merit);
+        status.innerText = `Found! Getting Merit Data (Rank ${meritRank})...`;
+
+        for (const mFile of meritFileList) {
+            if (checkMeritInMemory(meritRank, type)) break;
+
+            if (!LOADED_FILES.has(mFile)) {
+                await loadScript(mFile);
+                if (checkMeritInMemory(meritRank, type)) break;
+            }
+        }
+
+        // 4. DISPLAY RESULT
+        setTimeout(() => {
+            // Global DB Update karein taaki render functions kaam karein
+            loadDB(type); 
+            
+            // Candidate Data Set Karein
+            CANDIDATE = { ...foundData, Merit: meritRank };
+            
+            // Ab purana Display Logic Same Rahega
+            const det = CURRENT_DB[CANDIDATE.Merit] || {};
+            CANDIDATE.Cat = (det.Category||"OTHER").toUpperCase();
+            CANDIDATE.Gen = (det.Gender||"OTHER").toUpperCase();
+            CANDIDATE.Shift = String(det.Shift);
+            CANDIDATE.SubRaw = (det.SubCat||"").toUpperCase();
+            CANDIDATE.Tsp = (det.TSP||"").toUpperCase().includes("YES") || (det.TSP||"").toUpperCase().includes("TSP");
+
+            document.getElementById('d_roll').innerText = roll;
+            document.getElementById('d_name').innerText = CANDIDATE.Name;
+            document.getElementById('d_father').innerText = CANDIDATE.Father;
+            document.getElementById('d_mother').innerText = CANDIDATE.Mother;
+            document.getElementById('d_raw').innerText = CANDIDATE.RawMark;
+            document.getElementById('d_final').innerText = CANDIDATE.FinalMark;
+            document.getElementById('d_merit').innerText = CANDIDATE.Merit;
+            document.getElementById('d_cat').innerText = CANDIDATE.Cat;
+            document.getElementById('d_gender').innerText = CANDIDATE.Gen;
+            document.getElementById('d_shift').innerText = "Shift " + CANDIDATE.Shift;
+            document.getElementById('d_tsp').innerText = CANDIDATE.Tsp ? "YES" : "NO";
+            
+            let subDisp = "None";
+            SUB_TYPES.forEach(s => { if(CANDIDATE.SubRaw.includes(s.key) || (s.key==="LDCP"&&(CANDIDATE.SubRaw.includes("BL")||CANDIDATE.SubRaw.includes("LD")))) subDisp=s.label; });
+            if(subDisp==="None" && CANDIDATE.SubRaw.length>1) subDisp=CANDIDATE.SubRaw;
+            document.getElementById('d_subcat').innerText = subDisp;
+            
+            let rv = parseFloat(CANDIDATE.RawMark);
+            document.getElementById('d_rightq').innerText = !isNaN(rv) ? (rv/1.66).toFixed(2) : "N/A";
+
+            let rawM = parseFloat(CANDIDATE.RawMark) || 0;
+            let finM = parseFloat(CANDIDATE.FinalMark) || 0;
+            let diff = finM - rawM;
+            let diffEl = document.getElementById('d_diff');
+            diffEl.innerText = (diff > 0 ? "+" : "") + diff.toFixed(4);
+            diffEl.style.color = diff >= 0 ? "#28a745" : "#dc3545";
+
+            document.getElementById('res_start').value = 1;
+            document.getElementById('res_end').value = CANDIDATE.Merit;
+            
+            runSearchLogic(1, CANDIDATE.Merit);
+
+            status.innerText = "";
+            document.getElementById('result-search').style.display = 'block';
+        }, 100);
+    }
 
         function runSearchLogic(start, end) {
             let deepStart = start;
@@ -673,35 +688,45 @@
             document.getElementById('cutoff-display-area').style.display = 'block';
         }
 
-        async function executeAnalyze() {
-            const type = document.getElementById('examTypeAnalyze').value;
-            const start = parseInt(document.getElementById('ana_start').value);
-            const end = parseInt(document.getElementById('ana_end').value);
-            const status = document.getElementById('status-msg');
+       async function executeAnalyze() {
+        const type = document.getElementById('examTypeAnalyze').value;
+        const start = parseInt(document.getElementById('ana_start').value);
+        const end = parseInt(document.getElementById('ana_end').value);
+        const status = document.getElementById('status-msg');
 
-            document.getElementById('result-search').style.display = 'none';
-            document.getElementById('result-analyze').style.display = 'none';
-            document.getElementById('cutoff-display-area').style.display = 'none';
+        document.getElementById('result-search').style.display = 'none';
+        document.getElementById('result-analyze').style.display = 'none';
+        document.getElementById('cutoff-display-area').style.display = 'none';
 
-            if(!start || !end || start > end) {
-                status.innerHTML = "Invalid Range!"; status.style.color = "red"; return;
-            }
-
-            // 1. CHECK & LOAD DATA (Yeh nayi line hai)
-            if(!IS_DATA_LOADED) {
-                await loadAllDatabase();
-            }
-
-            status.innerHTML = "Analyzing..."; status.style.color = "#0056b3";
-
-            setTimeout(() => {
-                loadDB(type);
-                document.getElementById('ana-ov-header').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
-                calculateMultiShiftTables(start, end);
-                status.innerHTML = "";
-                document.getElementById('result-analyze').style.display = 'block';
-            }, 300);
+        if(!start || !end || start > end) {
+            status.innerHTML = "Invalid Range!"; status.style.color = "red"; return;
         }
+
+        status.innerHTML = "Loading Data..."; status.style.color = "#d35400";
+
+        const meritFileList = (type === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
+
+        // LOOP: Sirf wahi files load karo jisme 'End Rank' tak ka data ho
+        for (const mFile of meritFileList) {
+            if (checkMeritInMemory(end, type)) break; // Agar End rank ka data hai, to ruk jao
+
+            if (!LOADED_FILES.has(mFile)) {
+                status.innerText = `Loading Segment: ${mFile}...`;
+                await loadScript(mFile);
+                if (checkMeritInMemory(end, type)) break;
+            }
+        }
+
+        status.innerHTML = "Analyzing...";
+
+        setTimeout(() => {
+            loadDB(type); // Update global reference
+            document.getElementById('ana-ov-header').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
+            calculateMultiShiftTables(start, end);
+            status.innerHTML = "";
+            document.getElementById('result-analyze').style.display = 'block';
+        }, 200);
+    }
 
         function calculateBadges(start, end) {
             let mySubKey = ""; SUB_TYPES.forEach(s => { if(CANDIDATE.SubRaw.includes(s.key)||(s.key==="LDCP"&&(CANDIDATE.SubRaw.includes("BL")||CANDIDATE.SubRaw.includes("LD")))) mySubKey=s.key; });
