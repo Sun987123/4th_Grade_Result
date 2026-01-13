@@ -2139,25 +2139,111 @@
             return SELECTED_CRITERIA.has(matchId);
         }
 
-        function executeExploreAnalyze() {
-            const start = parseInt(document.getElementById('exp_start').value);
-            const end = parseInt(document.getElementById('exp_end').value);
-            
-            if(!end || end <= start) {
-                alert("Please enter a valid rank greater than start rank.");
+        async function executeExploreAnalyze() {
+            const safeRank = parseInt(document.getElementById('exp_start').value);
+            const userRank = parseInt(document.getElementById('exp_end').value);
+            const container = document.getElementById('result-analyze'); // We reuse the analyze container
+
+            if (!userRank || userRank <= 0) {
+                alert("Please enter a valid Rank.");
                 return;
             }
+
+            // UI Reset
+            container.style.display = 'block';
+            container.innerHTML = ""; // Clear previous content
             
-            // Redirect to Analyze Mode logic but show in explore tab?
-            // Better: Use the Analyze Result Container but display it
-            document.getElementById('result-analyze').style.display = 'block';
+            // --- SCENARIO 1: USER IS SAFE (User Rank <= Safe Rank) ---
+            if (userRank <= safeRank) {
+                // Header
+                container.innerHTML += `<div class="sec-title" style="color:#28a745; border-color:#28a745;">
+                    🎉 You are likely Safe! (Analysis: Rank 1 to ${userRank})
+                </div>`;
+                
+                // Show Single Analysis (Rank 1 to User Rank)
+                await renderCustomAnalyzeSection(1, userRank, container);
+            } 
             
-            // Reuse logic
-            document.getElementById('ana-ov-header').innerText = `📊 Gap Analysis (Rank ${start} to ${end})`;
-            calculateMultiShiftTables(start, end);
+            // --- SCENARIO 2: USER IS IN WAITING/DANGER (User Rank > Safe Rank) ---
+            else {
+                // PART A: SAFE ZONE (1 to Safe Rank)
+                container.innerHTML += `<div class="sec-title" style="color:#28a745; border-color:#28a745;">
+                    ✅ Zone 1: Selected Candidates (Rank 1 to ${safeRank})
+                </div>`;
+                await renderCustomAnalyzeSection(1, safeRank, container);
+
+                // SEPARATOR
+                container.innerHTML += `<hr style="border:0; border-top:2px dashed #ccc; margin:20px 0;">`;
+
+                // PART B: GAP ZONE (Safe Rank to User Rank)
+                container.innerHTML += `<div class="sec-title" style="color:#dc3545; border-color:#dc3545;">
+                    ⚠️ Zone 2: The GAP (Rank ${safeRank} to ${userRank})
+                </div>`;
+                await renderCustomAnalyzeSection(safeRank + 1, userRank, container);
+            }
+
+            // Scroll to view
+            container.scrollIntoView({ behavior: "smooth" });
+        }
+      // HELPER: Generates Analysis Tables dynamically inside a target container
+        async function renderCustomAnalyzeSection(start, end, targetContainer) {
             
-            // Scroll down
-            document.getElementById('result-analyze').scrollIntoView({behavior: "smooth"});
+            // 1. Calculate Stats (Same Logic as before)
+            let gm = createEmptyMatrix();
+            let shifts = {};
+
+            // Ensure Data is Loaded (Double Check)
+            // Note: explore mode already loads files, so usually data is present.
+            // But for safety, we assume data exists in CURRENT_DB from previous step.
+
+            for (let i = start; i <= end; i++) {
+                const p = CURRENT_DB[i];
+                if (!p) continue;
+                processRow(gm, p);
+                let s = String(p.Shift);
+                if (!shifts[s]) shifts[s] = createEmptyMatrix();
+                processRow(shifts[s], p);
+            }
+
+            // 2. Build HTML Structure
+            const wrapper = document.createElement('div');
+            
+            // A. Overall Table
+            let html = `<div class="table-wrapper" style="margin-bottom:15px;">
+                            <div style="background:#f1f1f1; padding:5px; font-weight:bold; font-size:0.75rem; text-align:center;">Overall Stats (${start}-${end})</div>
+                            <table class="stats-table">${getTableHeader()}<tbody>`;
+            
+            // We need a temporary tbody to use our existing renderDeepTable function
+            // Trick: Create a dummy table in memory to generate innerHTML
+            let tempTable = document.createElement('table');
+            let tempBody = document.createElement('tbody');
+            renderDeepTable(tempBody, gm);
+            html += tempBody.innerHTML;
+            html += `</tbody></table></div>`;
+
+            // B. Shift Tables
+            const sortedShifts = Object.keys(shifts).sort();
+            if(sortedShifts.length > 0) {
+                 html += `<div style="display:grid; grid-template-columns: 1fr; gap:10px;">`;
+                 sortedShifts.forEach(sk => {
+                    let tempBodyS = document.createElement('tbody');
+                    renderDeepTable(tempBodyS, shifts[sk]);
+                    
+                    html += `<div class="dynamic-shift-wrapper">
+                                <div class="dynamic-shift-label">Shift ${sk}</div>
+                                <div class="table-wrapper">
+                                    <table class="stats-table">
+                                        ${getTableHeader(true)}
+                                        <tbody>${tempBodyS.innerHTML}</tbody>
+                                    </table>
+                                </div>
+                             </div>`;
+                 });
+                 html += `</div>`;
+            }
+
+            wrapper.innerHTML = html;
+            targetContainer.appendChild(wrapper);
         }
     </script>
 </body>
