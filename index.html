@@ -1079,22 +1079,19 @@
         }
 
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
-        const SUB_TYPES = [{
-            key: "EXM",
-            label: "Ex-Serviceman"
-        }, {
-            key: "LDCP",
-            label: "LDCP/PH"
-        }, {
-            key: "SP",
-            label: "Sports"
-        }, {
-            key: "DIV",
-            label: "Divorcee"
-        }, {
-            key: "WD",
-            label: "Widow"
-        }];
+        // इमेज के अनुसार सही और पूरी लिस्ट (Alphabetical Order)
+        const SUB_TYPES = [
+            { key: "DIV", label: "Divorcee" },
+            { key: "EXM", label: "Ex-Serviceman" },
+            { key: "EXM SP", label: "Ex-S + Sports" },  // Combined
+            { key: "LDCP", label: "LDCP/PH" },
+            { key: "LDCP DIV", label: "LDCP + Div" },    // Combined
+            { key: "LDCP EXM", label: "LDCP + Ex-S" },   // Combined
+            { key: "LDCP SP", label: "LDCP + Sports" },  // Combined
+            { key: "SP", label: "Sports Person" },
+            { key: "SP DIV", label: "Sport + Div" },     // Combined
+            { key: "WID", label: "Widow" }
+        ];
 
         let CURRENT_DB = {};
         let CANDIDATE = null;
@@ -1538,80 +1535,98 @@
             renderRankTable("tb-shift-rank", shiftStats, mySubKey, CANDIDATE.Tsp);
         }
 
-        const z = () => ({
-            m: 0,
-            f: 0,
-            o: 0,
-            tot: 0,
-            tsp: 0
-        });
+        const z = () => ({ m: 0, f: 0, o: 0, tot: 0, tsp: 0 });
+        
         const createEmptyMatrix = () => {
             let m = {};
             [...CAT_ORDER, "OTHER"].forEach(c => {
+                // 1. Pehle Sub-Categories ka object banayein dynamic tarike se
+                let subObj = {};
+                SUB_TYPES.forEach(sub => {
+                    subObj[sub.key] = z(); // Har naye category ke liye empty box banega
+                });
+
+                // 2. Main structure assign karein
                 m[c] = {
                     ...z(),
-                    subs: {
-                        "EXM": z(),
-                        "LDCP": z(),
-                        "SP": z(),
-                        "DIV": z(),
-                        "WD": z()
-                    }
+                    pure: z(), // Pure/Open candidates ke liye
+                    subs: subObj // Yahan ab saari nayi categories hongi
                 };
             });
             return m;
         };
 
         function processRow(m, p) {
+            // 1. Category & Gender Cleaning
             let cat = (p.Category || "OTHER").toUpperCase();
             if (!CAT_ORDER.includes(cat)) cat = "OTHER";
-            let gen = (p.Gender || "OTHER").toUpperCase(),
-                tsp = (p.TSP || "").toUpperCase().includes("YES") || (p.TSP || "").toUpperCase().includes("TSP");
-            let sub = (p.SubCat || "").toUpperCase();
+            
+            // Gender ko saaf karein (Trim spaces)
+            let gen = (p.Gender || "OTHER").trim().toUpperCase(); 
+            
+            let tsp = (p.TSP || "").toUpperCase().includes("YES") || (p.TSP || "").toUpperCase().includes("TSP");
+            let sub = (p.SubCat || "").trim().toUpperCase(); // Exact Match ke liye Trim zaroori hai
 
             let r = m[cat];
 
+            // Helper to determine gender key (m, f, or o)
+            // 'THIRD' apne aap 'o' me chala jayega
+            let gKey = 'o'; 
+            if (gen === 'MALE') gKey = 'm';
+            else if (gen === 'FEMALE') gKey = 'f';
+
+            // 1. Main Category Total Count
             if (CURRENT_TYPE === 'NTSP') {
-                if (tsp) {
-                    r.tsp++;
-                    r.tot++;
-                } else {
-                    if (gen === 'MALE') r.m++;
-                    else if (gen === 'FEMALE') r.f++;
-                    else r.o++;
+                if (tsp) { r.tsp++; r.tot++; }
+                else {
+                    r[gKey]++; // Dynamic access (m/f/o)
                     r.tot++;
                 }
             } else {
-                // TSP MODE
-                if (gen === 'MALE') r.m++;
-                else if (gen === 'FEMALE') r.f++;
-                else r.o++;
+                r[gKey]++;
                 r.tot++;
             }
 
+            // 2. Exact Subcategory Matching (Using new list)
+            let isSpecial = false; 
+
             SUB_TYPES.forEach(s => {
-                if (sub.includes(s.key) || (s.key === "LDCP" && (sub.includes("BL") || sub.includes("LD")))) {
-                    let sr = r.subs[s.key];
+                // EXACT MATCH LOGIC (No Mixing)
+                if (sub === s.key) {
+                    isSpecial = true;
+                    // Ab ye line Error nahi degi kyonki createEmptyMatrix ne box bana diya hai
+                    let sr = r.subs[s.key]; 
+
                     if (CURRENT_TYPE === 'NTSP') {
-                        if (tsp) {
-                            sr.tsp++;
-                            sr.tot++;
-                        } else {
-                            if (gen === 'MALE') sr.m++;
-                            else if (gen === 'FEMALE') sr.f++;
-                            else sr.o++;
+                        if (tsp) { sr.tsp++; sr.tot++; }
+                        else {
+                            sr[gKey]++; // Error yahi aa raha tha (reading 'f'), ab nahi aayega
                             sr.tot++;
                         }
                     } else {
-                        if (gen === 'MALE') sr.m++;
-                        else if (gen === 'FEMALE') sr.f++;
-                        else sr.o++;
+                        sr[gKey]++;
                         sr.tot++;
                     }
                 }
             });
-        }
 
+            // 3. Count "Pure Open" Candidates
+            // (Agar createEmptyMatrix me 'pure' add kiya hai toh check ki zaroorat nahi, par safety ke liye rakhein)
+            if (!r.pure) r.pure = { m: 0, f: 0, o: 0, tsp: 0, tot: 0 };
+
+            if (!isSpecial) { 
+                if (CURRENT_TYPE === 'NTSP') {
+                    if (tsp) { r.pure.tsp++; r.pure.tot++; }
+                    else {
+                        r.pure[gKey]++;
+                        r.pure.tot++;
+                    }
+                } else {
+                    r.pure[gKey]++;
+                    r.pure.tot++;
+                }
+            }
+        }
         function getTableHeader(isShift = false) {
             let bg = isShift ? "background:#f3e5f5;color:#4a148c;" : "";
 
@@ -1626,12 +1641,10 @@
                     <tr>
                         <th style="${bg}">Male</th>
                         <th style="${bg}">Female</th>
-                        <th style="${bg}">Other</th>
-                    </tr>
+                        <th style="${bg}">THIRD</th> </tr>
                 </thead>`;
             } else {
-                return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Female</th><th style="${bg}">Other</th><th style="${bg}">Total</th></tr></thead>`;
-            }
+                return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Female</th><th style="${bg}">THIRD</th><th style="${bg}">Total</th></tr></thead>`; }
         }
 
         function calculateSearchTables(start, end) {
