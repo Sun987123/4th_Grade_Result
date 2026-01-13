@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dream-Link 4th POST</title>
+    <title>Dream-Link 4th 2 MODE</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -266,7 +266,7 @@
         }
 
         .mini-inp {
-            width: 90px; 
+            width: 90px;
             padding: 4px;
             text-align: center;
             font-weight: bold;
@@ -274,6 +274,7 @@
             border-radius: 3px;
             font-size: 0.75rem;
         }
+
         .mini-btn {
             padding: 4px 10px;
             border-radius: 3px;
@@ -602,71 +603,79 @@
             /* 3. CUTOFF TABLE PRINT DESIGN (Professional Look) */
             #cutoff-display-area {
                 display: block !important;
-                order: 9999 !important;       /* पेज के अंत में */
+                order: 9999 !important;
+                /* पेज के अंत में */
                 margin-top: 25px !important;
-                border: none !important;      /* पुराना डैश बॉर्डर हटाया */
+                border: none !important;
+                /* पुराना डैश बॉर्डर हटाया */
                 background: transparent !important;
-                opacity: 1 !important;        /* धुंधलापन हटाया */
+                opacity: 1 !important;
+                /* धुंधलापन हटाया */
                 filter: none !important;
                 width: 100% !important;
                 page-break-inside: avoid !important;
                 padding: 0 !important;
             }
-            
+
             /* Header को Section Title जैसा बनाएं */
-            .cutoff-header { 
-                text-align: left !important;  /* Center से Left किया */
-                font-size: 0.85rem !important; 
-                font-weight: 700 !important; 
-                color: #000 !important;       /* गहरा काला */
-                border-bottom: 3px solid #000 !important; /* नीचे लाइन */
-                margin-bottom: 5px !important; 
+            .cutoff-header {
+                text-align: left !important;
+                /* Center से Left किया */
+                font-size: 0.85rem !important;
+                font-weight: 700 !important;
+                color: #000 !important;
+                /* गहरा काला */
+                border-bottom: 3px solid #000 !important;
+                /* नीचे लाइन */
+                margin-bottom: 5px !important;
                 padding-left: 5px !important;
                 letter-spacing: normal !important;
             }
 
             /* Table को बाकी टेबल्स जैसा सॉलिड बनाएं */
-            .cutoff-table { 
-                width: 100% !important; 
-                border-collapse: collapse !important; 
-                border: 1px solid #000 !important; 
+            .cutoff-table {
+                width: 100% !important;
+                border-collapse: collapse !important;
+                border: 1px solid #000 !important;
                 font-size: 7pt !important;
             }
-            
-            .cutoff-table th { 
-                background: #f0f0f0 !important; 
-                color: #000 !important; 
-                border: 1px solid #000 !important; 
-                padding: 4px !important; 
-                text-align: center !important;
-            }
-            
-            .cutoff-table td { 
-                color: #000 !important; 
-                border: 1px solid #000 !important; 
-                padding: 3px !important; 
-                text-align: center !important;
-            }
-            
-            /* Category Column (First) Styling */
-            .cutoff-table td:first-child { 
-                background: #f9f9f9 !important; 
+
+            .cutoff-table th {
+                background: #f0f0f0 !important;
                 color: #000 !important;
-                text-align: left !important; 
-                font-weight: 800 !important; 
+                border: 1px solid #000 !important;
+                padding: 4px !important;
+                text-align: center !important;
+            }
+
+            .cutoff-table td {
+                color: #000 !important;
+                border: 1px solid #000 !important;
+                padding: 3px !important;
+                text-align: center !important;
+            }
+
+            /* Category Column (First) Styling */
+            .cutoff-table td:first-child {
+                background: #f9f9f9 !important;
+                color: #000 !important;
+                text-align: left !important;
+                font-weight: 800 !important;
                 padding-left: 8px !important;
                 border-right: 1px solid #000 !important;
             }
 
             /* Bottom Tags (LD/CP etc) Styling */
-            .hz-row { 
-                justify-content: flex-start !important; /* Left Align */
+            .hz-row {
+                justify-content: flex-start !important;
+                /* Left Align */
                 margin-top: 8px !important;
                 gap: 10px !important;
             }
-            .hz-tag { 
-                border: 1px solid #000 !important; 
-                color: #000 !important; 
+
+            .hz-tag {
+                border: 1px solid #000 !important;
+                color: #000 !important;
                 background: white !important;
                 font-weight: bold !important;
                 padding: 2px 8px !important;
@@ -764,44 +773,6 @@
         .cutoff-table tr:nth-child(even) {
             background: #f9f9f9;
         }
-        /* EXPLORE MODE STYLES */
-        .cutoff-table td.selectable {
-            cursor: pointer;
-            transition: 0.2s;
-        }
-        .cutoff-table td.selectable:hover {
-            background-color: #e3f2fd;
-        }
-        .cutoff-table td.selected-cell {
-            background-color: #28a745 !important; /* Green */
-            color: white !important;
-            border-color: #1e7e34;
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-        }
-        .cutoff-table td.selected-cell div {
-            color: white !important; /* Vacancy text white */
-        }
-        /* MIGRATION BADGE STYLE */
-        .migration-badge {
-            background: #ffc107;
-            color: #000;
-            font-size: 0.55rem;
-            padding: 1px 4px;
-            border-radius: 4px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 2px;
-            border: 1px solid #d39e00;
-        }
-        .fill-stat {
-            font-size: 0.65rem; 
-            color: #fff; 
-            background: rgba(0,0,0,0.2); 
-            padding: 1px 4px; 
-            border-radius: 3px; 
-            margin-top: 2px; 
-            display: block;
-        }
 
         .cutoff-table td:first-child {
             background: #6c757d;
@@ -847,12 +818,10 @@
         </div>
 
         <div class="mode-toggle">
-            <button class="toggle-btn active" onclick="switchMode('search')">🔍 Search</button>
-            <button class="toggle-btn" onclick="switchMode('explore')">🚀 Cat. Explore</button>
-            <button class="toggle-btn" onclick="switchMode('analyze')">📊 Analyze</button>
+            <button class="toggle-btn active" onclick="switchMode('analyze')">📊 Rank Analyse</button>
+            <button class="toggle-btn" onclick="switchMode('search')">🔍 Search Result</button>
         </div>
-
-        <div id="input-search" class="input-section active">
+        <div id="input-search" class="input-section">
             <div class="search-inputs">
                 <div class="form-group" style="flex: 0.6;">
                     <select id="examTypeSearch">
@@ -868,7 +837,7 @@
         </div>
 
 
-        <div id="input-analyze" class="input-section">
+        <div id="input-analyze" class="input-section active">
 
             <div class="search-inputs">
 
@@ -885,46 +854,6 @@
                 </div>
             </div>
             <button class="main-btn analyze-btn" onclick="executeAnalyze()">Analyze Stats 🚀</button>
-        </div>
-      
-      <div id="input-explore" class="input-section">
-            <div class="search-inputs">
-                <div class="form-group">
-                    <select id="examTypeExplore" onchange="renderInteractiveTable(this.value)">
-                        <option value="NTSP">NTSP</option>
-                        <option value="TSP">TSP</option>
-                    </select>
-                </div>
-            </div>
-
-            <p style="font-size:0.75rem; color:#666; text-align:center; margin:5px 0;">
-                Select Categories below to find where vacancies get filled:
-            </p>
-
-            <div class="cutoff-table-wrapper" style="margin-bottom:10px;">
-                <table class="cutoff-table" id="explore-table-body">
-                    </table>
-            </div>
-
-            <button class="main-btn analyze-btn" onclick="findVacancyCutoffRank()">📍 Find Cutoff Rank</button>
-
-            <div id="explore-result-area" style="display:none; margin-top:15px; border-top:1px dashed #ccc; padding-top:10px;">
-                <div class="dynamic-shift-label" style="background:#e8f5e9; color:#2e7d32; text-align:center;">
-                    Vacancy Filled At Rank: <span id="calc-cutoff-rank" style="font-size:1.1rem;">-</span>
-                </div>
-                
-                <div class="search-inputs" style="margin-top:10px;">
-                    <div class="form-group">
-                        <label style="font-size:0.7rem;">Safe Rank (Start)</label>
-                        <input type="number" id="exp_start" readonly style="background:#eee; font-weight:bold;">
-                    </div>
-                    <div class="form-group">
-                        <label style="font-size:0.7rem;">Your Rank (End)</label>
-                        <input type="number" id="exp_end" placeholder="Enter Rank">
-                    </div>
-                </div>
-                <button class="main-btn" onclick="executeExploreAnalyze()">📊 Analyze Gap</button>
-            </div>
         </div>
         <div id="cutoff-display-area">
             <div class="cutoff-header">
@@ -1170,29 +1099,28 @@
         let CURRENT_DB = {};
         let CANDIDATE = null;
         let CURRENT_TYPE = "NTSP";
-        // GLOBAL SET FOR SELECTED CATEGORIES
-        let SELECTED_CRITERIA = new Set(); // Stores "CAT_TYPE" strings e.g. "OBC_GEN"
-        let TOTAL_VACANCY_TARGET = 0;
 
-        function switchMode(mode) {
-            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.input-section').forEach(d => d.classList.remove('active'));
-            document.querySelectorAll('.result-container').forEach(d => d.style.display = 'none');
-            document.getElementById('status-msg').innerHTML = "";
-            document.getElementById('cutoff-display-area').style.display = (mode === 'explore') ? 'none' : 'block';
+       function switchMode(mode) {
+    // 1. सबसे पहले दोनों बटन से 'active' क्लास हटा दें
+    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
 
-            if (mode === 'search') {
-                document.querySelectorAll('.toggle-btn')[0].classList.add('active');
-                document.getElementById('input-search').classList.add('active');
-            } else if (mode === 'explore') {
-                document.querySelectorAll('.toggle-btn')[1].classList.add('active');
-                document.getElementById('input-explore').classList.add('active');
-                renderInteractiveTable(document.getElementById('examTypeExplore').value);
-            } else {
-                document.querySelectorAll('.toggle-btn')[2].classList.add('active');
-                document.getElementById('input-analyze').classList.add('active');
-            }
-        }
+    // 2. सारे इनपुट सेक्शन को छुपा दें
+    document.querySelectorAll('.input-section').forEach(d => d.classList.remove('active'));
+    document.querySelectorAll('.result-container').forEach(d => d.style.display = 'none');
+    document.getElementById('status-msg').innerHTML = "";
+
+    if (mode === 'search') {
+        // अगर Search चुना है:
+        // HTML में अब Search दूसरे नंबर पर है, इसलिए [1] का use करेंगे
+        document.querySelectorAll('.toggle-btn')[1].classList.add('active'); 
+        document.getElementById('input-search').classList.add('active');
+    } else {
+        // अगर Analyze चुना है:
+        // HTML में अब Analyze पहले नंबर पर है, इसलिए [0] का use करेंगे
+        document.querySelectorAll('.toggle-btn')[0].classList.add('active'); 
+        document.getElementById('input-analyze').classList.add('active');
+    }
+}
 
         function loadDB(type) {
             CURRENT_TYPE = type;
@@ -1376,14 +1304,20 @@
                 document.getElementById('d_shift').innerText = "Shift " + CANDIDATE.Shift;
                 document.getElementById('d_tsp').innerText = CANDIDATE.Tsp ? "YES" : "NO";
                 // --- ATTENDANCE DATA FILLING START ---
-            const sData = SHIFT_ATTENDANCE[CANDIDATE.Shift] || { date: "N/A", total: "-", pres: "-", abs: "-", per: "-" };
-            
-            document.getElementById('d_exam_date').innerText = sData.date;
-            document.getElementById('d_total_cands').innerText = sData.total;
-            // Present + Percentage ek sath dikhayenge
-            document.getElementById('d_present').innerHTML = `${sData.pres} <span style="font-size:0.65rem; color:#28a745;">(${sData.per})</span>`;
-            document.getElementById('d_absent').innerText = sData.abs;
-            // --- ATTENDANCE DATA FILLING END ---
+                const sData = SHIFT_ATTENDANCE[CANDIDATE.Shift] || {
+                    date: "N/A",
+                    total: "-",
+                    pres: "-",
+                    abs: "-",
+                    per: "-"
+                };
+
+                document.getElementById('d_exam_date').innerText = sData.date;
+                document.getElementById('d_total_cands').innerText = sData.total;
+                // Present + Percentage ek sath dikhayenge
+                document.getElementById('d_present').innerHTML = `${sData.pres} <span style="font-size:0.65rem; color:#28a745;">(${sData.per})</span>`;
+                document.getElementById('d_absent').innerText = sData.abs;
+                // --- ATTENDANCE DATA FILLING END ---
 
                 let subDisp = "None";
                 SUB_TYPES.forEach(s => {
@@ -1467,12 +1401,12 @@
                     status.innerText = `Loading Data Segment: ${mFile}...`;
                     await loadScript(mFile);
                     loadDB(CURRENT_TYPE); // Database refresh karein
-                    
+
                     // Dobara check karein
                     if (checkMeritInMemory(e, CURRENT_TYPE)) break;
                 }
             }
-            
+
             status.innerText = ""; // Clear message
             // --- END NEW LOGIC ---
 
@@ -1891,395 +1825,6 @@
                     ${tspCellTot}<td>${gt.all}</td>
                 </tr>`;
             }
-        }
-      // --- EXPLORE MODE FUNCTIONS ---
-
-        function renderInteractiveTable(type) {
-            SELECTED_CRITERIA.clear(); // Reset selection
-            TOTAL_VACANCY_TARGET = 0;
-            document.getElementById('explore-result-area').style.display = 'none';
-
-            const tbody = document.getElementById('explore-table-body');
-            const data = CUTOFF_DB[type];
-            
-            // Header
-            let html = `<thead><tr>
-                <th>Cat</th><th>GEN</th><th>FEM</th><th>WID</th><th>DIV</th><th>EX</th>
-            </tr></thead><tbody>`;
-
-            // Rows with Click Events
-            const colMap = { 1: 'GEN', 2: 'FEM', 3: 'WID', 4: 'DIV', 5: 'EX' };
-            
-            for (const [cat, vals] of Object.entries(data)) {
-                html += `<tr><td style="font-weight:bold; background:#f0f0f0;">${cat}</td>`;
-                
-                // Columns GEN to EX
-                ['GEN', 'FEM', 'WID', 'DIV', 'EX'].forEach(colKey => {
-                    const cellData = vals[colKey];
-                    // Create a unique ID: "OBC_FEM"
-                    const cellId = `${cat}_${colKey}`;
-                    const vac = (cellData && cellData.vac) ? cellData.vac : 0;
-                    const cut = (cellData && cellData.cut) ? cellData.cut : '-';
-
-                    if(vac > 0) {
-                        html += `<td class="selectable" id="cell-${cellId}" onclick="toggleCell('${cat}', '${colKey}', ${vac})">
-                             <div style="line-height:1.1; pointer-events:none;">
-                                <span>${cut}</span>
-                                <div style="font-size:0.6rem; color:#666; font-weight:normal; margin-top:1px;">Posts: ${vac}</div>
-                            </div>
-                        </td>`;
-                    } else {
-                        html += `<td style="background:#fafafa; color:#ccc;">-</td>`;
-                    }
-                });
-                html += `</tr>`;
-            }
-            html += `</tbody>`;
-            tbody.innerHTML = html;
-        }
-
-        // GLOBAL VARIABLES
-        let SEL_VERT = null; // Stores {id, cat, sub, vac} for Main Category
-        let SEL_HORIZ = new Set(); // Stores Horizontal Filters like "LD/CP"
-
-        function toggleCell(cat, subType, vac) {
-            const cellId = `${cat}_${subType}`;
-            const el = document.getElementById(`cell-${cellId}`);
-            
-            // CHECK: Is this a Horizontal Category (LD/CP, SPORTS etc)?
-            // We identify Horizontal by checking if 'cat' is NOT in our main list or specific key
-            // Based on your data structure, Horizontal rows in main table are rare, 
-            // usually they are separate buttons or bottom rows.
-            // Assumption: This function is called by Main Table clicks.
-            
-            // LOGIC FOR VERTICAL MAIN TABLE (Mutually Exclusive)
-            if (SEL_VERT && SEL_VERT.id === cellId) {
-                // Deselect if already selected
-                el.classList.remove('selected-cell');
-                SEL_VERT = null;
-            } else {
-                // Remove previous selection
-                if (SEL_VERT) {
-                    const prev = document.getElementById(`cell-${SEL_VERT.id}`);
-                    if (prev) prev.classList.remove('selected-cell');
-                }
-                
-                // Select New
-                el.classList.add('selected-cell');
-                SEL_VERT = { id: cellId, cat: cat, sub: subType, vac: vac };
-            }
-            
-            updateExploreButtonText();
-        }
-
-        // Helper for Bottom Horizontal Tags (Make them clickable if needed later)
-        // For now, focusing on the Main Table Logic as requested.
-        
-        function updateExploreButtonText() {
-            const btn = document.querySelector('#input-explore .analyze-btn');
-            if (SEL_VERT) {
-                btn.innerHTML = `📍 Check Rank for <b>${SEL_VERT.cat}-${SEL_VERT.sub}</b>`;
-                btn.style.background = "#28a745";
-            } else {
-                btn.innerHTML = `📍 Select a Category`;
-                btn.style.background = "#6c757d";
-            }
-        }
-     async function findVacancyCutoffRank() {
-            const type = document.getElementById('examTypeExplore').value;
-            const status = document.getElementById('status-msg');
-            const resArea = document.getElementById('explore-result-area');
-            
-            // 1. CLEAR OLD BADGES
-            document.querySelectorAll('.migration-badge').forEach(e => e.remove());
-            document.querySelectorAll('.fill-stat').forEach(e => e.remove());
-
-            resArea.style.display = 'none';
-
-            if (!SEL_VERT) {
-                alert("Please select one Main Category (e.g., OBC-FEM) from the table.");
-                return;
-            }
-
-            // 2. SETUP BUCKETS (All Categories)
-            // We need to simulate EVERY category filling up parallelly to know when GEN gets full.
-            const DB_CAT = CUTOFF_DB[type];
-            const targetSub = SEL_VERT.sub; // "GEN"(Male), "FEM", "WID" etc.
-            
-            // Track fill counts for ALL categories for this specific SubType (Gender)
-            let BUCKETS = {}; 
-            let LIMITS = {};
-            
-            // Initialize Buckets
-            for (const catKey of Object.keys(DB_CAT)) {
-                BUCKETS[catKey] = 0;
-                let vacObj = DB_CAT[catKey][targetSub];
-                LIMITS[catKey] = (vacObj) ? vacObj.vac : 0;
-            }
-
-            // MIGRATION TRACKER: How many [Category] candidates took [GEN] seats?
-            let MIGRATION_TO_GEN = {};
-            Object.keys(DB_CAT).forEach(c => MIGRATION_TO_GEN[c] = 0);
-
-            status.innerHTML = `Simulating Universal Merit (Rank 1 onwards)...`;
-            status.style.color = "#d35400";
-
-            let currentRank = 0;
-            let loadedUntil = 0;
-            let targetCategoryFull = false;
-
-            // 3. START SCANNING
-            const meritFileList = (type === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
-            
-            for (const mFile of meritFileList) {
-                if (!LOADED_FILES.has(mFile)) {
-                    status.innerText = `Loading Merit Data: ${mFile}...`;
-                    await loadScript(mFile);
-                }
-                loadDB(type);
-                
-                const allKeys = Object.keys(CURRENT_DB).map(Number).sort((a,b)=>a-b);
-                const maxRank = allKeys[allKeys.length - 1];
-
-                // 4. ROW-BY-ROW UNIVERSAL ANALYSIS
-                for (let i = loadedUntil + 1; i <= maxRank; i++) {
-                    const p = CURRENT_DB[i];
-                    if (!p) continue;
-                    
-                    let pCat = (p.Category || "OTHER").toUpperCase();
-                    if (!CAT_ORDER.includes(pCat)) pCat = "OTHER";
-                    let pGen = (p.Gender || "").toUpperCase();
-                    let pSub = (p.SubCat || "").toUpperCase();
-
-                    // -- ELIGIBILITY CHECK (Gender/Type Filter) --
-                    // Only process candidates that match the column we are analyzing (e.g. only FEMALES)
-                    let isEligible = false;
-                    let cType = "GEN"; // Default Male/Open
-                    
-                    if (pSub.includes("WD")) cType = "WID";
-                    else if (pSub.includes("DV")) cType = "DIV";
-                    else if (pSub.includes("EX")) cType = "EX";
-                    else if (pGen === "FEMALE") cType = "FEM";
-                    
-                    // Logic: If we are analyzing FEMALE column, we only care about FEMALES.
-                    // If analyzing GEN(Male/Open), we usually exclude WID/DIV/EX as they have separate horizontal.
-                    // But in strict Vertical: Open includes everyone. 
-                    // To keep it simple and accurate to your UI columns: Match strictly.
-                    if (cType === targetSub) isEligible = true;
-
-                    if (!isEligible) continue;
-
-                    // -- WATERFALL LOGIC --
-                    
-                    // Step A: TRY GENERAL SEAT (Open Competition)
-                    // Everyone is eligible for GEN seat first (Migration)
-                    if (BUCKETS["GEN"] < LIMITS["GEN"]) {
-                        BUCKETS["GEN"]++;
-                        // Track who took it
-                        if (pCat !== "GEN") {
-                            MIGRATION_TO_GEN[pCat]++;
-                        }
-                    } 
-                    // Step B: IF GEN FULL -> TRY OWN CATEGORY
-                    else {
-                        if (BUCKETS[pCat] < LIMITS[pCat]) {
-                            BUCKETS[pCat]++;
-                            
-                            // Check if THIS was the bucket we were watching (User Selected)
-                            if (pCat === SEL_VERT.cat) {
-                                currentRank = i; // Mark the rank
-                            }
-                        }
-                    }
-
-                    // CHECK STOP CONDITION
-                    // Stop if our Target Bucket is full
-                    if (BUCKETS[SEL_VERT.cat] >= LIMITS[SEL_VERT.cat]) {
-                        targetCategoryFull = true;
-                        currentRank = i;
-                        break;
-                    }
-                    // Special Case: If Target is GEN, stop when GEN is full
-                    if (SEL_VERT.cat === "GEN" && BUCKETS["GEN"] >= LIMITS["GEN"]) {
-                        targetCategoryFull = true;
-                        currentRank = i;
-                        break;
-                    }
-                }
-                
-                loadedUntil = maxRank;
-                if (targetCategoryFull) break;
-            }
-
-            // 5. UPDATE UI BADGES (Visual Feedback)
-            // Add counts to selected cell
-            const selEl = document.getElementById(`cell-${SEL_VERT.id}`);
-            const limit = LIMITS[SEL_VERT.cat];
-            const filled = BUCKETS[SEL_VERT.cat];
-            if(selEl) {
-                selEl.querySelector('div').innerHTML += `<span class="fill-stat">Filled: ${filled}/${limit}</span>`;
-            }
-
-            // If user selected a Category (e.g. OBC), show how many migrated to GEN
-            if (SEL_VERT.cat !== "GEN") {
-                const migratedCount = MIGRATION_TO_GEN[SEL_VERT.cat];
-                if (migratedCount > 0) {
-                    // Find the GEN cell for this row (e.g. GEN_FEM or GEN_GEN)
-                    const genCellId = `GEN_${targetSub}`;
-                    const genEl = document.getElementById(`cell-${genCellId}`);
-                    if (genEl) {
-                        genEl.querySelector('div').innerHTML += `<span class="migration-badge">★ ${SEL_VERT.cat}: ${migratedCount}</span>`;
-                        // Highlight GEN cell slightly to show connection
-                        genEl.style.backgroundColor = "#fff3cd"; 
-                    }
-                }
-            }
-
-            // 6. SHOW RESULT
-            status.innerHTML = "";
-            resArea.style.display = 'block';
-            
-            if (!targetCategoryFull) {
-                 document.getElementById('calc-cutoff-rank').innerHTML = `<span style="color:red">Not Filled</span> <span style="font-size:0.7rem">(Data Ends at ${loadedUntil})</span>`;
-                 document.getElementById('exp_start').value = loadedUntil;
-            } else {
-                document.getElementById('calc-cutoff-rank').innerHTML = `${currentRank}`;
-                document.getElementById('exp_start').value = currentRank;
-            }
-        }
-      
-        function isCandidateMatch(p, type) {
-            // Check if candidate 'p' matches ANY of the SELECTED_CRITERIA
-            // ID Format: "CAT_TYPE" e.g. "OBC_GEN", "SC_FEM", "GEN_WID"
-            
-            let pCat = (p.Category || "OTHER").toUpperCase();
-            if (!CAT_ORDER.includes(pCat)) pCat = "OTHER";
-            
-            let pGen = (p.Gender || "").toUpperCase();
-            let pSub = (p.SubCat || "").toUpperCase();
-            
-            // Convert Candidate Data to our Table Column Keys
-            // GEN (Male), FEM, WID, DIV, EX
-            
-            let candidateType = "GEN"; // Default to Male column
-            
-            if (pSub.includes("WD")) candidateType = "WID";
-            else if (pSub.includes("DV")) candidateType = "DIV";
-            else if (pSub.includes("EX")) candidateType = "EX";
-            else if (pGen === "FEMALE") candidateType = "FEM";
-            else candidateType = "GEN"; // Male or Others fall here
-            
-            // Construct ID
-            const matchId = `${pCat}_${candidateType}`;
-            
-            return SELECTED_CRITERIA.has(matchId);
-        }
-
-        async function executeExploreAnalyze() {
-            const safeRank = parseInt(document.getElementById('exp_start').value);
-            const userRank = parseInt(document.getElementById('exp_end').value);
-            const container = document.getElementById('result-analyze'); // We reuse the analyze container
-
-            if (!userRank || userRank <= 0) {
-                alert("Please enter a valid Rank.");
-                return;
-            }
-
-            // UI Reset
-            container.style.display = 'block';
-            container.innerHTML = ""; // Clear previous content
-            
-            // --- SCENARIO 1: USER IS SAFE (User Rank <= Safe Rank) ---
-            if (userRank <= safeRank) {
-                // Header
-                container.innerHTML += `<div class="sec-title" style="color:#28a745; border-color:#28a745;">
-                    🎉 You are likely Safe! (Analysis: Rank 1 to ${userRank})
-                </div>`;
-                
-                // Show Single Analysis (Rank 1 to User Rank)
-                await renderCustomAnalyzeSection(1, userRank, container);
-            } 
-            
-            // --- SCENARIO 2: USER IS IN WAITING/DANGER (User Rank > Safe Rank) ---
-            else {
-                // PART A: SAFE ZONE (1 to Safe Rank)
-                container.innerHTML += `<div class="sec-title" style="color:#28a745; border-color:#28a745;">
-                    ✅ Zone 1: Selected Candidates (Rank 1 to ${safeRank})
-                </div>`;
-                await renderCustomAnalyzeSection(1, safeRank, container);
-
-                // SEPARATOR
-                container.innerHTML += `<hr style="border:0; border-top:2px dashed #ccc; margin:20px 0;">`;
-
-                // PART B: GAP ZONE (Safe Rank to User Rank)
-                container.innerHTML += `<div class="sec-title" style="color:#dc3545; border-color:#dc3545;">
-                    ⚠️ Zone 2: The GAP (Rank ${safeRank} to ${userRank})
-                </div>`;
-                await renderCustomAnalyzeSection(safeRank + 1, userRank, container);
-            }
-
-            // Scroll to view
-            container.scrollIntoView({ behavior: "smooth" });
-        }
-      // HELPER: Generates Analysis Tables dynamically inside a target container
-        async function renderCustomAnalyzeSection(start, end, targetContainer) {
-            
-            // 1. Calculate Stats (Same Logic as before)
-            let gm = createEmptyMatrix();
-            let shifts = {};
-
-            // Ensure Data is Loaded (Double Check)
-            // Note: explore mode already loads files, so usually data is present.
-            // But for safety, we assume data exists in CURRENT_DB from previous step.
-
-            for (let i = start; i <= end; i++) {
-                const p = CURRENT_DB[i];
-                if (!p) continue;
-                processRow(gm, p);
-                let s = String(p.Shift);
-                if (!shifts[s]) shifts[s] = createEmptyMatrix();
-                processRow(shifts[s], p);
-            }
-
-            // 2. Build HTML Structure
-            const wrapper = document.createElement('div');
-            
-            // A. Overall Table
-            let html = `<div class="table-wrapper" style="margin-bottom:15px;">
-                            <div style="background:#f1f1f1; padding:5px; font-weight:bold; font-size:0.75rem; text-align:center;">Overall Stats (${start}-${end})</div>
-                            <table class="stats-table">${getTableHeader()}<tbody>`;
-            
-            // We need a temporary tbody to use our existing renderDeepTable function
-            // Trick: Create a dummy table in memory to generate innerHTML
-            let tempTable = document.createElement('table');
-            let tempBody = document.createElement('tbody');
-            renderDeepTable(tempBody, gm);
-            html += tempBody.innerHTML;
-            html += `</tbody></table></div>`;
-
-            // B. Shift Tables
-            const sortedShifts = Object.keys(shifts).sort();
-            if(sortedShifts.length > 0) {
-                 html += `<div style="display:grid; grid-template-columns: 1fr; gap:10px;">`;
-                 sortedShifts.forEach(sk => {
-                    let tempBodyS = document.createElement('tbody');
-                    renderDeepTable(tempBodyS, shifts[sk]);
-                    
-                    html += `<div class="dynamic-shift-wrapper">
-                                <div class="dynamic-shift-label">Shift ${sk}</div>
-                                <div class="table-wrapper">
-                                    <table class="stats-table">
-                                        ${getTableHeader(true)}
-                                        <tbody>${tempBodyS.innerHTML}</tbody>
-                                    </table>
-                                </div>
-                             </div>`;
-                 });
-                 html += `</div>`;
-            }
-
-            wrapper.innerHTML = html;
-            targetContainer.appendChild(wrapper);
         }
     </script>
 </body>
