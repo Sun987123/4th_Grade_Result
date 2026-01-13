@@ -781,6 +781,27 @@
         .cutoff-table td.selected-cell div {
             color: white !important; /* Vacancy text white */
         }
+        /* MIGRATION BADGE STYLE */
+        .migration-badge {
+            background: #ffc107;
+            color: #000;
+            font-size: 0.55rem;
+            padding: 1px 4px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 2px;
+            border: 1px solid #d39e00;
+        }
+        .fill-stat {
+            font-size: 0.65rem; 
+            color: #fff; 
+            background: rgba(0,0,0,0.2); 
+            padding: 1px 4px; 
+            border-radius: 3px; 
+            margin-top: 2px; 
+            display: block;
+        }
 
         .cutoff-table td:first-child {
             background: #6c757d;
@@ -1964,11 +1985,15 @@
                 btn.style.background = "#6c757d";
             }
         }
-      async function findVacancyCutoffRank() {
+     async function findVacancyCutoffRank() {
             const type = document.getElementById('examTypeExplore').value;
             const status = document.getElementById('status-msg');
             const resArea = document.getElementById('explore-result-area');
             
+            // 1. CLEAR OLD BADGES
+            document.querySelectorAll('.migration-badge').forEach(e => e.remove());
+            document.querySelectorAll('.fill-stat').forEach(e => e.remove());
+
             resArea.style.display = 'none';
 
             if (!SEL_VERT) {
@@ -1976,33 +2001,34 @@
                 return;
             }
 
-            // 1. SETUP VACANCY LIMITS (The Buckets)
-            // Bucket A: General Seats (Open or Female)
-            // Bucket B: Target Category Seats (Open or Female)
-            
+            // 2. SETUP BUCKETS (All Categories)
+            // We need to simulate EVERY category filling up parallelly to know when GEN gets full.
             const DB_CAT = CUTOFF_DB[type];
-            const targetCat = SEL_VERT.cat;     // e.g. "OBC"
-            const targetSub = SEL_VERT.sub;     // e.g. "FEM" or "GEN"(Male)
+            const targetSub = SEL_VERT.sub; // "GEN"(Male), "FEM", "WID" etc.
             
-            // Get General Vacancy for this specific column (Gender)
-            // Note: If user selected GEN-FEM, both buckets are same, handle logically.
-            const genVacObj = DB_CAT["GEN"][targetSub]; 
-            const catVacObj = DB_CAT[targetCat][targetSub];
-
-            const VACANCY_GEN_LIMIT = (genVacObj) ? genVacObj.vac : 0;
-            const VACANCY_CAT_LIMIT = (catVacObj) ? catVacObj.vac : 0;
-
-            // COUNTERS
-            let filled_Gen = 0;
-            let filled_Cat = 0;
+            // Track fill counts for ALL categories for this specific SubType (Gender)
+            let BUCKETS = {}; 
+            let LIMITS = {};
             
-            status.innerHTML = `Simulating Merit... Checking Gen(${VACANCY_GEN_LIMIT}) + ${targetCat}(${VACANCY_CAT_LIMIT})`;
+            // Initialize Buckets
+            for (const catKey of Object.keys(DB_CAT)) {
+                BUCKETS[catKey] = 0;
+                let vacObj = DB_CAT[catKey][targetSub];
+                LIMITS[catKey] = (vacObj) ? vacObj.vac : 0;
+            }
+
+            // MIGRATION TRACKER: How many [Category] candidates took [GEN] seats?
+            let MIGRATION_TO_GEN = {};
+            Object.keys(DB_CAT).forEach(c => MIGRATION_TO_GEN[c] = 0);
+
+            status.innerHTML = `Simulating Universal Merit (Rank 1 onwards)...`;
             status.style.color = "#d35400";
 
             let currentRank = 0;
             let loadedUntil = 0;
+            let targetCategoryFull = false;
 
-            // 2. START SCANNING MERIT FILES
+            // 3. START SCANNING
             const meritFileList = (type === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
             
             for (const mFile of meritFileList) {
@@ -2015,103 +2041,113 @@
                 const allKeys = Object.keys(CURRENT_DB).map(Number).sort((a,b)=>a-b);
                 const maxRank = allKeys[allKeys.length - 1];
 
-                // 3. ROW-BY-ROW ANALYSIS (Waterfall Logic)
+                // 4. ROW-BY-ROW UNIVERSAL ANALYSIS
                 for (let i = loadedUntil + 1; i <= maxRank; i++) {
                     const p = CURRENT_DB[i];
                     if (!p) continue;
                     
-                    // Parse Candidate Attributes
                     let pCat = (p.Category || "OTHER").toUpperCase();
                     if (!CAT_ORDER.includes(pCat)) pCat = "OTHER";
                     let pGen = (p.Gender || "").toUpperCase();
                     let pSub = (p.SubCat || "").toUpperCase();
-                    
-                    // -- ELIGIBILITY CHECK --
-                    // Does this candidate match the Gender/Type requirement?
-                    // Example: If looking for FEMALE cutoff, ignore MALES.
-                    // Example: If looking for OPEN (GEN) cutoff, include MALES + FEMALES.
-                    
-                    let isEligibleForSeat = false;
-                    
-                    if (targetSub === "FEM" || targetSub === "WID" || targetSub === "DIV") {
-                        // Strict Gender/Status Matching
-                        // Logic: SubCat Match (WD/DV) or Gender Match (FEM)
-                        let cType = "GEN"; 
-                        if (pSub.includes("WD")) cType = "WID";
-                        else if (pSub.includes("DV")) cType = "DIV";
-                        else if (pGen === "FEMALE") cType = "FEM";
-                        
-                        if (cType === targetSub) isEligibleForSeat = true;
 
-                    } else if (targetSub === "EX") {
-                        if (pSub.includes("EX")) isEligibleForSeat = true;
+                    // -- ELIGIBILITY CHECK (Gender/Type Filter) --
+                    // Only process candidates that match the column we are analyzing (e.g. only FEMALES)
+                    let isEligible = false;
+                    let cType = "GEN"; // Default Male/Open
+                    
+                    if (pSub.includes("WD")) cType = "WID";
+                    else if (pSub.includes("DV")) cType = "DIV";
+                    else if (pSub.includes("EX")) cType = "EX";
+                    else if (pGen === "FEMALE") cType = "FEM";
+                    
+                    // Logic: If we are analyzing FEMALE column, we only care about FEMALES.
+                    // If analyzing GEN(Male/Open), we usually exclude WID/DIV/EX as they have separate horizontal.
+                    // But in strict Vertical: Open includes everyone. 
+                    // To keep it simple and accurate to your UI columns: Match strictly.
+                    if (cType === targetSub) isEligible = true;
 
-                    } else {
-                        // "GEN" Column (Male/Open)
-                        // In Vertical Reservation, "General Male" is actually "Open" (Everyone allowed)
-                        // BUT "OBC Male" is specific.
-                        
-                        // Rule: If candidate is special (WID/DIV/EX), they usually take horizontal or separate seats.
-                        // For simplicity in vertical analysis: 
-                        // If we are filling "Male/Open" seats, we generally exclude WID/DIV/EX 
-                        // unless they are high merit and fall in Open. 
-                        // Let's assume Open = Everyone NOT WID/DIV/EX for now (or strictly MALE/FEMALE).
-                        if (!pSub.includes("WD") && !pSub.includes("DV") && !pSub.includes("EX")) {
-                            isEligibleForSeat = true; 
+                    if (!isEligible) continue;
+
+                    // -- WATERFALL LOGIC --
+                    
+                    // Step A: TRY GENERAL SEAT (Open Competition)
+                    // Everyone is eligible for GEN seat first (Migration)
+                    if (BUCKETS["GEN"] < LIMITS["GEN"]) {
+                        BUCKETS["GEN"]++;
+                        // Track who took it
+                        if (pCat !== "GEN") {
+                            MIGRATION_TO_GEN[pCat]++;
+                        }
+                    } 
+                    // Step B: IF GEN FULL -> TRY OWN CATEGORY
+                    else {
+                        if (BUCKETS[pCat] < LIMITS[pCat]) {
+                            BUCKETS[pCat]++;
+                            
+                            // Check if THIS was the bucket we were watching (User Selected)
+                            if (pCat === SEL_VERT.cat) {
+                                currentRank = i; // Mark the rank
+                            }
                         }
                     }
 
-                    if (!isEligibleForSeat) continue;
-
-                    // -- WATERFALL FILLING --
-                    
-                    // Step A: Can they take a GENERAL Seat?
-                    // Condition: General Bucket not full
-                    if (filled_Gen < VACANCY_GEN_LIMIT) {
-                        filled_Gen++;
-                        // Even if I am OBC, I take Gen seat first.
-                    } 
-                    // Step B: If Gen Full, can they take CATEGORY Seat?
-                    else {
-                        // Must belong to the Target Category
-                        if (pCat === targetCat) {
-                            if (filled_Cat < VACANCY_CAT_LIMIT) {
-                                filled_Cat++;
-                                currentRank = i; // Update Rank
-                            } else {
-                                // Both Buckets Full for this Category User
-                                // Stop logic? No, only stop if we are tracking THIS category.
-                                // If we are analyzing OBC, and OBC fills up, we stop.
-                                goto_Result = true;
-                                break;
-                            }
-                        }
+                    // CHECK STOP CONDITION
+                    // Stop if our Target Bucket is full
+                    if (BUCKETS[SEL_VERT.cat] >= LIMITS[SEL_VERT.cat]) {
+                        targetCategoryFull = true;
+                        currentRank = i;
+                        break;
+                    }
+                    // Special Case: If Target is GEN, stop when GEN is full
+                    if (SEL_VERT.cat === "GEN" && BUCKETS["GEN"] >= LIMITS["GEN"]) {
+                        targetCategoryFull = true;
+                        currentRank = i;
+                        break;
                     }
                 }
                 
                 loadedUntil = maxRank;
-                // Check if our specific bucket is full
-                if (filled_Cat >= VACANCY_CAT_LIMIT) break;
-                // Special Case: If analyzing GEN Category, we stop when filled_Gen is full
-                if (targetCat === "GEN" && filled_Gen >= VACANCY_GEN_LIMIT) break;
+                if (targetCategoryFull) break;
             }
 
-            // 4. DISPLAY RESULT
+            // 5. UPDATE UI BADGES (Visual Feedback)
+            // Add counts to selected cell
+            const selEl = document.getElementById(`cell-${SEL_VERT.id}`);
+            const limit = LIMITS[SEL_VERT.cat];
+            const filled = BUCKETS[SEL_VERT.cat];
+            if(selEl) {
+                selEl.querySelector('div').innerHTML += `<span class="fill-stat">Filled: ${filled}/${limit}</span>`;
+            }
+
+            // If user selected a Category (e.g. OBC), show how many migrated to GEN
+            if (SEL_VERT.cat !== "GEN") {
+                const migratedCount = MIGRATION_TO_GEN[SEL_VERT.cat];
+                if (migratedCount > 0) {
+                    // Find the GEN cell for this row (e.g. GEN_FEM or GEN_GEN)
+                    const genCellId = `GEN_${targetSub}`;
+                    const genEl = document.getElementById(`cell-${genCellId}`);
+                    if (genEl) {
+                        genEl.querySelector('div').innerHTML += `<span class="migration-badge">★ ${SEL_VERT.cat}: ${migratedCount}</span>`;
+                        // Highlight GEN cell slightly to show connection
+                        genEl.style.backgroundColor = "#fff3cd"; 
+                    }
+                }
+            }
+
+            // 6. SHOW RESULT
             status.innerHTML = "";
             resArea.style.display = 'block';
             
-            // Logic to determine which count matters
-            let finalFilled = (targetCat === "GEN") ? filled_Gen : filled_Cat;
-            let finalLimit = (targetCat === "GEN") ? VACANCY_GEN_LIMIT : VACANCY_CAT_LIMIT;
-            
-            if (finalFilled < finalLimit) {
-                 document.getElementById('calc-cutoff-rank').innerHTML = `<span style="color:red">Not Filled</span> <span style="font-size:0.7rem">(Data ends at ${loadedUntil})</span>`;
+            if (!targetCategoryFull) {
+                 document.getElementById('calc-cutoff-rank').innerHTML = `<span style="color:red">Not Filled</span> <span style="font-size:0.7rem">(Data Ends at ${loadedUntil})</span>`;
                  document.getElementById('exp_start').value = loadedUntil;
             } else {
-                document.getElementById('calc-cutoff-rank').innerHTML = `${currentRank} <span style="font-size:0.7rem; color:#555;">(Seats Filled: ${finalFilled}/${finalLimit})</span>`;
+                document.getElementById('calc-cutoff-rank').innerHTML = `${currentRank}`;
                 document.getElementById('exp_start').value = currentRank;
             }
         }
+      
         function isCandidateMatch(p, type) {
             // Check if candidate 'p' matches ANY of the SELECTED_CRITERIA
             // ID Format: "CAT_TYPE" e.g. "OBC_GEN", "SC_FEM", "GEN_WID"
