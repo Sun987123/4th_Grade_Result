@@ -266,7 +266,7 @@
         }
 
         .mini-inp {
-            width: 55px;
+            width: 90px; 
             padding: 4px;
             text-align: center;
             font-weight: bold;
@@ -274,7 +274,6 @@
             border-radius: 3px;
             font-size: 0.75rem;
         }
-
         .mini-btn {
             padding: 4px 10px;
             border-radius: 3px;
@@ -1341,13 +1340,42 @@
             calculateBadges(deepStart, deepEnd);
         }
 
-        function updateSearchResult() {
+        async function updateSearchResult() {
             let s = parseInt(document.getElementById('res_start').value) || 1;
             let e = parseInt(document.getElementById('res_end').value) || CANDIDATE.Merit;
+            const status = document.getElementById('status-msg');
+
             if (s > e) {
                 alert("Start > End!");
                 return;
             }
+
+            // --- NEW LOGIC: Check & Load Missing Files ---
+            status.innerText = "Checking Data availability...";
+            status.style.color = "#d35400";
+
+            // 1. Select correct file list based on current exam type
+            const meritFileList = (CURRENT_TYPE === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
+
+            // 2. Loop through files and load if 'End Rank' data is missing
+            for (const mFile of meritFileList) {
+                // Agar End rank memory me hai, to loop break karein
+                if (checkMeritInMemory(e, CURRENT_TYPE)) break;
+
+                // Agar file load nahi hai, to load karein
+                if (!LOADED_FILES.has(mFile)) {
+                    status.innerText = `Loading Data Segment: ${mFile}...`;
+                    await loadScript(mFile);
+                    loadDB(CURRENT_TYPE); // Database refresh karein
+                    
+                    // Dobara check karein
+                    if (checkMeritInMemory(e, CURRENT_TYPE)) break;
+                }
+            }
+            
+            status.innerText = ""; // Clear message
+            // --- END NEW LOGIC ---
+
             runSearchLogic(s, e);
         }
 
