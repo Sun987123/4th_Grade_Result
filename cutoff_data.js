@@ -1,13 +1,5 @@
 // cutoff_data.js
-// Last Updated: 13/01/2026
 
-const INFO = {
-    examName: "Dream-Link Recruitment 2025",
-    totalPost: "47,571",
-    updateDate: "13 Jan 2026"
-};
-
-// New Smart Structure: { cut: "Cutoff Marks", vac: "Vacancy Count" }
 const CUTOFF_DB = {
     "NTSP": {
         "GEN": {
