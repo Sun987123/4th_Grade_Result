@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Dream-Link 4th 2 MODE</title>
+    <title>Dream-Link 4th LOADING AI</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     <style>
@@ -26,6 +26,57 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+        }
+
+        /* --- PREMIUM LOADER STYLES --- */
+        .loader-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(5px);
+            z-index: 9999;
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.3s ease;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #e0e0e0;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        .loader-text {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1rem;
+            text-align: center;
+            max-width: 80%;
+        }
+
+        .loader-subtext {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         /* COMPACT HEADER */
@@ -556,7 +607,8 @@
             .telegram-btn,
             footer,
             .home-action-area,
-            #status-msg {
+            #status-msg,
+            .loader-overlay {
                 display: none !important;
             }
 
@@ -805,6 +857,12 @@
 
 <body>
 
+    <div id="global-loader" class="loader-overlay">
+        <div class="loader-spinner"></div>
+        <div id="loader-msg" class="loader-text">Processing...</div>
+        <div id="loader-sub" class="loader-subtext">Please wait</div>
+    </div>
+
     <header>
         <h1>Dream-Link 4th Grade Results</h1>
         <div class="sub-head">Analyse by MP SALODIYA</div>
@@ -1021,7 +1079,7 @@
 
 
     <script>
-        // --- 1. SMART FILE LISTS (Files ke naam sahi kram me likhein) ---
+        // --- 1. SMART FILE LISTS ---
 
         // NTSP ROLL DATA FILES
         const ROLL_FILES_NTSP = [
@@ -1031,7 +1089,7 @@
 
         ];
 
-        // NTSP MERIT DATA FILES (Rank 1 se start hokar end tak)
+        // NTSP MERIT DATA FILES
         const MERIT_FILES_NTSP = [
             "data_ntsp_merit_part1.js",
             "data_ntsp_merit_part2.js",
@@ -1068,6 +1126,17 @@
             });
         }
 
+        // --- LOADER CONTROLS ---
+        function showLoading(msg, subMsg = "Loading data files...") {
+            document.getElementById('loader-msg').innerText = msg;
+            document.getElementById('loader-sub').innerText = subMsg;
+            document.getElementById('global-loader').style.display = 'flex';
+        }
+
+        function hideLoading() {
+            document.getElementById('global-loader').style.display = 'none';
+        }
+
         function checkRollInMemory(roll, type) {
             const db = (type === "TSP") ? window.TSP_ROLL_DATA : window.NTSP_ROLL_DATA;
             return db && db[roll];
@@ -1079,45 +1148,67 @@
         }
 
         const CAT_ORDER = ["GEN", "OBC", "EWS", "MBC", "SC", "ST", "SAH"];
-        // इमेज के अनुसार सही और पूरी लिस्ट (Alphabetical Order)
-        const SUB_TYPES = [
-            { key: "DIV", label: "Divorcee" },
-            { key: "EXM", label: "Ex-Serviceman" },
-            { key: "EXM SP", label: "Ex-S + Sports" },  // Combined
-            { key: "LDCP", label: "LDCP/PH" },
-            { key: "LDCP DIV", label: "LDCP + Div" },    // Combined
-            { key: "LDCP EXM", label: "LDCP + Ex-S" },   // Combined
-            { key: "LDCP SP", label: "LDCP + Sports" },  // Combined
-            { key: "SP", label: "Sports Person" },
-            { key: "SP DIV", label: "Sport + Div" },     // Combined
-            { key: "WID", label: "Widow" }
+
+        const SUB_TYPES = [{
+                key: "DIV",
+                label: "Divorcee"
+            },
+            {
+                key: "EXM",
+                label: "Ex-Serviceman"
+            },
+            {
+                key: "EXM SP",
+                label: "Ex-S + Sports"
+            }, // Combined
+            {
+                key: "LDCP",
+                label: "LDCP/PH"
+            },
+            {
+                key: "LDCP DIV",
+                label: "LDCP + Div"
+            }, // Combined
+            {
+                key: "LDCP EXM",
+                label: "LDCP + Ex-S"
+            }, // Combined
+            {
+                key: "LDCP SP",
+                label: "LDCP + Sports"
+            }, // Combined
+            {
+                key: "SP",
+                label: "Sports Person"
+            },
+            {
+                key: "SP DIV",
+                label: "Sport + Div"
+            }, // Combined
+            {
+                key: "WID",
+                label: "Widow"
+            }
         ];
 
         let CURRENT_DB = {};
         let CANDIDATE = null;
         let CURRENT_TYPE = "NTSP";
 
-       function switchMode(mode) {
-    // 1. सबसे पहले दोनों बटन से 'active' क्लास हटा दें
-    document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+        function switchMode(mode) {
+            document.querySelectorAll('.toggle-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.input-section').forEach(d => d.classList.remove('active'));
+            document.querySelectorAll('.result-container').forEach(d => d.style.display = 'none');
+            document.getElementById('status-msg').innerHTML = "";
 
-    // 2. सारे इनपुट सेक्शन को छुपा दें
-    document.querySelectorAll('.input-section').forEach(d => d.classList.remove('active'));
-    document.querySelectorAll('.result-container').forEach(d => d.style.display = 'none');
-    document.getElementById('status-msg').innerHTML = "";
-
-    if (mode === 'search') {
-        // अगर Search चुना है:
-        // HTML में अब Search दूसरे नंबर पर है, इसलिए [1] का use करेंगे
-        document.querySelectorAll('.toggle-btn')[1].classList.add('active'); 
-        document.getElementById('input-search').classList.add('active');
-    } else {
-        // अगर Analyze चुना है:
-        // HTML में अब Analyze पहले नंबर पर है, इसलिए [0] का use करेंगे
-        document.querySelectorAll('.toggle-btn')[0].classList.add('active'); 
-        document.getElementById('input-analyze').classList.add('active');
-    }
-}
+            if (mode === 'search') {
+                document.querySelectorAll('.toggle-btn')[1].classList.add('active');
+                document.getElementById('input-search').classList.add('active');
+            } else {
+                document.querySelectorAll('.toggle-btn')[0].classList.add('active');
+                document.getElementById('input-analyze').classList.add('active');
+            }
+        }
 
         function loadDB(type) {
             CURRENT_TYPE = type;
@@ -1189,6 +1280,7 @@
                         </div>`;
             }).join('');
         }
+
         // 2. Initialize on Load
         document.addEventListener('DOMContentLoaded', () => {
             renderCutoff('NTSP'); // Default Load
@@ -1198,23 +1290,22 @@
             if (searchSelect) {
                 searchSelect.addEventListener('change', (e) => {
                     renderCutoff(e.target.value);
-                    // Sync Analyze dropdown also
                     const anaSelect = document.getElementById('examTypeAnalyze');
                     if (anaSelect) anaSelect.value = e.target.value;
                 });
             }
 
-            // Link Analyze Tab Dropdown (ISKI KAMI THI)
+            // Link Analyze Tab Dropdown
             const analyzeSelect = document.getElementById('examTypeAnalyze');
             if (analyzeSelect) {
                 analyzeSelect.addEventListener('change', (e) => {
                     renderCutoff(e.target.value);
-                    // Sync Search dropdown also
                     const srchSelect = document.getElementById('examTypeSearch');
                     if (srchSelect) srchSelect.value = e.target.value;
                 });
             }
         });
+
         async function executeSearch() {
             const roll = document.getElementById('rollInput').value.trim();
             const type = document.getElementById('examTypeSearch').value;
@@ -1223,14 +1314,23 @@
             // Reset UI
             document.getElementById('result-search').style.display = 'none';
             document.getElementById('cutoff-display-area').style.display = 'none';
+            status.innerText = ""; // Clear old status
 
+            // --- CHANGE 1: 7 DIGIT VALIDATION ---
             if (!roll) {
                 status.innerText = "Please enter Roll Number";
+                status.style.color = "red";
                 return;
             }
 
-            status.innerText = "Searching Database...";
-            status.style.color = "#d35400";
+            if (roll.length !== 7) {
+                status.innerText = "⚠️ Error: Roll Number must be exactly 7 digits!";
+                status.style.color = "red";
+                return;
+            }
+
+            // SHOW NEW LOADER
+            showLoading("Searching Database...", "Scanning records for Roll: " + roll);
 
             // 1. SELECT FILE LIST
             const rollFileList = (type === "TSP") ? ROLL_FILES_TSP : ROLL_FILES_NTSP;
@@ -1238,13 +1338,14 @@
 
             let foundData = null;
 
-            // 2. FIND ROLL NUMBER (Load files one by one)
+            // 2. FIND ROLL NUMBER
             for (const file of rollFileList) {
                 foundData = checkRollInMemory(roll, type);
-                if (foundData) break; // Mil gaya!
+                if (foundData) break;
 
                 if (!LOADED_FILES.has(file)) {
-                    status.innerText = `Scanning File: ${file}...`;
+                    // Update Loader Text
+                    showLoading("Scanning Database...", `Loading file: ${file}`);
                     await loadScript(file);
                     foundData = checkRollInMemory(roll, type);
                     if (foundData) break;
@@ -1252,14 +1353,15 @@
             }
 
             if (!foundData) {
+                hideLoading(); // Hide Loader
                 status.innerText = "Roll Number Not Found!";
                 status.style.color = "red";
                 return;
             }
 
-            // 3. FIND MERIT DATA (Load Merit files until Rank is found)
+            // 3. FIND MERIT DATA
             const meritRank = parseInt(foundData.Merit);
-            status.innerText = `Found! Getting Merit Data (Rank ${meritRank})...`;
+            showLoading("Roll Found!", `Retrieving Rank Data (${meritRank})...`);
 
             for (const mFile of meritFileList) {
                 if (checkMeritInMemory(meritRank, type)) break;
@@ -1272,16 +1374,14 @@
 
             // 4. DISPLAY RESULT
             setTimeout(() => {
-                // Global DB Update karein taaki render functions kaam karein
                 loadDB(type);
 
-                // Candidate Data Set Karein
+                // Candidate Data Set
                 CANDIDATE = {
                     ...foundData,
                     Merit: meritRank
                 };
 
-                // Ab purana Display Logic Same Rahega
                 const det = CURRENT_DB[CANDIDATE.Merit] || {};
                 CANDIDATE.Cat = (det.Category || "OTHER").toUpperCase();
                 CANDIDATE.Gen = (det.Gender || "OTHER").toUpperCase();
@@ -1300,7 +1400,8 @@
                 document.getElementById('d_gender').innerText = CANDIDATE.Gen;
                 document.getElementById('d_shift').innerText = "Shift " + CANDIDATE.Shift;
                 document.getElementById('d_tsp').innerText = CANDIDATE.Tsp ? "YES" : "NO";
-                // --- ATTENDANCE DATA FILLING START ---
+
+                // Attendance Data
                 const sData = SHIFT_ATTENDANCE[CANDIDATE.Shift] || {
                     date: "N/A",
                     total: "-",
@@ -1308,13 +1409,10 @@
                     abs: "-",
                     per: "-"
                 };
-
                 document.getElementById('d_exam_date').innerText = sData.date;
                 document.getElementById('d_total_cands').innerText = sData.total;
-                // Present + Percentage ek sath dikhayenge
                 document.getElementById('d_present').innerHTML = `${sData.pres} <span style="font-size:0.65rem; color:#28a745;">(${sData.per})</span>`;
                 document.getElementById('d_absent').innerText = sData.abs;
-                // --- ATTENDANCE DATA FILLING END ---
 
                 let subDisp = "None";
                 SUB_TYPES.forEach(s => {
@@ -1338,17 +1436,16 @@
 
                 runSearchLogic(1, CANDIDATE.Merit);
 
-                status.innerText = "";
+                hideLoading(); // HIDE LOADER
                 document.getElementById('result-search').style.display = 'block';
             }, 100);
         }
 
         function runSearchLogic(start, end) {
             let deepStart = start;
-            let deepEnd = CANDIDATE.Merit; // FORCE End to be Candidate Merit for Deep Analysis
+            let deepEnd = CANDIDATE.Merit;
             let isSafeMode = false;
 
-            // Deep Merit Logic: If start > Candidate.Merit, fade and reset to 1-Merit (Safe Mode)
             if (start > CANDIDATE.Merit) {
                 isSafeMode = true;
                 deepStart = 1;
@@ -1361,13 +1458,10 @@
             const opacity = isSafeMode ? "0.4" : "1";
             document.getElementById('rt-wrapper-1').style.opacity = opacity;
             document.getElementById('rt-wrapper-3').style.opacity = opacity;
-            // Stats tables always use exact inputs (start-end), no opacity needed
             document.getElementById('rt-wrapper-2').style.opacity = "1";
             document.getElementById('rt-wrapper-4').style.opacity = "1";
 
-            // Stats use MANUAL range
             calculateSearchTables(start, end);
-            // Deep Merit uses Start-to-Merit (or Safe Mode)
             calculateBadges(deepStart, deepEnd);
         }
 
@@ -1381,33 +1475,27 @@
                 return;
             }
 
-            // --- NEW LOGIC: Check & Load Missing Files ---
-            status.innerText = "Checking Data availability...";
-            status.style.color = "#d35400";
+            // SHOW LOADER
+            showLoading("Updating Range...", "Checking data availability...");
 
-            // 1. Select correct file list based on current exam type
             const meritFileList = (CURRENT_TYPE === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
 
-            // 2. Loop through files and load if 'End Rank' data is missing
             for (const mFile of meritFileList) {
-                // Agar End rank memory me hai, to loop break karein
                 if (checkMeritInMemory(e, CURRENT_TYPE)) break;
 
-                // Agar file load nahi hai, to load karein
                 if (!LOADED_FILES.has(mFile)) {
-                    status.innerText = `Loading Data Segment: ${mFile}...`;
+                    showLoading("Downloading Data...", `Fetching: ${mFile}`);
                     await loadScript(mFile);
-                    loadDB(CURRENT_TYPE); // Database refresh karein
-
-                    // Dobara check karein
+                    loadDB(CURRENT_TYPE);
                     if (checkMeritInMemory(e, CURRENT_TYPE)) break;
                 }
             }
 
-            status.innerText = ""; // Clear message
-            // --- END NEW LOGIC ---
-
-            runSearchLogic(s, e);
+            // DELAY for UI Update
+            setTimeout(() => {
+                runSearchLogic(s, e);
+                hideLoading(); // HIDE LOADER
+            }, 100);
         }
 
         function resetSearchAnalysis() {
@@ -1428,35 +1516,48 @@
             document.getElementById('result-analyze').style.display = 'none';
             document.getElementById('cutoff-display-area').style.display = 'none';
 
-            if (!start || !end || start > end) {
-                status.innerHTML = "Invalid Range!";
+            // --- CHANGE 2: 500,000 LIMIT VALIDATION ---
+            if (!start || !end) {
+                status.innerHTML = "Please enter Start and End Rank!";
                 status.style.color = "red";
                 return;
             }
 
-            status.innerHTML = "Loading Data...";
-            status.style.color = "#d35400";
+            if (start > end) {
+                status.innerHTML = "Error: Start Rank cannot be greater than End Rank!";
+                status.style.color = "red";
+                return;
+            }
+
+            if (end > 300000) {
+                status.innerHTML = "⚠️ Error: Max analysis limit is 300,000!";
+                status.style.color = "red";
+                return;
+            }
+
+            // SHOW LOADER
+            showLoading("Preparing Analysis...", "Checking data segments...");
 
             const meritFileList = (type === "TSP") ? MERIT_FILES_TSP : MERIT_FILES_NTSP;
 
-            // LOOP: Sirf wahi files load karo jisme 'End Rank' tak ka data ho
             for (const mFile of meritFileList) {
-                if (checkMeritInMemory(end, type)) break; // Agar End rank ka data hai, to ruk jao
+                if (checkMeritInMemory(end, type)) break;
 
                 if (!LOADED_FILES.has(mFile)) {
-                    status.innerText = `Loading Segment: ${mFile}...`;
+                    showLoading("Loading Data...", `Downloading segment: ${mFile}`);
                     await loadScript(mFile);
                     if (checkMeritInMemory(end, type)) break;
                 }
             }
 
-            status.innerHTML = "Analyzing...";
+            showLoading("Crunching Numbers...", "Generating Statistics tables...");
 
             setTimeout(() => {
-                loadDB(type); // Update global reference
+                loadDB(type);
                 document.getElementById('ana-ov-header').innerText = `🌐 Overall Stats (Rank ${start}-${end})`;
                 calculateMultiShiftTables(start, end);
-                status.innerHTML = "";
+
+                hideLoading(); // HIDE LOADER
                 document.getElementById('result-analyze').style.display = 'block';
             }, 200);
         }
@@ -1535,51 +1636,48 @@
             renderRankTable("tb-shift-rank", shiftStats, mySubKey, CANDIDATE.Tsp);
         }
 
-        const z = () => ({ m: 0, f: 0, o: 0, tot: 0, tsp: 0 });
-        
+        const z = () => ({
+            m: 0,
+            f: 0,
+            o: 0,
+            tot: 0,
+            tsp: 0
+        });
+
         const createEmptyMatrix = () => {
             let m = {};
             [...CAT_ORDER, "OTHER"].forEach(c => {
-                // 1. Pehle Sub-Categories ka object banayein dynamic tarike se
                 let subObj = {};
                 SUB_TYPES.forEach(sub => {
-                    subObj[sub.key] = z(); // Har naye category ke liye empty box banega
+                    subObj[sub.key] = z();
                 });
-
-                // 2. Main structure assign karein
                 m[c] = {
                     ...z(),
-                    pure: z(), // Pure/Open candidates ke liye
-                    subs: subObj // Yahan ab saari nayi categories hongi
+                    pure: z(),
+                    subs: subObj
                 };
             });
             return m;
         };
 
         function processRow(m, p) {
-            // 1. Category & Gender Cleaning
             let cat = (p.Category || "OTHER").toUpperCase();
             if (!CAT_ORDER.includes(cat)) cat = "OTHER";
-            
-            // Gender ko saaf karein (Trim spaces)
-            let gen = (p.Gender || "OTHER").trim().toUpperCase(); 
-            
+            let gen = (p.Gender || "OTHER").trim().toUpperCase();
             let tsp = (p.TSP || "").toUpperCase().includes("YES") || (p.TSP || "").toUpperCase().includes("TSP");
-            let sub = (p.SubCat || "").trim().toUpperCase(); // Exact Match ke liye Trim zaroori hai
+            let sub = (p.SubCat || "").trim().toUpperCase();
 
             let r = m[cat];
-
-            // Helper to determine gender key (m, f, or o)
-            // 'THIRD' apne aap 'o' me chala jayega
-            let gKey = 'o'; 
+            let gKey = 'o';
             if (gen === 'MALE') gKey = 'm';
             else if (gen === 'FEMALE') gKey = 'f';
 
-            // 1. Main Category Total Count
             if (CURRENT_TYPE === 'NTSP') {
-                if (tsp) { r.tsp++; r.tot++; }
-                else {
-                    r[gKey]++; // Dynamic access (m/f/o)
+                if (tsp) {
+                    r.tsp++;
+                    r.tot++;
+                } else {
+                    r[gKey]++;
                     r.tot++;
                 }
             } else {
@@ -1587,20 +1685,17 @@
                 r.tot++;
             }
 
-            // 2. Exact Subcategory Matching (Using new list)
-            let isSpecial = false; 
-
+            let isSpecial = false;
             SUB_TYPES.forEach(s => {
-                // EXACT MATCH LOGIC (No Mixing)
                 if (sub === s.key) {
                     isSpecial = true;
-                    // Ab ye line Error nahi degi kyonki createEmptyMatrix ne box bana diya hai
-                    let sr = r.subs[s.key]; 
-
+                    let sr = r.subs[s.key];
                     if (CURRENT_TYPE === 'NTSP') {
-                        if (tsp) { sr.tsp++; sr.tot++; }
-                        else {
-                            sr[gKey]++; // Error yahi aa raha tha (reading 'f'), ab nahi aayega
+                        if (tsp) {
+                            sr.tsp++;
+                            sr.tot++;
+                        } else {
+                            sr[gKey]++;
                             sr.tot++;
                         }
                     } else {
@@ -1610,14 +1705,19 @@
                 }
             });
 
-            // 3. Count "Pure Open" Candidates
-            // (Agar createEmptyMatrix me 'pure' add kiya hai toh check ki zaroorat nahi, par safety ke liye rakhein)
-            if (!r.pure) r.pure = { m: 0, f: 0, o: 0, tsp: 0, tot: 0 };
-
-            if (!isSpecial) { 
+            if (!r.pure) r.pure = {
+                m: 0,
+                f: 0,
+                o: 0,
+                tsp: 0,
+                tot: 0
+            };
+            if (!isSpecial) {
                 if (CURRENT_TYPE === 'NTSP') {
-                    if (tsp) { r.pure.tsp++; r.pure.tot++; }
-                    else {
+                    if (tsp) {
+                        r.pure.tsp++;
+                        r.pure.tot++;
+                    } else {
                         r.pure[gKey]++;
                         r.pure.tot++;
                     }
@@ -1627,6 +1727,7 @@
                 }
             }
         }
+
         function getTableHeader(isShift = false) {
             let bg = isShift ? "background:#f3e5f5;color:#4a148c;" : "";
 
@@ -1644,7 +1745,8 @@
                         <th style="${bg}">THIRD</th> </tr>
                 </thead>`;
             } else {
-                return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Female</th><th style="${bg}">THIRD</th><th style="${bg}">Total</th></tr></thead>`; }
+                return `<thead><tr><th class="col-cat" style="${bg}">Category</th><th style="${bg}">Male</th><th style="${bg}">Female</th><th style="${bg}">THIRD</th><th style="${bg}">Total</th></tr></thead>`;
+            }
         }
 
         function calculateSearchTables(start, end) {
@@ -1693,46 +1795,30 @@
         function renderRankTable(id, d, hasSub, hasTsp) {
             const tbody = document.getElementById(id);
             tbody.innerHTML = "";
-
-            // 1. Check if Current Candidate is TSP
             const isTspCand = CANDIDATE.Tsp;
-
-            // 2. Dynamic Header Logic (Change Text based on Candidate)
-            // यह कोड टेबल के 3rd कॉलम का नाम अपने आप बदल देगा
             const table = tbody.closest('table');
             if (table) {
                 const th3 = table.querySelector('th:nth-child(3)');
                 if (th3) {
                     if (isTspCand) {
                         th3.innerText = "Rank (TSP Only)";
-                        th3.style.background = "#fd7e14"; // TSP के लिए ऑरेंज कलर (Optional)
+                        th3.style.background = "#fd7e14";
                     } else {
                         th3.innerText = "Rank (NTSP Only)";
-                        th3.style.background = ""; // NTSP के लिए डिफ़ॉल्ट (Blue)
+                        th3.style.background = "";
                     }
                 }
             }
 
-            // 3. Define Rows (Removed 'tsp' row as requested)
-            // Order: Overall -> Gender -> Category -> Mix -> Subcategory
             const k = ["range", "gen", "cat", "mix"];
             if (hasSub) k.push("sub");
-            // Note: 'tsp' key is removed, so that row won't show anymore.
 
             k.forEach(key => {
                 let v = d[key];
-
-                // 4. Calculate Logic for 2nd Column
-                // v.a = Total Count
-                // v.n = NTSP Count
-                // So, TSP Count = v.a - v.n
                 let col2Val = 0;
-
                 if (isTspCand) {
-                    // अगर कैंडिडेट TSP है, तो "All - NTSP" = TSP Rank दिखाएं
                     col2Val = v.a - v.n;
                 } else {
-                    // अगर कैंडिडेट NTSP है, तो सीधा NTSP Rank दिखाएं
                     col2Val = v.n;
                 }
 
@@ -1748,20 +1834,18 @@
 
         function renderDeepTable(tbody, data) {
             let gt = z();
-            gt.all = 0; // Grand Total tracker
+            gt.all = 0;
 
             [...CAT_ORDER, "OTHER"].forEach(c => {
                 let d = data[c];
                 if (d.tot === 0) return;
 
-                // Update Grand Total with strict logic
                 gt.m += d.m;
                 gt.f += d.f;
                 gt.o += d.o;
                 gt.tsp += d.tsp;
                 gt.all += d.tot;
 
-                // 1. Calculate Subcategory Totals to find "Pure/Open" candidates
                 let subSum = {
                     m: 0,
                     f: 0,
@@ -1783,15 +1867,13 @@
                     }
                 });
 
-                // Pure (Open) = Total - Sum of all Subcategories
                 let openM = d.m - subSum.m;
                 let openF = d.f - subSum.f;
                 let openO = d.o - subSum.o;
                 let openTsp = d.tsp - subSum.tsp;
                 let openTot = d.tot - subSum.tot;
 
-                // 2. Render OPEN/GENERAL Row (Category Main without Subcats)
-                let label = hasSubs ? `${c} (Open)` : c; // Change label if subcats exist
+                let label = hasSubs ? `${c} (Open)` : c;
                 let tspCellOpen = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${openTsp}</td>` : '';
 
                 let h = `<tr>
@@ -1800,7 +1882,6 @@
                     ${tspCellOpen}<td style="font-weight:bold;">${openTot}</td>
                 </tr>`;
 
-                // 3. Render Subcategory Rows
                 SUB_TYPES.forEach(s => {
                     let sd = d.subs[s.key];
                     if (sd.tot > 0) {
@@ -1813,7 +1894,6 @@
                     }
                 });
 
-                // 4. Render Category TOTAL Row (ONLY if subcategories exist)
                 if (hasSubs) {
                     let tspCellTot = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell" style="font-weight:bold;">${d.tsp}</td>` : '';
                     h += `<tr style="background:#fff3cd; border-bottom:2px solid #ddd;">
@@ -1829,7 +1909,6 @@
                 tbody.innerHTML += h;
             });
 
-            // 5. Grand Total Row (Last Row of Table)
             if (gt.all > 0) {
                 let tspCellTot = CURRENT_TYPE === 'NTSP' ? `<td class="tsp-cell">${gt.tsp}</td>` : '';
                 tbody.innerHTML += `<tr class="grand-total-row">
