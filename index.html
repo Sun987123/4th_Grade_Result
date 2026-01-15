@@ -42,7 +42,7 @@
     </div>
 
     <header>
-        <h1>Dream-Link 4th Grade Results</h1>
+        <h1>4th Grade Result</h1>
         <div class="sub-head">Analysis by MP SALODIYA</div>
         <button class="info-icon-btn" onclick="toggleInfoModal(true)" title="Help & Features">!</button>
     </header>
@@ -281,18 +281,21 @@
             "data_roll_ntsp_part1.js",
             "data_roll_ntsp_part2.js",
             "data_roll_ntsp_part3.js"
-
         ];
 
         const MERIT_FILES_NTSP = [
             "data_ntsp_merit_part1.js",
             "data_ntsp_merit_part2.js",
             "data_ntsp_merit_part3.js"
-
         ];
 
-        const ROLL_FILES_TSP = ["data_roll_tsp1.js"];
-        const MERIT_FILES_TSP = ["data_merit_tsp1.js"];
+        const ROLL_FILES_TSP = [
+             "data_roll_tsp1.js"
+        ];
+        const MERIT_FILES_TSP = [
+             "data_merit_tsp1.js"
+        ];
+        
         const LOADED_FILES = new Set();
       
         function toggleInfoModal(show) {
@@ -653,6 +656,8 @@
                 runSearchLogic(1, CANDIDATE.Merit);
 
                 hideLoading();
+                document.getElementById('status-msg').innerHTML = ""; // Fix: Error message ko force remove karega
+                document.querySelector('.home-action-area').style.display = 'none'; // Fix: Stats area hide karega
                 document.getElementById('result-search').style.display = 'block';
             }, 100);
         }
