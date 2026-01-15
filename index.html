@@ -276,6 +276,25 @@
 
 
     <script>
+      
+      const ROLL_FILES_NTSP = [
+            "data_roll_ntsp_part1.js",
+            "data_roll_ntsp_part2.js",
+            "data_roll_ntsp_part3.js"
+
+        ];
+
+        const MERIT_FILES_NTSP = [
+            "data_ntsp_merit_part1.js",
+            "data_ntsp_merit_part2.js",
+            "data_ntsp_merit_part3.js"
+
+        ];
+
+        const ROLL_FILES_TSP = ["data_roll_tsp1.js"];
+        const MERIT_FILES_TSP = ["data_merit_tsp1.js"];
+        const LOADED_FILES = new Set();
+      
         function toggleInfoModal(show) {
             const el = document.getElementById('featureModalOverlay');
             if (show) {
@@ -327,24 +346,7 @@
             const target = document.querySelector('.stats-grid');
             if (target) observer.observe(target);
         });
-        const ROLL_FILES_NTSP = [
-            "data_roll_ntsp_part1.js",
-            "data_roll_ntsp_part2.js",
-            "data_roll_ntsp_part3.js"
-
-        ];
-
-        const MERIT_FILES_NTSP = [
-            "data_ntsp_merit_part1.js",
-            "data_ntsp_merit_part2.js",
-            "data_ntsp_merit_part3.js"
-
-        ];
-
-        const ROLL_FILES_TSP = ["data_roll_tsp1.js"];
-        const MERIT_FILES_TSP = ["data_merit_tsp1.js"];
-        const LOADED_FILES = new Set();
-
+        
         function loadScript(src) {
             return new Promise((resolve, reject) => {
                 if (LOADED_FILES.has(src)) {
@@ -537,7 +539,6 @@
             document.getElementById('cutoff-display-area').style.display = 'none';
             status.innerText = "";
 
-            //7 DIGIT
             if (!roll) {
                 status.innerText = "Please enter Roll Number";
                 status.style.color = "red";
@@ -552,14 +553,22 @@
             let foundData = null;
 
             for (const file of rollFileList) {
+                
                 foundData = checkRollInMemory(roll, type);
-                if (foundData) break;
+                if (foundData) {
+                    break; 
+                }
 
                 if (!LOADED_FILES.has(file)) {
                     showLoading("Scanning Database...", `Loading file: ${file}`);
+                 
                     await loadScript(file);
+
                     foundData = checkRollInMemory(roll, type);
-                    if (foundData) break;
+                    
+                    if (foundData) {
+                        break; 
+                    }
                 }
             }
 
